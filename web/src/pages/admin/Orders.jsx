@@ -122,16 +122,63 @@ function CloseKit({ order, onDone, onCancel }) {
   );
 }
 
-const TABS = [['confirmed', 'Para entregar'], ['delivered', 'Kits abiertos'], ['settled', 'Cerrados'], ['cancelled', 'Cancelados']];
+// Reclamos por falla de fábrica: foto, ficha de la vendedora y de su jefa zonal, y la resolución.
+function ClaimCard({ c, onDone }) {
+  const [note, setNote] = useState('');
+  const { busy, msg, run } = useAction();
+  const act = (action, ok) => run(() => api(`/admin/claims/${c.id}/resolve`, { method: 'POST', body: { action, note } }).then(onDone), ok);
+  return (
+    <div className={`card ${c.status === 'pending' ? 'highlight' : ''}`}>
+      <div className="claim">
+        <a href={c.photo_url} target="_blank" rel="noreferrer"><img className="product-img" src={c.photo_url} alt={`Foto de la falla de ${c.product}`} /></a>
+        <div className="stack">
+          <div className="row between">
+            <strong>Reclamo #{c.id} · {c.qty} × {c.product}</strong>
+            <strong>{pesos(c.amount)}</strong>
+          </div>
+          <div className="muted small">Pedido #{c.order_id}{c.order_kind === 'kit' ? ' (kit)' : ''} · {fecha(c.created_at)}</div>
+          <div>“{c.description}”</div>
+          {c.status === 'approved' && <Badge tone="amarillo">Aprobado: llevar el cambio en la próxima entrega</Badge>}
+        </div>
+      </div>
+      <Profiles o={c} />
+      <Notice msg={msg} />
+      {c.status === 'pending' && (
+        <div className="stack" style={{ marginTop: 10 }}>
+          <input placeholder="Nota para la vendedora (obligatoria si lo rechazás)" value={note} onChange={(e) => setNote(e.target.value)} aria-label="Nota para la vendedora" />
+          <div className="row">
+            <button className="btn small" disabled={busy} onClick={() => act('replace', 'Aprobado: queda para cambiar en la próxima entrega.')}>Aprobar y cambiar</button>
+            <button className="btn small" disabled={busy} onClick={() => act('credit', 'Aprobado: se le descontó de su deuda o quedó como saldo a favor.')}>Aprobar con saldo a favor</button>
+            <button className="btn secondary small" disabled={busy || !note.trim()} onClick={() => act('reject', 'Reclamo rechazado.')}>Rechazar</button>
+          </div>
+        </div>
+      )}
+      {c.status === 'approved' && (
+        <div className="row" style={{ marginTop: 10 }}>
+          <button className="btn small" disabled={busy} onClick={() => run(() => api(`/admin/claims/${c.id}/replaced`, { method: 'POST' }).then(onDone), 'Cambio entregado.')}>Cambio entregado</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ClaimsTab({ onChange }) {
+  const { data, error, reload } = useApi('/admin/claims');
+  if (!data) return <Loading error={error} />;
+  if (data.length === 0) return <p className="muted">No hay reclamos abiertos.</p>;
+  return <div className="stack">{data.map((c) => <ClaimCard key={c.id} c={c} onDone={() => { reload(); onChange(); }} />)}</div>;
+}
+
+const TABS = [['confirmed', 'Para entregar'], ['delivered', 'Kits abiertos'], ['claims', 'Reclamos'], ['settled', 'Cerrados'], ['cancelled', 'Cancelados']];
 
 export default function AdminOrders() {
   const [tab, setTab] = useState('confirmed');
-  const { data, error, reload } = useApi(`/admin/orders?status=${tab}`);
+  const { data, error, reload } = useApi(`/admin/orders?status=${tab === 'claims' ? 'confirmed' : tab}`);
   const counts = useApi('/admin/counts');
   const [closing, setClosing] = useState(null);
   const { busy, msg, run } = useAction();
   const done = () => { reload(); counts.reload(); refreshCounts(); };
-  const tabCount = { confirmed: counts.data?.orders_to_deliver, delivered: counts.data?.kit_changes };
+  const tabCount = { confirmed: counts.data?.orders_to_deliver, delivered: counts.data?.kit_changes, claims: counts.data?.claims_open };
 
   return (
     <div>
@@ -147,7 +194,7 @@ export default function AdminOrders() {
       {tab === 'delivered' && counts.data?.kit_changes > 0 && <p className="small">{counts.data.kit_changes} {counts.data.kit_changes === 1 ? 'kit tiene' : 'kits tienen'} cambios pedidos para la segunda visita.</p>}
       <Notice msg={msg} />
       {closing && <CloseKit order={closing} onCancel={() => setClosing(null)} onDone={() => { setClosing(null); done(); }} />}
-      {!data ? <Loading error={error} /> : data.length === 0 ? <p className="muted">No hay pedidos.</p> : (
+      {tab === 'claims' ? <ClaimsTab onChange={done} /> : !data ? <Loading error={error} /> : data.length === 0 ? <p className="muted">No hay pedidos.</p> : (
         <div className="stack">
           {data.map((o) => (
             <div key={o.id} className={`card ${o.change_request && o.status === 'delivered' ? 'highlight' : ''}`}>

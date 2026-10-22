@@ -1,5 +1,5 @@
 import { tx } from '../db/index.js';
-import { today } from '../config.js';
+import { now, today } from '../config.js';
 import * as R from '../rules/index.js';
 import { AppError, audit, availableCreditFor, blockingDebt, getSeller, getSettings, levelOf } from './common.js';
 import { notifyUser } from './whatsapp.js';
@@ -108,7 +108,7 @@ export async function closeKit(orderId, { returns = [], additions = [] }, adminI
     }
     if (additions.length) await insertItems(db, orderId, await reserveItems(db, additions));
     const { v: kept } = await db.one('SELECT COALESCE(SUM((qty - returned_qty) * unit_price), 0) AS v FROM order_items WHERE order_id = $1', [orderId]);
-    await db.query(`UPDATE orders SET subtotal = $2, total = $2, status = 'settled' WHERE id = $1`, [orderId, kept]);
+    await db.query(`UPDATE orders SET subtotal = $2, total = $2, status = 'settled', closed_at = $3 WHERE id = $1`, [orderId, kept, now()]);
     let obligation = null;
     if (kept > 0) {
       obligation = await db.one(
@@ -186,7 +186,7 @@ export async function deliverOrder(orderId, adminId) {
     if (unpaidUpfront) throw new AppError('Este pedido se paga antes de la entrega y todavía no está acreditado.');
     const seller = await getSeller(o.seller_id, db);
     const day = today();
-    await db.query(`UPDATE orders SET status = 'delivered', delivered_at = now() WHERE id = $1`, [orderId]);
+    await db.query(`UPDATE orders SET status = 'delivered', delivered_at = $2 WHERE id = $1`, [orderId, now()]);
     await db.query(`UPDATE obligations SET due_date = $2 WHERE order_id = $1 AND kind = 'credit'`, [orderId, R.dueDateFor(day, levelOf(seller))]);
     await db.query(`UPDATE obligations SET due_date = $2 WHERE order_id = $1 AND kind = 'on_delivery'`, [orderId, day]);
     if (o.kind === 'regular') await db.query(`UPDATE orders SET status = 'settled' WHERE id = $1`, [orderId]);

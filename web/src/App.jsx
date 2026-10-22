@@ -34,7 +34,7 @@ const ADMIN_NAV = [
   ['/', 'home', 'Inicio'],
   ['/admin/vendedoras', 'users', 'Vendedoras', (c) => c.sellers_pending],
   ['/admin/catalogo', 'list', 'Catálogo'],
-  ['/admin/pedidos', 'box', 'Pedidos', (c) => c.orders_to_deliver + c.kit_changes],
+  ['/admin/pedidos', 'box', 'Pedidos', (c) => c.orders_to_deliver + c.kit_changes + c.claims_open],
   ['/admin/pagos', 'card', 'Pagos', (c) => c.payments_to_confirm],
   ['/admin/alertas', 'bell', 'Alertas', (c) => c.admin_alerts],
   ['/admin/ajustes', 'gear', 'Ajustes'],

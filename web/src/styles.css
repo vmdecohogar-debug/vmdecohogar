@@ -203,3 +203,7 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
   .onb-backdrop { align-items: center; padding: 16px; }
   .onb { border-radius: 20px; }
 }
+
+/* Reclamos por falla */
+.claim { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: start; }
+.claim .product-img { width: 96px; height: 96px; object-fit: cover; }

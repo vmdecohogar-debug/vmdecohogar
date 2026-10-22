@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { api } from '../../api.js';
 import { LABELS, fecha, pesos } from '../../format.js';
 import { Badge, Loading, Notice, Qty, useAction, useApi } from '../../components/ui.jsx';
+import Claims from './Claims.jsx';
 
 // Segunda visita: qué devuelve del kit y qué productos nuevos quiere, elegidos del catálogo.
 function KitChanges({ kit, onDone }) {
@@ -90,6 +91,7 @@ export default function SellerOrders() {
       <h1>Mis pedidos</h1>
       <Notice msg={msg} />
       {openKit && <KitChanges kit={openKit} onDone={reload} />}
+      <Claims />
       {data.orders.length === 0 ? <p className="muted">Todavía no hiciste pedidos.</p> : (
         <div className="card table-wrap">
           <table className="responsive">

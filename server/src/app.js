@@ -11,8 +11,9 @@ import { runDaily } from './services/daily.js';
 import { closePeriod, markSettlementPaid } from './services/commissions.js';
 import { render } from './services/whatsapp.js';
 import * as catalog from './services/catalog.js';
+import * as claims from './services/claims.js';
 
-const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery'];
+const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery', 'claims'];
 
 function sign(user) {
   return jwt.sign({ id: user.id, role: user.role }, config.jwtSecret, { expiresIn: '30d' });
@@ -82,7 +83,7 @@ export function createApp() {
   app.get('/api/onboarding', h(async () => {
     const settings = await getSettings(direct);
     const levels = (await direct.query('SELECT code, name, credit_limit, term_days, early_discount_pct FROM levels ORDER BY rank')).rows;
-    return { levels, kit: settings.kit, commissions: settings.commissions, mora: settings.mora, delivery: settings.delivery };
+    return { levels, kit: settings.kit, commissions: settings.commissions, mora: settings.mora, delivery: settings.delivery, claims: settings.claims ?? { windowDays: 7 } };
   }));
   app.get('/api/products', h(async () => catalog.listProducts()));
   app.get('/api/obligations/:id/pay-link', h(async (req) => {
@@ -97,6 +98,8 @@ export function createApp() {
   app.post('/api/seller/kit', seller, h(async (req) => orders.createKit(req.user.id, req.body)));
   app.post('/api/seller/kit/:id/changes', seller, h(async (req) => orders.requestKitChanges(req.user.id, Number(req.params.id), req.body)));
   app.post('/api/seller/orders', seller, h(async (req) => orders.createOrder(req.user.id, req.body)));
+  app.get('/api/seller/claims', seller, h(async (req) => ({ ...(await claims.claimableItems(req.user.id)), claims: await claims.sellerClaims(req.user.id) })));
+  app.post('/api/seller/claims', seller, h(async (req) => claims.createClaim(req.user.id, req.body)));
   app.post('/api/seller/orders/:id/cancel', seller, h(async (req) => orders.cancelOrder(Number(req.params.id), req.user.id, false)));
 
   // Jefa zonal
@@ -121,6 +124,9 @@ export function createApp() {
   app.post('/api/admin/sellers/:id/status', admin, h(async (req) => sellers.setSellerStatus(Number(req.params.id), req.body.status, req.user.id)));
   app.post('/api/admin/sellers/:id/override', admin, h(async (req) => sellers.overrideSeller(Number(req.params.id), req.body, req.user.id)));
   app.get('/api/admin/orders', admin, h(async (req) => dash.adminOrders({ status: req.query.status })));
+  app.get('/api/admin/claims', admin, h(async (req) => claims.adminClaims({ status: req.query.status })));
+  app.post('/api/admin/claims/:id/resolve', admin, h(async (req) => claims.resolveClaim(Number(req.params.id), req.body, req.user.id)));
+  app.post('/api/admin/claims/:id/replaced', admin, h(async (req) => claims.markReplaced(Number(req.params.id), req.user.id)));
   app.get('/api/admin/counts', admin, h(async () => dash.adminCounts()));
   app.post('/api/admin/orders/:id/deliver', admin, h(async (req) => orders.deliverOrder(Number(req.params.id), req.user.id)));
   app.post('/api/admin/orders/:id/cancel', admin, h(async (req) => orders.cancelOrder(Number(req.params.id), req.user.id, true)));

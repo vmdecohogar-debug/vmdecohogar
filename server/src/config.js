@@ -25,3 +25,8 @@ export const config = {
 export function today() {
   return config.today ?? new Date().toISOString().slice(0, 10);
 }
+
+// Momento actual; en pruebas, el mediodía del día simulado.
+export function now() {
+  return config.today ? new Date(`${config.today}T12:00:00Z`) : new Date();
+}

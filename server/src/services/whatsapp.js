@@ -15,6 +15,7 @@ export const TEMPLATES = {
   pago_recibido: { vars: ['nombre', 'monto', 'saldo', 'cupo'], text: 'Recibimos tu pago de {{2}}, {{1}}. Saldo pendiente: {{3}}. Cupo disponible: {{4}}.' },
   subida_nivel: { vars: ['nombre', 'nivel'], text: '¡Felicitaciones {{1}}! Subiste a nivel {{2}}.' },
   ascenso_jefa: { vars: ['nombre'], text: '¡Felicitaciones {{1}}! Ya sos jefa zonal: tenés tu panel de red habilitado.' },
+  reclamo_respuesta: { vars: ['nombre', 'producto', 'resultado'], text: 'Hola {{1}}, revisamos tu reclamo por {{2}}: {{3}}.' },
   comision_liquidada: { vars: ['nombre', 'periodo', 'monto'], text: 'Hola {{1}}, liquidamos tus comisiones de {{2}}: {{3}}.' },
 };
 

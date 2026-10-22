@@ -4,7 +4,7 @@ import { pesos } from '../format.js';
 import { useApi } from './ui.jsx';
 
 // Pasos cortos: una idea por pantalla. Los números salen de la configuración vigente.
-function steps({ levels, kit, commissions, mora, delivery }) {
+function steps({ levels, kit, commissions, mora, delivery, claims }) {
   const paid = levels.filter((l) => l.credit_limit > 0);
   const discount = paid[0]?.early_discount_pct ?? 0;
   return [
@@ -40,7 +40,7 @@ function steps({ levels, kit, commissions, mora, delivery }) {
             ))}
           </ul>
           {discount > 0 && <p>Si pagás antes de recibir el pedido, tenés <strong>{discount}% de descuento</strong>.</p>}
-          <p className="muted small">Pedís cuando quieras y te llega en {delivery.minBusinessDays} a {delivery.maxBusinessDays} días hábiles.</p>
+          <p className="muted small">Pedís cuando quieras y te llega en {delivery.minBusinessDays} a {delivery.maxBusinessDays} días hábiles. Si algo llega con falla de fábrica, lo reclamás con una foto dentro de los {claims.windowDays} días.</p>
         </>
       ),
     },

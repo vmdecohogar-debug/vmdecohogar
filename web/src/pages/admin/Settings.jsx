@@ -42,6 +42,7 @@ const FIELDS = {
   kit: [['maxUnits', 'Máximo de productos'], ['maxAmount', 'Monto máximo ($)'], ['followUpDays', 'Días hasta preguntar por cambios']],
   commissions: [['tier1Pct', '% referidas directas'], ['tier2Pct', '% segundo nivel'], ['minActiveToEarn', 'Activas para cobrar'], ['minActiveForLeader', 'Activas para jefa zonal'], ['activeWindowDays', 'Días para contar como activa']],
   mora: [['reminderDaysBefore', 'Recordatorio, días antes'], ['leaderAlertDay', 'Aviso a jefa, día de atraso'], ['surchargeDay', 'Recargo, día de atraso'], ['surchargeDailyPct', 'Recargo diario (%)'], ['surchargeMaxPct', 'Tope del recargo (%)'], ['blockDay', 'Bloqueo de pedidos, día'], ['adminAlertDay', 'Alerta a administración, día'], ['levelDownDay', 'Baja de nivel, día'], ['badDebtDay', 'Incobrable, día'], ['lateToleranceDays', 'Atraso tolerado para subir de nivel']],
+  claims: [['windowDays', 'Días para reclamar una falla']],
   delivery: [['minBusinessDays', 'Entrega mínima (días hábiles)'], ['maxBusinessDays', 'Entrega máxima (días hábiles)']],
 };
 // Campos de dinero: se guardan en centavos y se muestran en pesos.
@@ -49,7 +50,7 @@ const MONEY = new Set(['maxAmount']);
 const shown = (f, v) => (MONEY.has(f) ? v / 100 : v);
 const stored = (f, v) => (MONEY.has(f) ? toCents(v) : Number(String(v).replace(',', '.')));
 
-const TITLES = { kit: 'Kit de arranque', commissions: 'Comisiones', mora: 'Mora y recargos', delivery: 'Entregas' };
+const TITLES = { kit: 'Kit de arranque', commissions: 'Comisiones', mora: 'Mora y recargos', delivery: 'Entregas', claims: 'Reclamos por falla' };
 
 function Rules() {
   const { data, error, reload } = useApi('/admin/settings');
