@@ -1,0 +1,28 @@
+/* Paleta tomada del logo de VM Bazar y Deco. Cambiar acá cambia toda la app. */
+:root {
+  --taupe: #5e5650;        /* letras del logo */
+  --taupe-soft: #8a827b;
+  --sage: #93a08a;         /* hojas */
+  --sage-dark: #6b7a63;    /* botones: el salvia del logo oscurecido para que el texto blanco se lea */
+  --sage-tint: #e9ede5;
+  --beige: #b8a995;        /* semillas */
+  --beige-tint: #f1ece4;
+  --cream: #faf8f4;        /* fondo */
+  --white: #ffffff;
+
+  --ok: #6b7a63;
+  --ok-bg: #e6ece1;
+  --warn: #9a6b1f;
+  --warn-bg: #f6ead2;
+  --bad: #a04a3c;
+  --bad-bg: #f5e1dc;
+
+  --text: var(--taupe);
+  --text-soft: var(--taupe-soft);
+  --line: #e4ded5;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(94, 86, 80, 0.06), 0 4px 16px rgba(94, 86, 80, 0.06);
+
+  --font-title: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
