@@ -157,7 +157,7 @@ export async function createPaymentLink(obligationId) {
     body: JSON.stringify({
       items: [{ title: `Pago pedido #${ob.order_id}`, quantity: 1, unit_price: due / 100, currency_id: 'ARS' }],
       external_reference: String(ob.id),
-      notification_url: `${process.env.API_URL ?? ''}/api/webhooks/mercadopago`,
+      notification_url: `${config.apiUrl}/api/webhooks/mercadopago`,
     }),
   });
   const body = await res.json();

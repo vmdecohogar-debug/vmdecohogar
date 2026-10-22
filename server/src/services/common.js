@@ -1,3 +1,4 @@
+import { config } from '../config.js';
 import { direct } from '../db/index.js';
 import { addDays, availableCredit, toDateOnly } from '../rules/index.js';
 
@@ -108,5 +109,5 @@ export async function activeDirectCount(sellerId, asOf, windowDays, db = direct)
 }
 
 export function paymentLink(obligationId) {
-  return `${process.env.APP_URL ?? 'http://localhost:5173'}/pagar/${obligationId}`;
+  return `${config.appUrl}/pagar/${obligationId}`;
 }

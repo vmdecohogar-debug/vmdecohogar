@@ -20,7 +20,11 @@ const PRODUCTS = [
   ['PLA-001', 'Plato de sitio de ratán', 390000, 560000],
 ];
 
-export async function seed({ adminPhone = '1100000000', adminPassword = 'admin123' } = {}) {
+export async function seed({ adminPhone = '1100000000', adminPassword, sampleProducts = true } = {}) {
+  if (!adminPassword) {
+    if (process.env.NODE_ENV === 'production') throw new Error('Definí ADMIN_PASSWORD para crear el usuario de administración.');
+    adminPassword = 'admin123';
+  }
   await migrate();
   const hash = await bcrypt.hash(adminPassword, 10);
   await pool.query(
@@ -28,7 +32,7 @@ export async function seed({ adminPhone = '1100000000', adminPassword = 'admin12
      ON CONFLICT (phone) DO NOTHING`,
     [normalizePhone(adminPhone), hash],
   );
-  for (const [sku, name, price, suggested] of PRODUCTS) {
+  for (const [sku, name, price, suggested] of sampleProducts ? PRODUCTS : []) {
     await pool.query(
       `INSERT INTO products (sku, name, price, suggested_price, stock) VALUES ($1, $2, $3, $4, 100) ON CONFLICT (sku) DO NOTHING`,
       [sku, name, price, suggested],
@@ -38,7 +42,7 @@ export async function seed({ adminPhone = '1100000000', adminPassword = 'admin12
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  seed({ adminPhone: process.env.ADMIN_PHONE, adminPassword: process.env.ADMIN_PASSWORD })
+  seed({ adminPhone: process.env.ADMIN_PHONE || undefined, adminPassword: process.env.ADMIN_PASSWORD, sampleProducts: process.env.SEED_SAMPLE_PRODUCTS !== 'false' })
     .then(() => {
       console.log('Datos iniciales cargados. Admin: teléfono', process.env.ADMIN_PHONE ?? '11 0000 0000');
       return pool.end();
