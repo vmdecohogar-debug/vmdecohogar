@@ -144,3 +144,23 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
 .auth .logo { display: block; width: 160px; height: 160px; margin: 8px auto 16px; border-radius: 50%; object-fit: cover; }
 .code { font-family: ui-monospace, monospace; font-size: 20px; font-weight: 800; letter-spacing: 1px; }
 @media (max-width: 420px) { .topbar .brand { font-size: 17px; } }
+
+/* Fotos de productos */
+.product-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; background: var(--beige-tint); display: block; }
+.product-img.placeholder {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-title); font-size: 34px; color: var(--beige); border: 1px dashed var(--beige);
+}
+.product.paused { opacity: 0.6; }
+.photo-field { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: center; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; }
+.chips button { flex: 0 0 auto; }
+@media (max-width: 599px) {
+  /* En el celular, cada producto en una fila: foto chica a la izquierda */
+  .product { display: grid; grid-template-columns: 88px 1fr; column-gap: 12px; row-gap: 4px; align-items: start; }
+  .product > .product-img { grid-row: 1 / span 6; aspect-ratio: 1; }
+  .product > *:not(.product-img) { grid-column: 2; }
+  .product-img.placeholder { font-size: 22px; }
+  .photo-field { grid-template-columns: 96px 1fr; }
+  .nav a { min-width: 56px; font-size: 11px; }
+}

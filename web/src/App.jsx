@@ -17,6 +17,7 @@ import AdminOrders from './pages/admin/Orders.jsx';
 import AdminPayments from './pages/admin/Payments.jsx';
 import AdminAlerts from './pages/admin/Alerts.jsx';
 import AdminSettings from './pages/admin/Settings.jsx';
+import AdminCatalog from './pages/admin/Catalog.jsx';
 
 const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
@@ -31,6 +32,7 @@ const SELLER_NAV = [
 const ADMIN_NAV = [
   ['/', 'home', 'Inicio'],
   ['/admin/vendedoras', 'users', 'Vendedoras'],
+  ['/admin/catalogo', 'list', 'Catálogo'],
   ['/admin/pedidos', 'box', 'Pedidos'],
   ['/admin/pagos', 'card', 'Pagos'],
   ['/admin/alertas', 'bell', 'Alertas'],
@@ -105,6 +107,7 @@ export default function App() {
                   <Routes>
                     <Route path="/" element={<AdminHome />} />
                     <Route path="/admin/vendedoras" element={<AdminSellers />} />
+                    <Route path="/admin/catalogo" element={<AdminCatalog />} />
                     <Route path="/admin/pedidos" element={<AdminOrders />} />
                     <Route path="/admin/pagos" element={<AdminPayments />} />
                     <Route path="/admin/alertas" element={<AdminAlerts />} />
