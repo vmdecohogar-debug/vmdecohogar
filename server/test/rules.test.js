@@ -93,8 +93,8 @@ test('bajada por mora: 15 días baja uno, 30 vuelve a Inicial', () => {
 test('recargo diario desde el día 4, con tope', () => {
   const principalDue = 10000000;
   assert.equal(R.surchargeFor({ principalDue, daysLate: 3 }, mora), 0);
-  assert.equal(R.surchargeFor({ principalDue, daysLate: 4 }, mora), 200000);
-  assert.equal(R.surchargeFor({ principalDue, daysLate: 10 }, mora), 500000);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 4 }, mora), 50000);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 10 }, mora), 350000);
   assert.equal(R.surchargeFor({ principalDue, daysLate: 45 }, mora), 1500000);
   assert.equal(R.surchargeFor({ principalDue, daysLate: 10 }, { ...mora, surchargeDailyPct: 0 }), 0);
 });

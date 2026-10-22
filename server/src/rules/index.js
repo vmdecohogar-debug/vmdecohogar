@@ -84,11 +84,11 @@ export function daysLate(dueDate, today) {
   return Math.max(0, diffDays(dueDate, today));
 }
 
-// Recargo por mora: desde el día de recargo, un % diario por cada día de atraso desde el vencimiento, con tope.
-// Ej.: 0,5% diario y tope 15% → al día 4 es 2%, al día 10 es 5%, desde el día 30 queda en 15%.
+// Recargo por mora: un % diario por cada día de atraso contado desde el día de recargo (los días de margen no suman), con tope.
+// Ej.: 0,5% diario desde el día 4 y tope 15% → al día 4 es 0,5%, al día 10 es 3,5%, desde el día 33 queda en 15%.
 export function surchargeFor({ principalDue, daysLate }, cfg) {
   if (!cfg.surchargeDailyPct || daysLate < cfg.surchargeDay || principalDue <= 0) return 0;
-  const pct = Math.min(daysLate * Number(cfg.surchargeDailyPct), Number(cfg.surchargeMaxPct ?? Infinity));
+  const pct = Math.min((daysLate - cfg.surchargeDay + 1) * Number(cfg.surchargeDailyPct), Number(cfg.surchargeMaxPct ?? Infinity));
   return pctOf(principalDue, pct);
 }
 

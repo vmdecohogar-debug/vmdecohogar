@@ -177,11 +177,11 @@ test('flujo completo: kit, comisiones, crédito, mora, ascenso y liquidación', 
 
   // Paga todo con recargo: se cierra la alerta y no sube de nivel (pagó con más de 3 días de atraso).
   const withSurcharge = await m.db.one('SELECT amount + surcharge AS total, surcharge FROM obligations WHERE id = $1', [credit.id]);
-  assert.equal(withSurcharge.surcharge, Math.round(7500000 * 0.02)); // 4 días × 0,5%
+  assert.equal(withSurcharge.surcharge, Math.round(7500000 * 0.005)); // día 4: 1 día × 0,5%
   m.config.today = m.R.addDays(credit.due_date, 6);
   assert.equal((await m.daily.runDaily(m.config.today)).surcharges, 1);
   const day6 = await m.db.one('SELECT amount + surcharge AS total, surcharge FROM obligations WHERE id = $1', [credit.id]);
-  assert.equal(day6.surcharge, Math.round(7500000 * 0.03)); // 6 días × 0,5%
+  assert.equal(day6.surcharge, Math.round(7500000 * 0.015)); // día 6: 3 días × 0,5%
   withSurcharge.total = day6.total;
   await m.payments.registerPayment({ obligationId: credit.id, amount: withSurcharge.total, method: 'transfer' }, ADMIN);
   const caroNow = await m.db.one('SELECT level_code, clean_streak FROM sellers WHERE user_id = $1', [caro.id]);
