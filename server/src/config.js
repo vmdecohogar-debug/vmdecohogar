@@ -6,7 +6,9 @@ export const config = {
   // Carpeta donde se guardan las fotos de productos (en producción, un disco persistente).
   uploadsDir: process.env.UPLOADS_DIR || fileURLToPath(new URL('../uploads', import.meta.url)),
   jwtSecret: process.env.JWT_SECRET ?? 'cambiar-en-produccion',
-  appUrl: process.env.APP_URL ?? 'http://localhost:5173',
+  // En Render, RENDER_EXTERNAL_URL trae la dirección pública del servicio.
+  appUrl: process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173',
+  apiUrl: process.env.API_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3001',
   // Fecha "de hoy" fija para pruebas; vacío = fecha real.
   today: process.env.TODAY_OVERRIDE || null,
   whatsapp: {

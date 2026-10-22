@@ -49,9 +49,26 @@ npm test                                                   # reglas de negocio
 TEST_DATABASE_URL=postgres://localhost/redvendedora_test npm test   # además, el flujo completo con base real
 ```
 
-## Producción
+## Publicar en Render
 
-`npm run build` compila el frontend en `web/dist`; el servidor (`npm --prefix server start`) sirve la API y la app en el mismo puerto. El proceso diario (recordatorios, mora, recargos, alertas) corre solo a las 10 h; si preferís un cron externo, poné `DAILY_JOB=off` y programá `npm --prefix server run daily`.
+El archivo `render.yaml` deja todo listo para [Render](https://render.com):
+
+1. Creá una cuenta en Render entrando con GitHub.
+2. En el panel, **New > Blueprint**, elegí este repositorio y tocá **Apply**.
+3. Render pide `ADMIN_PHONE` (tu celular, por ejemplo 1144445555) y `ADMIN_PASSWORD` (la contraseña del admin). Con eso crea el usuario de administración la primera vez.
+4. En unos minutos la app queda en `https://vmdecohogar.onrender.com` (o el nombre que te asigne Render).
+
+Crea tres cosas, con costo mensual aproximado en dólares (precios de Render a octubre de 2026):
+
+| Recurso | Plan | Costo |
+| --- | --- | --- |
+| App web (API y página) | 0.5c-512mb | USD 7 |
+| Base de datos PostgreSQL | 0.1c-256mb | USD 6 |
+| Disco de 1 GB para fotos | — | USD 0,25 |
+
+El plan gratis de Render no sirve para esto: no admite disco para las fotos y la base gratis se borra a los 30 días. Cada vez que subís cambios a `main`, Render vuelve a publicar solo.
+
+Fuera de Render: `npm --prefix server ci && npm --prefix web ci --include=dev && npm --prefix web run build`, después `npm --prefix server run seed && npm --prefix server start`. El servidor sirve la API y la app en el mismo puerto. El proceso diario (recordatorios, mora, recargos, alertas) corre solo a las 10 h; si preferís un cron externo, poné `DAILY_JOB=off` y programá `npm --prefix server run daily`. En producción (`NODE_ENV=production`) el admin solo se crea si definís `ADMIN_PASSWORD`, y con `SEED_SAMPLE_PRODUCTS=false` no se cargan los productos de ejemplo.
 
 ## Catálogo
 
