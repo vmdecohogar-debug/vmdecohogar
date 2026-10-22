@@ -9,7 +9,7 @@ const levels = [
   { code: 'oro', rank: 3, credit_limit: 20000000, term_days: 15, early_discount_pct: 5, required_clean_orders: 6 },
 ];
 const lv = (c) => levels.find((l) => l.code === c);
-const mora = { reminderDaysBefore: 3, leaderAlertDay: 4, surchargeDay: 4, surchargePct: 3, blockDay: 4, adminAlertDay: 7, levelDownDay: 15, badDebtDay: 30, lateToleranceDays: 3 };
+const mora = { reminderDaysBefore: 3, leaderAlertDay: 4, surchargeDay: 4, surchargeDailyPct: 0.5, surchargeMaxPct: 15, blockDay: 4, adminAlertDay: 7, levelDownDay: 15, badDebtDay: 30, lateToleranceDays: 3 };
 const com = { tier1Pct: 3, tier2Pct: 1, minActiveToEarn: 5, minActiveForLeader: 10, activeWindowDays: 30 };
 
 test('entrega en 1 a 3 días hábiles salta el fin de semana', () => {
@@ -88,4 +88,13 @@ test('bajada por mora: 15 días baja uno, 30 vuelve a Inicial', () => {
   assert.equal(R.levelAfterLateness({ currentCode: 'bronce', daysLate: 15 }, levels, mora), 'inicial');
   assert.equal(R.levelAfterLateness({ currentCode: 'oro', daysLate: 30 }, levels, mora), 'inicial');
   assert.equal(R.levelAfterLateness({ currentCode: 'oro', daysLate: 10 }, levels, mora), 'oro');
+});
+
+test('recargo diario desde el día 4, con tope', () => {
+  const principalDue = 10000000;
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 3 }, mora), 0);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 4 }, mora), 200000);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 10 }, mora), 500000);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 45 }, mora), 1500000);
+  assert.equal(R.surchargeFor({ principalDue, daysLate: 10 }, { ...mora, surchargeDailyPct: 0 }), 0);
 });

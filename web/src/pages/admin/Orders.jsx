@@ -31,7 +31,7 @@ function Profiles({ o }) {
             <div className="small"><a href={wa(o.leader.phone)} target="_blank" rel="noreferrer">{o.leader.phone}</a></div>
             {o.leader.address && <div className="small">{o.leader.address}</div>}
           </>
-        ) : <span className="muted small">Sin jefa zonal todavía.</span>}
+        ) : <span className="muted small">Sin jefa zonal todavía: la atendés vos.</span>}
       </div>
     </div>
   );

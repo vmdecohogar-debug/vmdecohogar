@@ -50,7 +50,7 @@ function steps({ levels, kit, commissions, mora, delivery }) {
       body: (
         <>
           <p>Pagás en efectivo o con Mercado Pago, desde <strong>Pagos</strong>. Te avisamos por WhatsApp {mora.reminderDaysBefore} días antes de cada vencimiento.</p>
-          <p>Si te atrasás {mora.surchargeDay} días o más, se suma un recargo del {mora.surchargePct}% y no podés hacer pedidos nuevos hasta ponerte al día. También le avisamos a tu jefa zonal para que te ayude.</p>
+          <p>Tenés {mora.surchargeDay - 1} días de margen. Desde el día {mora.surchargeDay} de atraso se suma un recargo del {String(mora.surchargeDailyPct).replace('.', ',')}% por cada día y no podés hacer pedidos nuevos hasta ponerte al día. También le avisamos a tu jefa zonal para que te ayude.</p>
           <p className="muted small">Pagar a tiempo es lo que te hace subir de nivel y tener más cupo.</p>
         </>
       ),
