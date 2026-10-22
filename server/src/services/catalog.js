@@ -1,7 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
-import { join } from 'node:path';
-import { config } from '../config.js';
 import { direct, tx } from '../db/index.js';
 import { parseCatalog, skuPrefix, validateRow } from '../rules/catalog.js';
 import { AppError, audit } from './common.js';
@@ -125,14 +122,18 @@ export async function importProducts(text, adminId) {
 
 const IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
-// Guarda una foto enviada como data URL (la app la achica antes de subirla).
+// Guarda una foto enviada como data URL (la app la achica antes de subirla) en la base de datos.
 export async function saveImage(dataUrl) {
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(dataUrl ?? '');
   if (!m) throw new AppError('Formato de imagen no válido (usá JPG, PNG o WEBP).');
   const buf = Buffer.from(m[2], 'base64');
   if (buf.length > 3 * 1024 * 1024) throw new AppError('La foto pesa más de 3 MB.');
-  await mkdir(config.uploadsDir, { recursive: true });
   const name = `${Date.now()}-${randomBytes(4).toString('hex')}.${IMAGE_TYPES[m[1]]}`;
-  await writeFile(join(config.uploadsDir, name), buf);
+  await direct.query('INSERT INTO images (name, mime, data) VALUES ($1, $2, $3)', [name, m[1], buf]);
   return { url: `/uploads/${name}` };
+}
+
+// Foto guardada en la base (las anteriores pueden estar en disco: las sirve express.static).
+export async function getImage(name) {
+  return direct.one('SELECT mime, data FROM images WHERE name = $1', [name]);
 }

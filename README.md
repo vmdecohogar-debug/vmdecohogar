@@ -70,6 +70,21 @@ El plan gratis de Render no sirve para esto: no admite disco para las fotos y la
 
 Fuera de Render: `npm --prefix server ci && npm --prefix web ci --include=dev && npm --prefix web run build`, después `npm --prefix server run seed && npm --prefix server start`. El servidor sirve la API y la app en el mismo puerto. El proceso diario (recordatorios, mora, recargos, alertas) corre solo a las 10 h; si preferís un cron externo, poné `DAILY_JOB=off` y programá `npm --prefix server run daily`. En producción (`NODE_ENV=production`) el admin solo se crea si definís `ADMIN_PASSWORD`, y con `SEED_SAMPLE_PRODUCTS=false` no se cargan los productos de ejemplo.
 
+## Publicar gratis (Render + Neon)
+
+Para probar sin pagar: la app en el plan gratis de Render y la base en el plan gratis de Neon (no vence).
+Las fotos se guardan en la base, así que no hace falta disco.
+
+1. **Neon** (neon.tech): crear un proyecto (región São Paulo) y copiar la *connection string* (`postgresql://…?sslmode=require`).
+2. **Render** → New → Web Service → este repositorio, rama `main`, instancia **Free**:
+   - Build: `npm --prefix server ci && npm --prefix web ci --include=dev && npm --prefix web run build`
+   - Start: `npm --prefix server run seed && npm --prefix server start`
+   - Health check: `/api/health`
+   - Variables: `NODE_VERSION=22`, `NODE_ENV=production`, `DATABASE_URL` (la de Neon), `JWT_SECRET` (texto largo al azar),
+     `ADMIN_PHONE`, `ADMIN_PASSWORD`, `SEED_SAMPLE_PRODUCTS=false`, `WHATSAPP_PROVIDER=simulated`.
+3. **Despierta**: el plan gratis se duerme a los 15 minutos sin visitas (la primera carga tarda ~1 minuto) y así no corre
+   el proceso diario de recordatorios y mora. Un ping gratis cada 10 minutos a `/api/health` (por ejemplo, cron-job.org) lo mantiene despierto.
+
 ## Catálogo
 
 En **Catálogo** (panel de administración) se cargan los productos con foto, categoría, descripción, precio a vendedora, precio sugerido y stock, y se pausan los que no están disponibles. Para cargar muchos de una vez, **Importar lista** acepta:

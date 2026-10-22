@@ -46,6 +46,15 @@ const h = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).then((data) 
 export function createApp() {
   const app = express();
   app.use(express.json({ limit: '5mb' }));
+  app.get('/uploads/:name', async (req, res, next) => {
+    try {
+      const img = await catalog.getImage(req.params.name);
+      if (!img) return next();
+      res.set('Cache-Control', 'public, max-age=2592000, immutable').type(img.mime).send(img.data);
+    } catch (e) {
+      next(e);
+    }
+  });
   app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
