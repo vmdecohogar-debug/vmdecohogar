@@ -10,11 +10,12 @@ export const TEMPLATES = {
   recordatorio_vencimiento: { vars: ['nombre', 'monto', 'fecha', 'link'], text: 'Hola {{1}}, te recordamos que el {{3}} vence tu pago de {{2}}. Podés pagar acá: {{4}}' },
   vence_hoy: { vars: ['nombre', 'monto', 'link'], text: 'Hola {{1}}, hoy vence tu pago de {{2}}. Pagá acá: {{3}}' },
   aviso_atraso: { vars: ['nombre', 'monto', 'dias', 'link'], text: 'Hola {{1}}, tu pago de {{2}} tiene {{3}} día(s) de atraso. Regularizalo acá: {{4}}' },
-  bloqueo_pedidos: { vars: ['nombre', 'monto', 'recargo', 'link'], text: 'Hola {{1}}, por el atraso se sumó un recargo de {{3}} y se pausaron tus pedidos nuevos. Debés {{2}}. Pagá acá: {{4}}' },
+  bloqueo_pedidos: { vars: ['nombre', 'monto', 'recargo', 'link'], text: 'Hola {{1}}, por el atraso el recargo va en {{3}} (sube cada día de atraso) y se pausaron tus pedidos nuevos. Debés {{2}}. Pagá acá: {{4}}' },
   alerta_jefa_mora: { vars: ['jefa', 'vendedora', 'monto', 'dias'], text: 'Hola {{1}}, {{2}} tiene un pago de {{3}} con {{4}} días de atraso. ¿Podés contactarla?' },
   pago_recibido: { vars: ['nombre', 'monto', 'saldo', 'cupo'], text: 'Recibimos tu pago de {{2}}, {{1}}. Saldo pendiente: {{3}}. Cupo disponible: {{4}}.' },
   subida_nivel: { vars: ['nombre', 'nivel'], text: '¡Felicitaciones {{1}}! Subiste a nivel {{2}}.' },
   ascenso_jefa: { vars: ['nombre'], text: '¡Felicitaciones {{1}}! Ya sos jefa zonal: tenés tu panel de red habilitado.' },
+  reclamo_respuesta: { vars: ['nombre', 'producto', 'resultado'], text: 'Hola {{1}}, revisamos tu reclamo por {{2}}: {{3}}.' },
   comision_liquidada: { vars: ['nombre', 'periodo', 'monto'], text: 'Hola {{1}}, liquidamos tus comisiones de {{2}}: {{3}}.' },
 };
 

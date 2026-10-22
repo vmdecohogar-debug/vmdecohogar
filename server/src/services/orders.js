@@ -1,5 +1,5 @@
 import { tx } from '../db/index.js';
-import { today } from '../config.js';
+import { now, today } from '../config.js';
 import * as R from '../rules/index.js';
 import { AppError, audit, availableCreditFor, blockingDebt, getSeller, getSettings, levelOf } from './common.js';
 import { notifyUser } from './whatsapp.js';
@@ -65,12 +65,31 @@ export async function createKit(sellerId, { items, deliveryDate, deliverTo = 'se
 }
 
 // La vendedora deja anotados los cambios que quiere para la segunda visita del kit.
-export async function requestKitChanges(sellerId, orderId, changeRequest) {
+// returns: [{ itemId, qty }] productos del kit que devuelve; additions: [{ productId, qty }] productos nuevos.
+export async function requestKitChanges(sellerId, orderId, { returns = [], additions = [], note = '' }) {
   return tx(async (db) => {
     const o = await db.one(`SELECT * FROM orders WHERE id = $1 AND seller_id = $2 AND kind = 'kit'`, [orderId, sellerId]);
     if (!o) throw new AppError('Kit no encontrado', 404);
     if (o.status !== 'delivered') throw new AppError('El kit todavía no fue entregado o ya se cerró.');
-    await db.query('UPDATE orders SET change_request = $2 WHERE id = $1', [orderId, changeRequest]);
+    const cleanReturns = [];
+    for (const { itemId, qty } of returns) {
+      const q = Number(qty);
+      if (!q) continue;
+      const it = await db.one('SELECT qty FROM order_items WHERE id = $1 AND order_id = $2', [itemId, orderId]);
+      if (!it || !Number.isInteger(q) || q < 0 || q > it.qty) throw new AppError('Devolución inválida.');
+      cleanReturns.push({ itemId: Number(itemId), qty: q });
+    }
+    const cleanAdditions = [];
+    for (const { productId, qty } of additions) {
+      const q = Number(qty);
+      if (!q) continue;
+      const p = await db.one('SELECT id FROM products WHERE id = $1 AND active', [productId]);
+      if (!p || !Number.isInteger(q) || q < 0) throw new AppError('Producto inválido.');
+      cleanAdditions.push({ productId: p.id, qty: q });
+    }
+    const request = { returns: cleanReturns, additions: cleanAdditions, note: String(note ?? '').trim(), requested_at: new Date().toISOString() };
+    await db.query('UPDATE orders SET change_request = $2 WHERE id = $1', [orderId, request]);
+    return request;
   });
 }
 
@@ -89,7 +108,7 @@ export async function closeKit(orderId, { returns = [], additions = [] }, adminI
     }
     if (additions.length) await insertItems(db, orderId, await reserveItems(db, additions));
     const { v: kept } = await db.one('SELECT COALESCE(SUM((qty - returned_qty) * unit_price), 0) AS v FROM order_items WHERE order_id = $1', [orderId]);
-    await db.query(`UPDATE orders SET subtotal = $2, total = $2, status = 'settled' WHERE id = $1`, [orderId, kept]);
+    await db.query(`UPDATE orders SET subtotal = $2, total = $2, status = 'settled', closed_at = $3 WHERE id = $1`, [orderId, kept, now()]);
     let obligation = null;
     if (kept > 0) {
       obligation = await db.one(
@@ -167,7 +186,7 @@ export async function deliverOrder(orderId, adminId) {
     if (unpaidUpfront) throw new AppError('Este pedido se paga antes de la entrega y todavía no está acreditado.');
     const seller = await getSeller(o.seller_id, db);
     const day = today();
-    await db.query(`UPDATE orders SET status = 'delivered', delivered_at = now() WHERE id = $1`, [orderId]);
+    await db.query(`UPDATE orders SET status = 'delivered', delivered_at = $2 WHERE id = $1`, [orderId, now()]);
     await db.query(`UPDATE obligations SET due_date = $2 WHERE order_id = $1 AND kind = 'credit'`, [orderId, R.dueDateFor(day, levelOf(seller))]);
     await db.query(`UPDATE obligations SET due_date = $2 WHERE order_id = $1 AND kind = 'on_delivery'`, [orderId, day]);
     if (o.kind === 'regular') await db.query(`UPDATE orders SET status = 'settled' WHERE id = $1`, [orderId]);

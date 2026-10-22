@@ -23,6 +23,7 @@ before(async () => {
     payments: await import('../src/services/payments.js'),
     daily: await import('../src/services/daily.js'),
     commissions: await import('../src/services/commissions.js'),
+    claims: await import('../src/services/claims.js'),
     dash: await import('../src/services/dashboards.js'),
     R: await import('../src/rules/index.js'),
   };
@@ -90,8 +91,25 @@ test('flujo completo: kit, comisiones, crédito, mora, ascenso y liquidación', 
   const d1 = await m.daily.runDaily(m.config.today);
   assert.equal(d1.kitFollowUps, 1);
 
-  // Segunda visita: devuelve 1 vela y 1 mantel, agrega 2 sahumerios; paga en efectivo a administración.
+  // La vendedora pide los cambios desde la app: devuelve 1 vela y 1 mantel, suma 2 sahumerios.
   const items = (await m.db.query('SELECT * FROM order_items WHERE order_id = $1 ORDER BY id', [kit.id])).rows;
+  await assert.rejects(m.orders.requestKitChanges(caro.id, kit.id, { returns: [{ itemId: items[0].id, qty: 9 }] }), /Devolución inválida/);
+  await m.orders.requestKitChanges(caro.id, kit.id, {
+    returns: [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }, { itemId: items[1].id, qty: 0 }],
+    additions: [{ productId: sahumerio.id, qty: 2 }],
+    note: ' si hay, otro aroma ',
+  });
+  // A administración le llega con la ficha de la vendedora y de su jefa zonal, y suma al contador.
+  const [adminKit] = await m.dash.adminOrders({ status: 'delivered' });
+  assert.equal(adminKit.id, kit.id);
+  assert.deepEqual(adminKit.change_request.returns, [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }]);
+  assert.equal(adminKit.change_request.additions[0].product, sahumerio.name);
+  assert.equal(adminKit.change_request.note, 'si hay, otro aroma');
+  assert.match(adminKit.seller_phone, /^\+54/);
+  assert.equal(adminKit.referred_by_name, 'Bea Gómez');
+  assert.equal((await m.dash.adminCounts()).kit_changes, 1);
+
+  // Segunda visita: se cierra con lo pedido; paga en efectivo a administración.
   const { kept, obligation } = await m.orders.closeKit(kit.id, {
     returns: [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }],
     additions: [{ productId: sahumerio.id, qty: 2 }],
@@ -160,7 +178,12 @@ test('flujo completo: kit, comisiones, crédito, mora, ascenso y liquidación', 
 
   // Paga todo con recargo: se cierra la alerta y no sube de nivel (pagó con más de 3 días de atraso).
   const withSurcharge = await m.db.one('SELECT amount + surcharge AS total, surcharge FROM obligations WHERE id = $1', [credit.id]);
-  assert.equal(withSurcharge.surcharge, Math.round(7500000 * 0.03));
+  assert.equal(withSurcharge.surcharge, Math.round(7500000 * 0.005)); // día 4: 1 día × 0,5%
+  m.config.today = m.R.addDays(credit.due_date, 6);
+  assert.equal((await m.daily.runDaily(m.config.today)).surcharges, 1);
+  const day6 = await m.db.one('SELECT amount + surcharge AS total, surcharge FROM obligations WHERE id = $1', [credit.id]);
+  assert.equal(day6.surcharge, Math.round(7500000 * 0.015)); // día 6: 3 días × 0,5%
+  withSurcharge.total = day6.total;
   await m.payments.registerPayment({ obligationId: credit.id, amount: withSurcharge.total, method: 'transfer' }, ADMIN);
   const caroNow = await m.db.one('SELECT level_code, clean_streak FROM sellers WHERE user_id = $1', [caro.id]);
   assert.deepEqual(caroNow, { level_code: 'bronce', clean_streak: 0 });
@@ -177,4 +200,37 @@ test('flujo completo: kit, comisiones, crédito, mora, ascenso y liquidación', 
   assert.ok(byId[ana.id].total > 0);
   const anaBalance = await m.db.one('SELECT balance_credit FROM sellers WHERE user_id = $1', [ana.id]);
   assert.equal(anaBalance.balance_credit, byId[ana.id].total);
+
+  // Reclamo por falla de fábrica: con foto, dentro de los 7 días del cierre del kit.
+  const PHOTO = 'data:image/png;base64,iVBORw0KGgoAAAANSUHEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+  const dani = await newSeller('Dani Paz', ana.referralCode);
+  m.config.today = '2026-12-01';
+  const daniKit = await m.orders.createKit(dani.id, { items: [{ productId: vela.id, qty: 3 }], deliveryDate: m.R.addBusinessDays(m.config.today, 1) });
+  await m.orders.deliverOrder(daniKit.id, 1);
+  const closed = await m.orders.closeKit(daniKit.id, {}, 1);
+  const { items: claimable } = await m.claims.claimableItems(dani.id);
+  assert.equal(claimable.length, 1);
+  await assert.rejects(m.claims.createClaim(dani.id, { itemId: claimable[0].item_id, qty: 1, description: 'mecha suelta' }), /foto/);
+  await assert.rejects(m.claims.createClaim(dani.id, { itemId: claimable[0].item_id, qty: 4, description: 'x', photo: PHOTO }), /hasta 3/);
+  const c1 = await m.claims.createClaim(dani.id, { itemId: claimable[0].item_id, qty: 1, description: 'mecha suelta', photo: PHOTO });
+  assert.equal(c1.amount, 450000);
+  assert.equal((await m.dash.adminCounts()).claims_open, 1);
+  const [adminClaim] = await m.claims.adminClaims();
+  assert.equal(adminClaim.leader.name, 'Ana Pérez');
+  // Saldo a favor: como todavía debe el kit, se le descuenta de esa deuda.
+  await assert.rejects(m.claims.resolveClaim(c1.id, { action: 'reject' }, 1), /motivo/);
+  await m.claims.resolveClaim(c1.id, { action: 'credit' }, 1);
+  assert.equal((await m.db.one('SELECT amount FROM obligations WHERE id = $1', [closed.obligation.id])).amount, 2 * 450000);
+  // Otra unidad: se rechaza por rotura y la puede volver a reclamar si corresponde; una tercera se cambia.
+  const c2 = await m.claims.createClaim(dani.id, { itemId: claimable[0].item_id, qty: 1, description: 'llegó partida', photo: PHOTO });
+  await m.claims.resolveClaim(c2.id, { action: 'reject', note: 'rotura, no falla de fábrica' }, 1);
+  const stockBefore = (await product(vela.sku)).stock;
+  const c3 = await m.claims.createClaim(dani.id, { itemId: claimable[0].item_id, qty: 1, description: 'color desparejo', photo: PHOTO });
+  await m.claims.resolveClaim(c3.id, { action: 'replace' }, 1);
+  assert.equal((await product(vela.sku)).stock, stockBefore - 1);
+  await m.claims.markReplaced(c3.id, 1);
+  assert.equal((await m.dash.adminCounts()).claims_open, 0);
+  // Pasado el plazo ya no se puede reclamar.
+  m.config.today = '2026-12-20';
+  assert.equal((await m.claims.claimableItems(dani.id)).items.length, 0);
 });

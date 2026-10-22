@@ -34,8 +34,10 @@ export async function runDaily(day = todayFn()) {
     await tx(async (db) => {
       await db.query('UPDATE obligations SET max_days_late = GREATEST(max_days_late, $2) WHERE id = $1', [ob.id, late]);
       let surcharge = ob.surcharge;
-      if (actions.includes('surcharge') && ob.surcharge === 0 && cfg.surchargePct > 0) {
-        surcharge = R.pctOf(ob.amount - ob.paid_principal, cfg.surchargePct);
+      // El recargo crece cada día de atraso; nunca baja (un pago parcial no borra lo ya generado).
+      const target = actions.includes('surcharge') ? R.surchargeFor({ principalDue: ob.amount - ob.paid_principal, daysLate: late }, cfg) : 0;
+      if (target > ob.surcharge) {
+        surcharge = target;
         await db.query('UPDATE obligations SET surcharge = $2 WHERE id = $1', [ob.id, surcharge]);
         summary.surcharges++;
       }
@@ -58,8 +60,11 @@ export async function runDaily(day = todayFn()) {
           await openAlert(db, { type: 'mora', sellerId: ob.seller_id, recipientId: leaderId, obligationId: ob.id, note: `${late} días de atraso` });
           const leader = await db.one('SELECT name FROM users WHERE id = $1', [leaderId]);
           await send('alerta_jefa_mora', { jefa: leader.name, vendedora: ob.name, monto: owed, dias: late }, 'leader', leaderId);
-          summary.alerts++;
+        } else {
+          // Sin jefa zonal todavía: la atiende administración, que hace de jefa zonal.
+          await openAlert(db, { type: 'mora', sellerId: ob.seller_id, recipientId: null, obligationId: ob.id, note: `${late} días de atraso (sin jefa zonal)` });
         }
+        summary.alerts++;
       }
       if (actions.includes('admin_alert')) {
         await openAlert(db, { type: 'mora_admin', sellerId: ob.seller_id, recipientId: null, obligationId: ob.id, note: `${late} días de atraso` });

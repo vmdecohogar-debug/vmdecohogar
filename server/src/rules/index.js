@@ -84,6 +84,14 @@ export function daysLate(dueDate, today) {
   return Math.max(0, diffDays(dueDate, today));
 }
 
+// Recargo por mora: un % diario por cada día de atraso contado desde el día de recargo (los días de margen no suman), con tope.
+// Ej.: 0,5% diario desde el día 4 y tope 15% → al día 4 es 0,5%, al día 10 es 3,5%, desde el día 33 queda en 15%.
+export function surchargeFor({ principalDue, daysLate }, cfg) {
+  if (!cfg.surchargeDailyPct || daysLate < cfg.surchargeDay || principalDue <= 0) return 0;
+  const pct = Math.min((daysLate - cfg.surchargeDay + 1) * Number(cfg.surchargeDailyPct), Number(cfg.surchargeMaxPct ?? Infinity));
+  return pctOf(principalDue, pct);
+}
+
 // Qué corresponde hacer hoy con una obligación pendiente. Cada acción se ejecuta una sola vez
 // (el servicio la deduplica con una clave), así que puede llamarse todos los días sin repetir avisos.
 export function moraActions({ dueDate, today }, cfg) {
