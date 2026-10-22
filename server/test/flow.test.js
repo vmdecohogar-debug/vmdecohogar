@@ -90,8 +90,25 @@ test('flujo completo: kit, comisiones, crédito, mora, ascenso y liquidación', 
   const d1 = await m.daily.runDaily(m.config.today);
   assert.equal(d1.kitFollowUps, 1);
 
-  // Segunda visita: devuelve 1 vela y 1 mantel, agrega 2 sahumerios; paga en efectivo a administración.
+  // La vendedora pide los cambios desde la app: devuelve 1 vela y 1 mantel, suma 2 sahumerios.
   const items = (await m.db.query('SELECT * FROM order_items WHERE order_id = $1 ORDER BY id', [kit.id])).rows;
+  await assert.rejects(m.orders.requestKitChanges(caro.id, kit.id, { returns: [{ itemId: items[0].id, qty: 9 }] }), /Devolución inválida/);
+  await m.orders.requestKitChanges(caro.id, kit.id, {
+    returns: [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }, { itemId: items[1].id, qty: 0 }],
+    additions: [{ productId: sahumerio.id, qty: 2 }],
+    note: ' si hay, otro aroma ',
+  });
+  // A administración le llega con la ficha de la vendedora y de su jefa zonal, y suma al contador.
+  const [adminKit] = await m.dash.adminOrders({ status: 'delivered' });
+  assert.equal(adminKit.id, kit.id);
+  assert.deepEqual(adminKit.change_request.returns, [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }]);
+  assert.equal(adminKit.change_request.additions[0].product, sahumerio.name);
+  assert.equal(adminKit.change_request.note, 'si hay, otro aroma');
+  assert.match(adminKit.seller_phone, /^\+54/);
+  assert.equal(adminKit.referred_by_name, 'Bea Gómez');
+  assert.equal((await m.dash.adminCounts()).kit_changes, 1);
+
+  // Segunda visita: se cierra con lo pedido; paga en efectivo a administración.
   const { kept, obligation } = await m.orders.closeKit(kit.id, {
     returns: [{ itemId: items[0].id, qty: 1 }, { itemId: items[1].id, qty: 1 }],
     additions: [{ productId: sahumerio.id, qty: 2 }],

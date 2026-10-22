@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, session } from './api.js';
 import { Icon } from './components/ui.jsx';
+import { Onboarding } from './components/Onboarding.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import PayPage from './pages/PayPage.jsx';
@@ -31,17 +32,41 @@ const SELLER_NAV = [
 ];
 const ADMIN_NAV = [
   ['/', 'home', 'Inicio'],
-  ['/admin/vendedoras', 'users', 'Vendedoras'],
+  ['/admin/vendedoras', 'users', 'Vendedoras', (c) => c.sellers_pending],
   ['/admin/catalogo', 'list', 'Catálogo'],
-  ['/admin/pedidos', 'box', 'Pedidos'],
-  ['/admin/pagos', 'card', 'Pagos'],
-  ['/admin/alertas', 'bell', 'Alertas'],
+  ['/admin/pedidos', 'box', 'Pedidos', (c) => c.orders_to_deliver + c.kit_changes],
+  ['/admin/pagos', 'card', 'Pagos', (c) => c.payments_to_confirm],
+  ['/admin/alertas', 'bell', 'Alertas', (c) => c.admin_alerts],
   ['/admin/ajustes', 'gear', 'Ajustes'],
 ];
+
+// Lo que espera a administración (pedidos para entregar, cambios de kit, pagos, altas). Se actualiza al navegar y cada minuto.
+function useAdminCounts(enabled) {
+  const [counts, setCounts] = useState(null);
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const load = () => api('/admin/counts').then(setCounts).catch(() => {});
+    load();
+    const t = setInterval(load, 60000);
+    window.addEventListener('admin-counts', load);
+    return () => { clearInterval(t); window.removeEventListener('admin-counts', load); };
+  }, [enabled, pathname]);
+  return counts;
+}
 
 function Layout({ children }) {
   const { user, logout } = useAuth();
   const nav = user.role === 'admin' ? ADMIN_NAV : [...SELLER_NAV, ...(user.isLeader ? [['/red', 'star', 'Mi red']] : [])];
+  const counts = useAdminCounts(user.role === 'admin');
+  const navigate = useNavigate();
+  // Bienvenida: sola la primera vez que entra una vendedora; después, desde "Cómo funciona" en Inicio.
+  const [guide, setGuide] = useState(user.role === 'seller' && !user.onboarded ? 'first' : null);
+  useEffect(() => {
+    const open = () => setGuide('again');
+    window.addEventListener('open-guide', open);
+    return () => window.removeEventListener('open-guide', open);
+  }, []);
   return (
     <div className="app">
       <header className="topbar">
@@ -59,14 +84,18 @@ function Layout({ children }) {
         <button className="btn secondary small" onClick={logout}>Salir</button>
       </header>
       <nav className="nav" aria-label="Secciones">
-        {nav.map(([to, icon, label]) => (
-          <NavLink key={to} to={to} end={to === '/'}>
-            <Icon name={icon} />
-            <span>{label}</span>
-          </NavLink>
-        ))}
+        {nav.map(([to, icon, label, count]) => {
+          const n = counts && count ? count(counts) : 0;
+          return (
+            <NavLink key={to} to={to} end={to === '/'}>
+              <span className="nav-icon"><Icon name={icon} />{n > 0 && <span className="nav-count" aria-label={`${n} pendientes`}>{n > 99 ? '99+' : n}</span>}</span>
+              <span>{label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
       <main className="main">{children}</main>
+      {guide && <Onboarding finishTo={guide === 'first' ? '/comprar' : null} onClose={(to) => { setGuide(null); if (to) navigate(to); }} />}
     </div>
   );
 }

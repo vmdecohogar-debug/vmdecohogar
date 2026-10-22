@@ -164,3 +164,42 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
   .photo-field { grid-template-columns: 96px 1fr; }
   .nav a { min-width: 56px; font-size: 11px; }
 }
+
+/* Contadores de pendientes en el menú y en las pestañas */
+.nav-icon { position: relative; display: inline-block; }
+.nav-count {
+  position: absolute; top: -6px; right: -12px; min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 9px; background: var(--bad); color: var(--white); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+}
+.tab-count { display: inline-block; margin-left: 6px; min-width: 18px; padding: 0 5px; border-radius: 9px; background: var(--bad); color: var(--white); font-size: 11px; line-height: 18px; }
+
+/* Ficha de vendedora y jefa zonal en cada pedido */
+.card.highlight { border: 2px solid var(--beige); }
+.profiles { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+.profile { background: var(--beige-tint); border-radius: 10px; padding: 10px 12px; }
+.profile a { color: var(--sage-dark); }
+@media (min-width: 600px) { .profiles { grid-template-columns: 1fr 1fr; } }
+
+/* Bienvenida de primera vez */
+.onb-backdrop {
+  position: fixed; inset: 0; z-index: 50; background: rgba(94, 86, 80, 0.45);
+  display: flex; align-items: flex-end; justify-content: center; padding: 0;
+}
+.onb {
+  position: relative; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+  border-radius: 20px 20px 0 0; padding: 28px 22px calc(22px + env(safe-area-inset-bottom)); margin: 0;
+}
+.onb h2 { font-family: var(--font-title); font-size: 26px; margin: 4px 0 10px; }
+.onb-icon { font-size: 40px; line-height: 1; }
+.onb-body p { margin: 0 0 10px; line-height: 1.5; }
+.onb-skip { position: absolute; top: 14px; right: 14px; background: none; border: 0; color: var(--text-soft); font: inherit; font-size: 14px; cursor: pointer; padding: 6px; }
+.onb-levels { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 6px; }
+.onb-levels li { display: flex; justify-content: space-between; gap: 10px; background: var(--sage-tint); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.onb-dots { display: flex; gap: 6px; justify-content: center; margin: 14px 0; }
+.onb-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.onb-dots span.on { background: var(--sage-dark); width: 20px; border-radius: 4px; }
+.onb .row .btn { flex: 1; }
+@media (min-width: 600px) {
+  .onb-backdrop { align-items: center; padding: 16px; }
+  .onb { border-radius: 20px; }
+}

@@ -1,18 +1,80 @@
 import { useState } from 'react';
 import { api } from '../../api.js';
 import { LABELS, fecha, pesos } from '../../format.js';
-import { Badge, Loading, Notice, useAction, useApi } from '../../components/ui.jsx';
+import { Badge, Loading, Notice, Qty, useAction, useApi } from '../../components/ui.jsx';
 
+// Segunda visita: qué devuelve del kit y qué productos nuevos quiere, elegidos del catálogo.
 function KitChanges({ kit, onDone }) {
-  const [text, setText] = useState(kit.change_request?.note ?? '');
+  const products = useApi('/products');
+  const prev = kit.change_request ?? {};
+  const [returns, setReturns] = useState(() => Object.fromEntries((prev.returns ?? []).map((r) => [r.itemId, r.qty])));
+  const [additions, setAdditions] = useState(() => Object.fromEntries((prev.additions ?? []).map((a) => [a.productId, a.qty])));
+  const [note, setNote] = useState(prev.note ?? '');
+  const [q, setQ] = useState('');
   const { busy, msg, run } = useAction();
+
+  const list = products.data ?? [];
+  const byId = new Map(list.map((p) => [p.id, p]));
+  const kitTotal = kit.items.reduce((s, i) => s + i.qty * i.unit_price, 0);
+  const returned = kit.items.reduce((s, i) => s + (returns[i.id] ?? 0) * i.unit_price, 0);
+  const added = Object.entries(additions).reduce((s, [id, n]) => s + n * (byId.get(Number(id))?.price ?? 0), 0);
+  const found = q.trim() ? list.filter((p) => p.stock > 0 && `${p.name} ${p.category ?? ''}`.toLowerCase().includes(q.toLowerCase())).slice(0, 8) : [];
+
+  const save = () => run(() => api(`/seller/kit/${kit.id}/changes`, {
+    method: 'POST',
+    body: {
+      returns: Object.entries(returns).filter(([, n]) => n > 0).map(([itemId, qty]) => ({ itemId: Number(itemId), qty })),
+      additions: Object.entries(additions).filter(([, n]) => n > 0).map(([productId, qty]) => ({ productId: Number(productId), qty })),
+      note,
+    },
+  }).then(onDone), 'Listo, le llegó a administración. Lo traen en la segunda visita.');
+
   return (
     <div className="card tint stack">
       <h3>Cambios para la segunda visita</h3>
-      <p className="muted small">Contanos qué querés devolver, cambiar o agregar. Lo vemos en la visita y pagás solo lo que te quedás.</p>
+      <p className="muted small">Marcá lo que devolvés y sumá lo que quieras del catálogo. En la visita te llevan lo nuevo, retiran lo que devolvés y pagás solo lo que te quedás.</p>
+      {kit.change_request && <Badge tone="verde">Pedido de cambios enviado el {fecha(kit.change_request.requested_at)}</Badge>}
       <Notice msg={msg} />
-      <textarea rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="Ej.: devuelvo 1 mantel, sumo 2 velas" />
-      <button className="btn" disabled={busy} onClick={() => run(() => api(`/seller/kit/${kit.id}/changes`, { method: 'POST', body: { note: text } }).then(onDone), 'Guardado.')}>Guardar cambios</button>
+
+      <h4>Devuelvo</h4>
+      <ul className="list">
+        {kit.items.map((i) => (
+          <li key={i.id} className="row between">
+            <span>{i.qty} × {i.product}<div className="muted small">{pesos(i.unit_price)} c/u</div></span>
+            <Qty value={returns[i.id] ?? 0} max={i.qty} onChange={(n) => setReturns({ ...returns, [i.id]: n })} />
+          </li>
+        ))}
+      </ul>
+
+      <h4>Sumo</h4>
+      {Object.entries(additions).filter(([, n]) => n > 0).length > 0 && (
+        <ul className="list">
+          {Object.entries(additions).filter(([, n]) => n > 0).map(([id, n]) => {
+            const p = byId.get(Number(id));
+            return (
+              <li key={id} className="row between">
+                <span>{p?.name ?? 'Producto'}<div className="muted small">{p ? pesos(p.price) : ''} c/u</div></span>
+                <Qty value={n} max={p?.stock} onChange={(v) => setAdditions({ ...additions, [id]: v })} />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <input placeholder="Buscar en el catálogo para sumar" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Buscar producto para sumar" />
+      {found.length > 0 && (
+        <ul className="list">
+          {found.map((p) => (
+            <li key={p.id} className="row between">
+              <span>{p.name}<div className="muted small">{pesos(p.price)}{p.category ? ` · ${p.category}` : ''}</div></span>
+              <button type="button" className="btn secondary small" onClick={() => { setAdditions({ ...additions, [p.id]: (additions[p.id] ?? 0) + 1 }); setQ(''); }}>Sumar</button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div><label htmlFor="kit-note">Comentario (opcional)</label><textarea id="kit-note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ej.: el mantel en otro color si hay" /></div>
+      <p className="small">Te quedarías con <strong>{pesos(kitTotal - returned + added)}</strong>{added > 0 && <span className="muted"> (incluye {pesos(added)} de productos nuevos)</span>}.</p>
+      <button className="btn" disabled={busy} onClick={save}>{kit.change_request ? 'Actualizar cambios' : 'Enviar cambios'}</button>
     </div>
   );
 }

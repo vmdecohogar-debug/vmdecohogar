@@ -2,7 +2,7 @@ import { direct } from '../db/index.js';
 import { today } from '../config.js';
 import * as R from '../rules/index.js';
 import {
-  activeDirectCount, availableCreditFor, blockingDebt, getSeller, getSettings, levelOf, outstandingCredit,
+  activeDirectCount, availableCreditFor, blockingDebt, getSeller, getSettings, leaderFor, levelOf, outstandingCredit,
 } from './common.js';
 
 const OB_SELECT = `SELECT ob.id, ob.order_id, ob.kind, ob.amount, ob.surcharge, ob.paid_principal, ob.paid_surcharge,
@@ -24,8 +24,11 @@ export async function sellerDashboard(sellerId) {
     [sellerId],
   );
   const { rows: orders } = await direct.query(
-    `SELECT id, kind, payment_mode, status, subtotal, discount, balance_applied, total, delivery_date, deliver_to, delivered_at, change_request, created_at
-       FROM orders WHERE seller_id = $1 ORDER BY created_at DESC LIMIT 50`,
+    `SELECT o.id, o.kind, o.payment_mode, o.status, o.subtotal, o.discount, o.balance_applied, o.total, o.delivery_date, o.deliver_to,
+            o.delivered_at, o.change_request, o.created_at,
+            (SELECT json_agg(json_build_object('id', i.id, 'product_id', i.product_id, 'product', p.name, 'qty', i.qty, 'unit_price', i.unit_price) ORDER BY i.id)
+               FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id) AS items
+       FROM orders o WHERE o.seller_id = $1 ORDER BY o.created_at DESC LIMIT 50`,
     [sellerId],
   );
   const { rows: referrals } = await direct.query(
@@ -166,4 +169,51 @@ export async function listObligations({ status = 'open' } = {}) {
       WHERE ${where} ORDER BY ob.due_date NULLS LAST LIMIT 300`,
   );
   return rows.map((o) => decorate(o, settings.mora, day));
+}
+
+// Pedidos para administración, con la ficha de la vendedora y de su jefa zonal.
+export async function adminOrders({ status } = {}) {
+  const day = today();
+  const { rows } = await direct.query(
+    `SELECT o.*, u.name AS seller_name, u.phone AS seller_phone, u.address AS seller_address,
+            s.level_code, s.referral_code, s.is_leader AS seller_is_leader, r.name AS referred_by_name,
+            (SELECT COALESCE(SUM(amount + surcharge - paid_principal - paid_surcharge), 0) FROM obligations
+              WHERE seller_id = o.seller_id AND status IN ('pending', 'bad_debt')) AS seller_debt,
+            (SELECT COALESCE(MAX(GREATEST(0, $2::date - due_date)), 0) FROM obligations
+              WHERE seller_id = o.seller_id AND status IN ('pending', 'bad_debt') AND kind <> 'upfront') AS seller_max_late,
+            (SELECT json_agg(json_build_object('id', i.id, 'product_id', i.product_id, 'product', p.name, 'qty', i.qty,
+                     'returned_qty', i.returned_qty, 'unit_price', i.unit_price) ORDER BY i.id)
+               FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id) AS items
+       FROM orders o JOIN users u ON u.id = o.seller_id JOIN sellers s ON s.user_id = o.seller_id
+       LEFT JOIN users r ON r.id = s.referred_by
+      WHERE ($1::text IS NULL OR o.status = $1)
+      ORDER BY (o.change_request IS NOT NULL) DESC, o.delivery_date, o.id LIMIT 300`,
+    [status ?? null, day],
+  );
+  // Jefa zonal de cada vendedora (la primera jefa subiendo por sus referidas) y nombres de los productos pedidos en cambios.
+  const leaderCache = new Map();
+  const productNames = new Map((await direct.query('SELECT id, name, price FROM products')).rows.map((p) => [p.id, p]));
+  for (const o of rows) {
+    if (!leaderCache.has(o.seller_id)) {
+      const id = await leaderFor(o.seller_id);
+      leaderCache.set(o.seller_id, id ? await direct.one('SELECT id, name, phone, address FROM users WHERE id = $1', [id]) : null);
+    }
+    o.leader = leaderCache.get(o.seller_id);
+    if (o.change_request?.additions) {
+      o.change_request.additions = o.change_request.additions.map((a) => ({ ...a, product: productNames.get(a.productId)?.name, unit_price: productNames.get(a.productId)?.price }));
+    }
+  }
+  return rows;
+}
+
+// Lo que espera a administración: para el contador del menú.
+export async function adminCounts() {
+  return direct.one(
+    `SELECT
+       (SELECT COUNT(*)::int FROM orders WHERE status = 'confirmed') AS orders_to_deliver,
+       (SELECT COUNT(*)::int FROM orders WHERE kind = 'kit' AND status = 'delivered' AND change_request IS NOT NULL) AS kit_changes,
+       (SELECT COUNT(*)::int FROM payments WHERE status = 'reported') AS payments_to_confirm,
+       (SELECT COUNT(*)::int FROM users WHERE role = 'seller' AND status = 'pending') AS sellers_pending,
+       (SELECT COUNT(*)::int FROM alerts WHERE status = 'open' AND recipient_id IS NULL) AS admin_alerts`,
+  );
 }

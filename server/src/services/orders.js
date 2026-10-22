@@ -65,12 +65,31 @@ export async function createKit(sellerId, { items, deliveryDate, deliverTo = 'se
 }
 
 // La vendedora deja anotados los cambios que quiere para la segunda visita del kit.
-export async function requestKitChanges(sellerId, orderId, changeRequest) {
+// returns: [{ itemId, qty }] productos del kit que devuelve; additions: [{ productId, qty }] productos nuevos.
+export async function requestKitChanges(sellerId, orderId, { returns = [], additions = [], note = '' }) {
   return tx(async (db) => {
     const o = await db.one(`SELECT * FROM orders WHERE id = $1 AND seller_id = $2 AND kind = 'kit'`, [orderId, sellerId]);
     if (!o) throw new AppError('Kit no encontrado', 404);
     if (o.status !== 'delivered') throw new AppError('El kit todavía no fue entregado o ya se cerró.');
-    await db.query('UPDATE orders SET change_request = $2 WHERE id = $1', [orderId, changeRequest]);
+    const cleanReturns = [];
+    for (const { itemId, qty } of returns) {
+      const q = Number(qty);
+      if (!q) continue;
+      const it = await db.one('SELECT qty FROM order_items WHERE id = $1 AND order_id = $2', [itemId, orderId]);
+      if (!it || !Number.isInteger(q) || q < 0 || q > it.qty) throw new AppError('Devolución inválida.');
+      cleanReturns.push({ itemId: Number(itemId), qty: q });
+    }
+    const cleanAdditions = [];
+    for (const { productId, qty } of additions) {
+      const q = Number(qty);
+      if (!q) continue;
+      const p = await db.one('SELECT id FROM products WHERE id = $1 AND active', [productId]);
+      if (!p || !Number.isInteger(q) || q < 0) throw new AppError('Producto inválido.');
+      cleanAdditions.push({ productId: p.id, qty: q });
+    }
+    const request = { returns: cleanReturns, additions: cleanAdditions, note: String(note ?? '').trim(), requested_at: new Date().toISOString() };
+    await db.query('UPDATE orders SET change_request = $2 WHERE id = $1', [orderId, request]);
+    return request;
   });
 }
 

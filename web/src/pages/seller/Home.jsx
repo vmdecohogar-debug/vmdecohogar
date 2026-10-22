@@ -11,7 +11,10 @@ export default function SellerHome() {
 
   return (
     <div>
-      <h1>Hola, {profile.name.split(' ')[0]}</h1>
+      <div className="row between">
+        <h1>Hola, {profile.name.split(' ')[0]}</h1>
+        <button type="button" className="btn secondary small" onClick={() => window.dispatchEvent(new Event('open-guide'))}>Cómo funciona</button>
+      </div>
       {profile.status === 'pending' && <div className="notice warn">Tu cuenta está pendiente de aprobación. Te avisamos por WhatsApp.</div>}
       {blocked && <div className="notice error">Tenés un pago atrasado y los pedidos nuevos están pausados. <Link to="/pagos">Regularizalo acá</Link>.</div>}
 
