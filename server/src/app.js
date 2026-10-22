@@ -10,6 +10,7 @@ import * as dash from './services/dashboards.js';
 import { runDaily } from './services/daily.js';
 import { closePeriod, markSettlementPaid } from './services/commissions.js';
 import { render } from './services/whatsapp.js';
+import * as catalog from './services/catalog.js';
 
 const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery'];
 
@@ -43,7 +44,8 @@ const h = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).then((data) 
 
 export function createApp() {
   const app = express();
-  app.use(express.json());
+  app.use(express.json({ limit: '5mb' }));
+  app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
 
@@ -71,7 +73,7 @@ export function createApp() {
     const s = req.user.role === 'seller' ? await direct.one('SELECT is_leader FROM sellers WHERE user_id = $1', [req.user.id]) : null;
     return { ...req.user, isLeader: !!s?.is_leader };
   }));
-  app.get('/api/products', h(async () => (await direct.query('SELECT id, sku, name, price, suggested_price, stock FROM products WHERE active ORDER BY name')).rows));
+  app.get('/api/products', h(async () => catalog.listProducts()));
   app.get('/api/obligations/:id/pay-link', h(async (req) => {
     const ob = await direct.one('SELECT seller_id FROM obligations WHERE id = $1', [req.params.id]);
     if (!ob || (req.user.role !== 'admin' && ob.seller_id !== req.user.id)) throw new AppError('Deuda no encontrada', 404);
@@ -135,15 +137,12 @@ export function createApp() {
   app.get('/api/admin/messages', admin, h(async () => (await direct.query(
     `SELECT m.*, u.name AS recipient_name FROM messages m LEFT JOIN users u ON u.id = m.recipient_id ORDER BY m.created_at DESC LIMIT 200`,
   )).rows.map((m) => ({ ...m, text: render(m.template, m.vars) }))));
-  app.post('/api/admin/products', admin, h(async (req) => {
-    const { sku, name, price, suggested_price: suggested, stock } = req.body;
-    return direct.one(
-      `INSERT INTO products (sku, name, price, suggested_price, stock) VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (sku) DO UPDATE SET name = EXCLUDED.name, price = EXCLUDED.price, suggested_price = EXCLUDED.suggested_price, stock = EXCLUDED.stock
-       RETURNING *`,
-      [sku, name, price, suggested, stock ?? 0],
-    );
-  }));
+  app.get('/api/admin/products', admin, h(async () => ({ products: await catalog.listProducts({ includeInactive: true }), categories: await catalog.listCategories() })));
+  app.post('/api/admin/products', admin, h(async (req) => catalog.saveProduct(req.body, req.user.id)));
+  app.post('/api/admin/products/:id/active', admin, h(async (req) => catalog.setProductActive(Number(req.params.id), req.body.active, req.user.id)));
+  app.post('/api/admin/products/import/preview', admin, h(async (req) => catalog.previewImport(req.body.text)));
+  app.post('/api/admin/products/import', admin, h(async (req) => catalog.importProducts(req.body.text, req.user.id)));
+  app.post('/api/admin/uploads', admin, h(async (req) => catalog.saveImage(req.body.dataUrl)));
   app.get('/api/admin/levels', admin, h(async () => (await direct.query('SELECT * FROM levels ORDER BY rank')).rows));
   app.put('/api/admin/levels/:code', admin, h(async (req) => {
     const { credit_limit: limit, term_days: term, early_discount_pct: pct, required_clean_orders: req2 } = req.body;

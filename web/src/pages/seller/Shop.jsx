@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api.js';
 import { fechaCorta, pesos } from '../../format.js';
 import { Loading, Notice, Qty, useAction, useApi } from '../../components/ui.jsx';
+import { ProductImage } from '../../components/ProductImage.jsx';
 
 // Catálogo y carrito. Si la vendedora todavía no tiene kit, arma el kit de arranque.
 export default function Shop() {
@@ -13,10 +14,12 @@ export default function Shop() {
   const [mode, setMode] = useState('credit');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliverTo, setDeliverTo] = useState('seller');
+  const [category, setCategory] = useState('');
   const { busy, msg, run } = useAction();
   const navigate = useNavigate();
 
   const list = products.data ?? [];
+  const categories = [...new Set(list.map((p) => p.category).filter(Boolean))];
   const lines = useMemo(() => list.filter((p) => cart[p.id] > 0).map((p) => ({ ...p, qty: cart[p.id] })), [list, cart]);
   const units = lines.reduce((s, l) => s + l.qty, 0);
   const subtotal = lines.reduce((s, l) => s + l.qty * l.price, 0);
@@ -96,18 +99,26 @@ export default function Shop() {
       <h1>{isKit ? 'Armá tu kit de arranque' : 'Catálogo'}</h1>
       {isKit && <p className="muted">Hasta {d.kitRules.maxUnits} productos o {pesos(d.kitRules.maxAmount)}. Llevás {units} productos y {pesos(subtotal)}.</p>}
       {kitOver && <div className="notice error">Te pasaste del límite del kit.</div>}
+      {categories.length > 1 && (
+        <div className="chips" role="group" aria-label="Categorías">
+          <button className={`btn small ${category ? 'secondary' : ''}`} onClick={() => setCategory('')}>Todo</button>
+          {categories.map((c) => <button key={c} className={`btn small ${category === c ? '' : 'secondary'}`} onClick={() => setCategory(c)}>{c}</button>)}
+        </div>
+      )}
       <div className="products" style={{ marginBottom: 80 }}>
-        {list.map((p) => (
+        {list.filter((p) => !category || p.category === category).map((p) => (
           <div key={p.id} className="card product">
+            <ProductImage product={p} />
             <strong>{p.name}</strong>
+            {p.description && <div className="muted small">{p.description}</div>}
             <div className="row between">
               <div>
                 <div style={{ fontSize: 18, fontWeight: 800 }}>{pesos(p.price)}</div>
                 <div className="muted small">Precio sugerido {pesos(p.suggested_price)}</div>
               </div>
-              <Qty value={cart[p.id] ?? 0} max={p.stock} onChange={(q) => setQty(p.id, q)} />
+              {p.stock > 0 ? <Qty value={cart[p.id] ?? 0} max={p.stock} onChange={(q) => setQty(p.id, q)} /> : <span className="badge gris">Sin stock</span>}
             </div>
-            {p.stock < 5 && <div className="muted small">Quedan {p.stock}</div>}
+            {p.stock > 0 && p.stock < 5 && <div className="muted small">Quedan {p.stock}</div>}
           </div>
         ))}
       </div>

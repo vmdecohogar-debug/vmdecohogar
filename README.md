@@ -53,6 +53,15 @@ TEST_DATABASE_URL=postgres://localhost/redvendedora_test npm test   # además, e
 
 `npm run build` compila el frontend en `web/dist`; el servidor (`npm --prefix server start`) sirve la API y la app en el mismo puerto. El proceso diario (recordatorios, mora, recargos, alertas) corre solo a las 10 h; si preferís un cron externo, poné `DAILY_JOB=off` y programá `npm --prefix server run daily`.
 
+## Catálogo
+
+En **Catálogo** (panel de administración) se cargan los productos con foto, categoría, descripción, precio a vendedora, precio sugerido y stock, y se pausan los que no están disponibles. Para cargar muchos de una vez, **Importar lista** acepta:
+
+- texto copiado de WhatsApp, una línea por producto: `Vela de soja 200 g $4.800 / $6.900` (primer precio = vendedora, segundo = sugerido);
+- una planilla o CSV con columnas `Nombre; Precio; Sugerido; Stock; Categoría; Descripción; Código`.
+
+Antes de importar muestra una vista previa con lo que se crea, lo que se actualiza (mismo código o mismo nombre) y las líneas con errores. Las fotos se achican en el celular antes de subirse y se guardan en `UPLOADS_DIR`.
+
 ## Reglas configurables
 
 Desde **Ajustes** en el panel de administración:

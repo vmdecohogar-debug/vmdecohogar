@@ -78,45 +78,6 @@ function Rules() {
   );
 }
 
-function Products() {
-  const { data, error, reload } = useApi('/products');
-  const [form, setForm] = useState({ sku: '', name: '', price: '', suggested_price: '', stock: '' });
-  const { busy, msg, run } = useAction();
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-  const save = (e) => {
-    e.preventDefault();
-    run(() => api('/admin/products', { method: 'POST', body: { ...form, price: toCents(form.price), suggested_price: toCents(form.suggested_price), stock: Number(form.stock || 0) } })
-      .then(() => { setForm({ sku: '', name: '', price: '', suggested_price: '', stock: '' }); reload(); }), 'Producto guardado.');
-  };
-  return (
-    <div className="card">
-      <h3>Productos</h3>
-      <form className="grid three" onSubmit={save} style={{ marginBottom: 12 }}>
-        <input placeholder="Código (SKU)" value={form.sku} onChange={set('sku')} required />
-        <input placeholder="Nombre" value={form.name} onChange={set('name')} required />
-        <input placeholder="Precio a vendedora $" inputMode="decimal" value={form.price} onChange={set('price')} required />
-        <input placeholder="Precio sugerido $" inputMode="decimal" value={form.suggested_price} onChange={set('suggested_price')} required />
-        <input placeholder="Stock" inputMode="numeric" value={form.stock} onChange={set('stock')} />
-        <button className="btn" disabled={busy}>Agregar o actualizar</button>
-      </form>
-      <Notice msg={msg} />
-      <p className="muted small">Con el mismo código se actualiza el producto existente.</p>
-      {!data ? <Loading error={error} /> : (
-        <ul className="list">
-          {data.map((p) => (
-            <li key={p.id} className="row between">
-              <button type="button" className="btn secondary small" onClick={() => setForm({ sku: p.sku, name: p.name, price: String(p.price / 100), suggested_price: String(p.suggested_price / 100), stock: String(p.stock) })}>{p.sku}</button>
-              <span style={{ flex: 1 }}>{p.name}</span>
-              <span>{pesos(p.price)} <span className="muted small">/ {pesos(p.suggested_price)}</span></span>
-              <Badge tone={p.stock < 5 ? 'amarillo' : 'gris'}>stock {p.stock}</Badge>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 function Commissions() {
   const { data, error, reload } = useApi('/admin/settlements');
   const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toISOString().slice(0, 7);
@@ -161,7 +122,6 @@ export default function AdminSettings() {
       <h1>Ajustes</h1>
       <Levels />
       <Commissions />
-      <Products />
       <Rules />
     </div>
   );
