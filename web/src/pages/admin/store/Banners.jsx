@@ -21,7 +21,7 @@ function BannerForm({ initial, categories, onDone, onCancel }) {
       <Notice msg={msg} />
       <div>
         <label>Imagen</label>
-        <p className="muted small">Ideal horizontal, 1920 × 730 px (en el celular se recorta un poco a los costados). Dejá lo importante en el centro.</p>
+        <p className="muted small">Medida ideal: 1440 × 520 px (o el doble, 2880 × 1040). Se ve entera en computadora y en celular, sin recortes.</p>
         <ImageField wide max={1920} label="imagen" value={f.image_url} onChange={(url) => setF((x) => ({ ...x, image_url: url }))} onError={(text) => setMsg({ type: 'error', text })} />
       </div>
       <div className="grid two">

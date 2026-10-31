@@ -213,7 +213,7 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
 .img-field { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; }
 .img-field img, .img-field .img-empty { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
 .img-field.wide { grid-template-columns: 1fr; }
-.img-field.wide img, .img-field.wide .img-empty { width: 100%; height: auto; aspect-ratio: 21 / 8; }
+.img-field.wide img, .img-field.wide .img-empty { width: 100%; height: auto; aspect-ratio: 36 / 13; }
 .img-empty { display: flex; align-items: center; justify-content: center; background: var(--beige-tint); color: var(--text-soft); font-size: 13px; }
 .img-empty.mini { width: 48px; height: 48px; border-radius: 8px; flex: 0 0 auto; }
 .price-box { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 14px; margin: 0; }
@@ -238,7 +238,7 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
 .order-btns button { width: 30px; height: 22px; border: 1px solid var(--line); background: var(--white); color: var(--text); border-radius: 6px; font-size: 10px; cursor: pointer; padding: 0; }
 .order-btns button:disabled { opacity: 0.3; cursor: default; }
 .cat-icon { font-size: 26px; width: 36px; text-align: center; }
-.banner-thumb { width: 120px; aspect-ratio: 21 / 8; object-fit: cover; border-radius: 8px; }
+.banner-thumb { width: 120px; aspect-ratio: 36 / 13; object-fit: cover; border-radius: 8px; }
 .icon-pick { display: flex; flex-wrap: wrap; gap: 6px; }
 .icon-pick button { width: 40px; height: 40px; font-size: 20px; border-radius: 10px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
 .icon-pick button.on { border-color: var(--sage); outline: 2px solid var(--sage); }
