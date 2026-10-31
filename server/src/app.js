@@ -12,6 +12,8 @@ import { closePeriod, markSettlementPaid } from './services/commissions.js';
 import { render } from './services/whatsapp.js';
 import * as catalog from './services/catalog.js';
 import * as claims from './services/claims.js';
+import * as store from './services/store.js';
+import * as seo from './services/seo.js';
 
 const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery', 'claims'];
 
@@ -40,6 +42,19 @@ async function leader(req, _res, next) {
   return s?.is_leader ? next() : next(new AppError('El panel de jefa zonal se activa con 10 referidas activas.', 403));
 }
 
+// El precio mayorista solo se muestra a cuentas mayoristas activas (se habilitan en la etapa de compras).
+async function canSeeWholesale(req) {
+  const token = req.headers.authorization?.replace(/^Bearer /, '');
+  if (!token) return false;
+  try {
+    const { id } = jwt.verify(token, config.jwtSecret);
+    const u = await direct.one('SELECT role, status FROM users WHERE id = $1', [id]);
+    return u?.role === 'wholesale' && u.status === 'active';
+  } catch {
+    return false;
+  }
+}
+
 // Envuelve handlers async para que los errores lleguen al manejador central.
 const h = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).then((data) => res.json(data ?? { ok: true }), next);
 
@@ -58,20 +73,25 @@ export function createApp() {
   app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
+  app.get('/robots.txt', (_req, res) => res.type('text/plain').send(seo.robots()));
+  app.get('/sitemap.xml', async (_req, res, next) => {
+    try {
+      res.type('application/xml').send(await seo.sitemap());
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  // Tienda pública
+  app.get('/api/store/config', h(async () => store.publicConfig()));
+  app.get('/api/store/home', h(async (req) => store.home({ showWholesale: await canSeeWholesale(req) })));
+  app.get('/api/store/products', h(async (req) => store.publicProducts({ ...req.query, showWholesale: await canSeeWholesale(req) })));
+  app.get('/api/store/products/:slug', h(async (req) => store.publicProduct(req.params.slug, { showWholesale: await canSeeWholesale(req) })));
 
   // Público
-  app.post('/api/auth/register', h(async (req) => sellers.registerSeller(req.body)));
   app.post('/api/auth/login', h(async (req) => {
     const u = await sellers.login(req.body.phone, req.body.password);
     return { token: sign(u), user: { id: u.id, name: u.name, role: u.role, status: u.status } };
-  }));
-  app.get('/api/referral/:code', h(async (req) => {
-    const r = await direct.one(
-      `SELECT u.name FROM sellers s JOIN users u ON u.id = s.user_id WHERE upper(s.referral_code) = upper($1) AND u.status = 'active'`,
-      [req.params.code],
-    );
-    if (!r) throw new AppError('Código no encontrado', 404);
-    return { name: r.name.split(' ')[0] };
   }));
   app.post('/api/webhooks/mercadopago', h(async (req) => {
     const id = req.query['data.id'] ?? req.body?.data?.id ?? req.query.id;
@@ -157,6 +177,23 @@ export function createApp() {
   app.get('/api/admin/messages', admin, h(async () => (await direct.query(
     `SELECT m.*, u.name AS recipient_name FROM messages m LEFT JOIN users u ON u.id = m.recipient_id ORDER BY m.created_at DESC LIMIT 200`,
   )).rows.map((m) => ({ ...m, text: render(m.template, m.vars) }))));
+  // Tienda online (administración)
+  app.get('/api/admin/store/counts', admin, h(async () => store.storeCounts()));
+  app.get('/api/admin/store/products', admin, h(async () => ({ products: await store.adminProducts(), categories: await store.listCategories({ includeInactive: true }) })));
+  app.post('/api/admin/store/products', admin, h(async (req) => store.saveStoreProduct(req.body, req.user.id)));
+  app.post('/api/admin/store/products/recalc', admin, h(async (req) => store.recalcPrices(req.user.id)));
+  app.get('/api/admin/store/categories', admin, h(async () => store.listCategories({ includeInactive: true })));
+  app.post('/api/admin/store/categories', admin, h(async (req) => store.saveCategory(req.body, req.user.id)));
+  app.put('/api/admin/store/categories/order', admin, h(async (req) => store.reorder('categories', req.body.ids, req.user.id)));
+  app.delete('/api/admin/store/categories/:id', admin, h(async (req) => store.deleteCategory(Number(req.params.id), req.user.id)));
+  app.get('/api/admin/store/banners', admin, h(async () => store.listBanners({ includeInactive: true })));
+  app.post('/api/admin/store/banners', admin, h(async (req) => store.saveBanner(req.body, req.user.id)));
+  app.put('/api/admin/store/banners/order', admin, h(async (req) => store.reorder('banners', req.body.ids, req.user.id)));
+  app.delete('/api/admin/store/banners/:id', admin, h(async (req) => store.deleteBanner(Number(req.params.id), req.user.id)));
+  app.get('/api/admin/store/settings', admin, h(async () => store.storeSettings()));
+  app.put('/api/admin/store/settings', admin, h(async (req) => store.saveStoreSettings(req.body, req.user.id)));
+  app.put('/api/admin/store/theme', admin, h(async (req) => store.saveTheme(req.body, req.user.id)));
+
   app.get('/api/admin/products', admin, h(async () => ({ products: await catalog.listProducts({ includeInactive: true }), categories: await catalog.listCategories() })));
   app.post('/api/admin/products', admin, h(async (req) => catalog.saveProduct(req.body, req.user.id)));
   app.post('/api/admin/products/:id/active', admin, h(async (req) => catalog.setProductActive(Number(req.params.id), req.body.active, req.user.id)));

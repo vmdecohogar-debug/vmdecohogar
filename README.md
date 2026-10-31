@@ -85,6 +85,15 @@ Las fotos se guardan en la base, así que no hace falta disco.
 3. **Despierta**: el plan gratis se duerme a los 15 minutos sin visitas (la primera carga tarda ~1 minuto) y así no corre
    el proceso diario de recordatorios y mora. Un ping gratis cada 10 minutos a `/api/health` (por ejemplo, cron-job.org) lo mantiene despierto.
 
+## Tienda online
+
+La dirección principal (`/`) es la tienda pública de VM Bazar y Deco; el panel está en `/admin` (se entra por `/ingresar`).
+
+- **Tienda**: buscador, barra de categorías con íconos, carrusel de banners con link, Más vendidos / Lo nuevo (8 productos cada uno), 3 categorías al azar, ficha de producto, carrito, contacto, pie con medios de pago, redes y contacto, botón flotante de WhatsApp y modo oscuro.
+- **Precios**: cada producto tiene costo y se calcula solo con los márgenes generales (65% lista, 50% mayorista, redondeo a $100, todo editable en Tienda) o con márgenes propios; también se puede poner el precio a mano. El costo nunca se muestra al público y el precio mayorista solo a cuentas mayoristas.
+- **Panel**: Productos, Categorías (agregar, editar, ordenar, borrar), Banners, Apariencia (12 colores por uso para modo claro y oscuro, tipografías por enlace de Google Fonts) y Tienda (márgenes, WhatsApp, contacto, redes, medios de pago, SEO).
+- **SEO**: el servidor completa título, descripción, vista previa para redes y datos de producto para Google en cada página, y publica `/sitemap.xml` y `/robots.txt`.
+
 ## Catálogo
 
 En **Catálogo** (panel de administración) se cargan los productos con foto, categoría, descripción, precio a vendedora, precio sugerido y stock, y se pausan los que no están disponibles. Para cargar muchos de una vez, **Importar lista** acepta:
