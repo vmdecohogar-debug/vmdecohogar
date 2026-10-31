@@ -1,6 +1,6 @@
 // Tienda online pública y su administración (categorías, productos con costo y márgenes, banners, apariencia).
 import { direct, tx } from '../db/index.js';
-import { cleanTheme, computePrices, safeLink, slugify } from '../rules/store.js';
+import { cleanDiscount, cleanTheme, computePrices, promoPrices, safeLink, slugify } from '../rules/store.js';
 import { AppError, audit, getSettings } from './common.js';
 
 // ---------- Ajustes ----------
@@ -168,12 +168,18 @@ export async function deleteBanner(id, adminId) {
 // ---------- Productos ----------
 
 // Lo que ve el público. El costo nunca sale de acá; el mayorista solo para cuentas habilitadas.
-const PUBLIC_FIELDS = `p.id, p.slug, p.sku, p.name, p.description, p.image_url, p.list_price, p.wholesale_price, p.stock,
-  p.featured, p.created_at, c.name AS category_name, c.slug AS category_slug`;
+// Con descuento, list_price / wholesale_price ya son los promocionales y *_before los anteriores (para tacharlos).
+export const SALE_LIST = 'COALESCE(p.promo_list_price, p.list_price)';
+export const SALE_WHOLESALE = 'COALESCE(p.promo_wholesale_price, p.wholesale_price)';
+const PUBLIC_FIELDS = `p.id, p.slug, p.sku, p.name, p.description, p.image_url, ${SALE_LIST} AS list_price, ${SALE_WHOLESALE} AS wholesale_price,
+  CASE WHEN p.promo_list_price IS NOT NULL THEN p.list_price END AS list_price_before,
+  CASE WHEN p.promo_wholesale_price IS NOT NULL THEN p.wholesale_price END AS wholesale_price_before,
+  CASE WHEN p.promo_list_price IS NOT NULL THEN p.discount_pct::float END AS discount_pct,
+  p.stock, p.featured, p.created_at, c.name AS category_name, c.slug AS category_slug`;
 
 function forViewer(p, showWholesale) {
-  const { wholesale_price: w, ...rest } = p;
-  return showWholesale ? { ...rest, wholesale_price: w } : rest;
+  const { wholesale_price: w, wholesale_price_before: wb, ...rest } = p;
+  return showWholesale ? { ...rest, wholesale_price: w, wholesale_price_before: wb } : rest;
 }
 
 // Texto sin tildes para buscar "organizacion" y encontrar "Organización".
@@ -195,7 +201,7 @@ export async function publicProducts({ category, q, sort = 'new', page = 1, limi
     where.push(`(${PLAIN('p.name')} LIKE $${params.length} OR ${PLAIN("coalesce(p.description, '')")} LIKE $${params.length} OR lower(p.sku) LIKE $${params.length})`);
   }
   const order = {
-    new: 'p.created_at DESC, p.id DESC', price_asc: 'p.list_price, p.id', price_desc: 'p.list_price DESC, p.id', name: 'p.name, p.id',
+    new: 'p.created_at DESC, p.id DESC', price_asc: `${SALE_LIST}, p.id`, price_desc: `${SALE_LIST} DESC, p.id`, name: 'p.name, p.id',
   }[sort] ?? 'p.created_at DESC, p.id DESC';
   const lim = Math.min(Math.max(Number(limit) || 24, 1), 60);
   const offset = (Math.max(Number(page) || 1, 1) - 1) * lim;
@@ -250,7 +256,7 @@ export async function publicConfig() {
 // ---------- Productos (administración) ----------
 
 const ADMIN_FIELDS = `p.id, p.sku, p.slug, p.name, p.description, p.image_url, p.cost, p.list_price, p.wholesale_price, p.price_mode,
-  p.list_margin, p.wholesale_margin, p.category_id, c.name AS category_name, p.stock, p.active, p.featured, p.created_at, p.updated_at`;
+  p.list_margin, p.wholesale_margin, p.discount_pct::float AS discount_pct, p.promo_list_price, p.promo_wholesale_price, p.category_id, c.name AS category_name, p.stock, p.active, p.featured, p.created_at, p.updated_at`;
 
 export async function adminProducts() {
   const { rows } = await direct.query(
@@ -284,6 +290,8 @@ export async function saveStoreProduct(data, adminId) {
   const { store } = await storeSettings();
   const prices = computePrices(row, store);
   if (prices.errors.length) throw new AppError(prices.errors.join(' '));
+  const discount = cleanDiscount(data.discount_pct);
+  if (discount.errors.length) throw new AppError(discount.errors.join(' '));
   const stock = data.stock == null || data.stock === '' ? null : Number(data.stock);
   if (stock != null && (!Number.isInteger(stock) || stock < 0)) throw new AppError('Stock inválido.');
 
@@ -302,22 +310,30 @@ export async function saveStoreProduct(data, adminId) {
     ];
     let p;
     if (data.id) {
-      const cur = await db.one('SELECT sku FROM products WHERE id = $1', [data.id]);
+      const cur = await db.one('SELECT sku, discount_pct::float AS discount_pct FROM products WHERE id = $1', [data.id]);
       if (!cur) throw new AppError('Producto no encontrado', 404);
+      // Si no mandan el descuento (por ejemplo, desde otra pantalla) se conserva el que tenía.
+      const pctNow = data.discount_pct === undefined ? cur.discount_pct : discount.pct;
+      const promo = promoPrices({ ...prices, discount_pct: pctNow }, store.rounding);
+      if (promo.errors.length) throw new AppError(promo.errors.join(' '));
       const finalSku = sku ?? cur.sku;
       p = await db.one(
         `UPDATE products SET name = $1, description = $2, category_id = $3, category = $4, image_url = $5, cost = $6,
                 list_price = $7, wholesale_price = $8, price_mode = $9, list_margin = $10, wholesale_margin = $11, featured = $12,
-                stock = COALESCE($13, stock), price = $8, suggested_price = $7, sku = $14, slug = $15, updated_at = now()
+                stock = COALESCE($13, stock), price = $8, suggested_price = $7, sku = $14, slug = $15,
+                discount_pct = $17, promo_list_price = $18, promo_wholesale_price = $19, updated_at = now()
           WHERE id = $16 RETURNING id`,
-        [...values, finalSku, slugify(`${name} ${finalSku}`), data.id],
+        [...values, finalSku, slugify(`${name} ${finalSku}`), data.id, pctNow, promo.promo_list_price, promo.promo_wholesale_price],
       );
     } else {
+      const promo = promoPrices({ ...prices, discount_pct: discount.pct }, store.rounding);
+      if (promo.errors.length) throw new AppError(promo.errors.join(' '));
       p = await db.one(
         `INSERT INTO products (name, description, category_id, category, image_url, cost, list_price, wholesale_price, price_mode,
-                               list_margin, wholesale_margin, featured, stock, price, suggested_price, sku, slug)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, COALESCE($13, 0), $8, $7, $14, $15) RETURNING id`,
-        [...values, sku, slugify(`${name} ${sku}`)],
+                               list_margin, wholesale_margin, featured, stock, price, suggested_price, sku, slug,
+                               discount_pct, promo_list_price, promo_wholesale_price)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, COALESCE($13, 0), $8, $7, $14, $15, $16, $17, $18) RETURNING id`,
+        [...values, sku, slugify(`${name} ${sku}`), discount.pct, promo.promo_list_price, promo.promo_wholesale_price],
       );
     }
     await audit(db, adminId, data.id ? 'update' : 'create', 'product', p.id, { name, ...row, ...prices, errors: undefined });
@@ -330,16 +346,42 @@ export async function saveStoreProduct(data, adminId) {
 export async function recalcPrices(adminId) {
   const { store } = await storeSettings();
   return tx(async (db) => {
-    const { rows } = await db.query(`SELECT id, cost, price_mode, list_margin, wholesale_margin FROM products WHERE price_mode = 'margin' AND cost > 0`);
+    const { rows } = await db.query(`SELECT id, cost, price_mode, list_margin, wholesale_margin, discount_pct::float AS discount_pct
+                                       FROM products WHERE price_mode = 'margin' AND cost > 0`);
     let updated = 0;
     for (const p of rows) {
       const pr = computePrices(p, store);
       if (pr.errors.length) continue;
-      await db.query('UPDATE products SET list_price = $2, wholesale_price = $3, price = $3, suggested_price = $2, updated_at = now() WHERE id = $1', [p.id, pr.list_price, pr.wholesale_price]);
+      const promo = promoPrices({ ...pr, discount_pct: p.discount_pct }, store.rounding);
+      await db.query(
+        `UPDATE products SET list_price = $2, wholesale_price = $3, price = $3, suggested_price = $2,
+                promo_list_price = $4, promo_wholesale_price = $5, updated_at = now() WHERE id = $1`,
+        [p.id, pr.list_price, pr.wholesale_price, promo.promo_list_price, promo.promo_wholesale_price],
+      );
       updated++;
     }
     await audit(db, adminId, 'recalc', 'product', null, { updated });
     return { updated };
+  });
+}
+
+// Botón "Descuento" del panel: aplica un % al producto (lista y mayorista) o lo quita con vacío / 0.
+export async function setDiscount(id, discountPct, adminId) {
+  const { pct, errors } = cleanDiscount(discountPct);
+  if (errors.length) throw new AppError(errors.join(' '));
+  const { store } = await storeSettings();
+  return tx(async (db) => {
+    const cur = await db.one('SELECT id, list_price, wholesale_price FROM products WHERE id = $1', [id]);
+    if (!cur) throw new AppError('Producto no encontrado', 404);
+    if (pct != null && !(cur.list_price > 0)) throw new AppError('El producto no tiene precio de lista.');
+    const promo = promoPrices({ ...cur, discount_pct: pct }, store.rounding);
+    if (promo.errors.length) throw new AppError(promo.errors.join(' '));
+    await db.query(
+      'UPDATE products SET discount_pct = $2, promo_list_price = $3, promo_wholesale_price = $4, updated_at = now() WHERE id = $1',
+      [id, pct, promo.promo_list_price, promo.promo_wholesale_price],
+    );
+    await audit(db, adminId, pct == null ? 'discount_off' : 'discount_on', 'product', id, { discount_pct: pct, ...promo, errors: undefined });
+    return db.one(`SELECT ${ADMIN_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.id = $1`, [id]);
   });
 }
 

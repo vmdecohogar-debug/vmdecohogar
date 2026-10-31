@@ -93,6 +93,47 @@ test('tienda pública: búsqueda sin tildes, categoría, sin costo ni mayorista'
   assert.ok(cfg.theme.light.primary);
 });
 
+test('descuento: precio tachado en la tienda, se cobra el promocional y se puede quitar', { skip }, async () => {
+  const [item] = (await store.publicProducts({ q: 'bombonera' })).items;
+  const d = await store.setDiscount(item.id, 20, ADMIN);
+  assert.equal(d.discount_pct, 20);
+  assert.equal(d.promo_list_price, 270000); // $3.300 − 20% = $2.640 → $2.700
+  assert.equal(d.promo_wholesale_price, 240000); // $3.000 − 20% = $2.400
+  assert.equal(d.list_price, 330000, 'el precio normal no se pisa');
+
+  const pub = (await store.publicProducts({ q: 'bombonera' })).items[0];
+  assert.equal(pub.list_price, 270000);
+  assert.equal(pub.list_price_before, 330000);
+  assert.equal(pub.discount_pct, 20);
+  assert.equal(pub.wholesale_price_before, undefined);
+  const w = (await store.publicProducts({ q: 'bombonera', showWholesale: true })).items[0];
+  assert.equal(w.wholesale_price, 240000);
+  assert.equal(w.wholesale_price_before, 300000);
+
+  const checkout = await import('../src/services/checkout.js');
+  const q = await checkout.quote([{ productId: item.id, qty: 2 }]);
+  assert.equal(q.subtotal, 540000, 'se cobra el precio promocional');
+  const qw = await checkout.quote([{ productId: item.id, qty: 1 }], { wholesale: true });
+  assert.equal(qw.subtotal, 240000);
+
+  // Guardar el producto desde el formulario sin tocar el descuento lo conserva; cambiar el costo lo recalcula.
+  const kept = await store.saveStoreProduct({ ...d, cost: 198400 }, ADMIN);
+  assert.equal(kept.promo_list_price, 270000);
+  const { discount_pct: _d, ...noDiscount } = d;
+  const kept2 = await store.saveStoreProduct({ ...noDiscount, cost: 300000 }, ADMIN);
+  assert.equal(kept2.list_price, 500000); // $3.000 × 1,65 = $4.950 → $5.000
+  assert.equal(kept2.promo_list_price, 400000);
+  await store.saveStoreProduct({ ...kept2, cost: 198400 }, ADMIN);
+
+  await assert.rejects(store.setDiscount(item.id, 120, ADMIN), /entre 1 y 99/);
+  const off = await store.setDiscount(item.id, null, ADMIN);
+  assert.equal(off.discount_pct, null);
+  assert.equal(off.promo_list_price, null);
+  const back = (await store.publicProducts({ q: 'bombonera' })).items[0];
+  assert.equal(back.list_price, 330000);
+  assert.equal(back.list_price_before, null);
+});
+
 test('banners: link seguro, orden y baja', { skip }, async () => {
   const [navidad] = await store.listBanners();
   assert.equal(navidad.link, '/categoria/navidad', 'banner de Navidad cargado de entrada');

@@ -4,13 +4,30 @@ import { pesos } from '../format.js';
 import { useStore } from './StoreContext.jsx';
 import { Ico } from './icons.jsx';
 
+// Con descuento: precio anterior tachado, precio promocional y el % de descuento.
 export function Price({ product, big = false }) {
+  const before = product.list_price_before;
   return (
     <div className={`s-price ${big ? 'big' : ''}`}>
-      <span className="s-price-list">{pesos(product.list_price)}</span>
-      {product.wholesale_price != null && <span className="s-price-wholesale">Mayorista {pesos(product.wholesale_price)}</span>}
+      {before > product.list_price && (
+        <span className="s-price-before">
+          <s aria-label={`Antes ${pesos(before)}`}>{pesos(before)}</s>
+          {product.discount_pct ? <span className="s-off">-{Math.round(product.discount_pct)}%</span> : null}
+        </span>
+      )}
+      <span className={`s-price-list ${before > product.list_price ? 's-price-promo' : ''}`}>{pesos(product.list_price)}</span>
+      {product.wholesale_price != null && (
+        <span className="s-price-wholesale">
+          Mayorista {product.wholesale_price_before > product.wholesale_price && <s>{pesos(product.wholesale_price_before)}</s>} {pesos(product.wholesale_price)}
+        </span>
+      )}
     </div>
   );
+}
+
+export function DiscountTag({ product }) {
+  if (!(product.list_price_before > product.list_price) || !product.discount_pct) return null;
+  return <span className="s-tag-off">{Math.round(product.discount_pct)}% OFF</span>;
 }
 
 export function ProductPhoto({ product, className = '' }) {
@@ -24,7 +41,7 @@ export function ProductCard({ product }) {
   const url = `/producto/${product.slug}`;
   return (
     <article className="s-card">
-      <Link to={url} className="s-card-img" tabIndex={-1} aria-hidden="true"><ProductPhoto product={product} /></Link>
+      <Link to={url} className="s-card-img" tabIndex={-1} aria-hidden="true"><ProductPhoto product={product} /><DiscountTag product={product} /></Link>
       <div className="s-card-body">
         {product.category_name && <div className="s-card-cat">{product.category_name}</div>}
         <h3 className="s-card-title"><Link to={url}>{product.name}</Link></h3>
