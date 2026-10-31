@@ -72,7 +72,7 @@ function useCart() {
   const add = useCallback((p, qty = 1) => setItems((cur) => {
     const found = cur.find((i) => i.id === p.id);
     if (found) return cur.map((i) => (i.id === p.id ? { ...i, qty: i.qty + qty } : i));
-    return [...cur, { id: p.id, slug: p.slug, name: p.name, image_url: p.image_url, list_price: p.list_price, wholesale_price: p.wholesale_price, qty }];
+    return [...cur, { id: p.id, slug: p.slug, name: p.name, image_url: p.image_url, list_price: p.list_price, qty }];
   }), []);
   const setQty = useCallback((id, qty) => setItems((cur) => (qty <= 0 ? cur.filter((i) => i.id !== id) : cur.map((i) => (i.id === id ? { ...i, qty } : i)))), []);
   const clear = useCallback(() => setItems([]), []);

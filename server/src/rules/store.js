@@ -76,3 +76,34 @@ export function safeLink(link) {
   if (/^https?:\/\//i.test(l)) return l;
   return null;
 }
+
+// Total de un pedido con los precios vigentes. items: [{ productId, qty }], products: filas de la base.
+// Los mayoristas pagan precio mayorista; el resto, precio de lista.
+export function priceOrder(items, products, { wholesale = false, shipping = 0 } = {}) {
+  const errors = [];
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const merged = new Map();
+  for (const it of items ?? []) {
+    const id = Number(it.productId ?? it.id);
+    const qty = Number(it.qty);
+    if (!Number.isInteger(qty) || qty <= 0 || qty > 999) { errors.push('Cantidad inválida.'); continue; }
+    merged.set(id, (merged.get(id) ?? 0) + qty);
+  }
+  const lines = [];
+  for (const [id, qty] of merged) {
+    const p = byId.get(id);
+    if (!p || !p.active || !(p.list_price > 0)) { errors.push('Un producto del carrito ya no está disponible.'); continue; }
+    const unit = wholesale && p.wholesale_price > 0 ? p.wholesale_price : p.list_price;
+    lines.push({ productId: id, sku: p.sku, name: p.name, slug: p.slug, image_url: p.image_url, qty, unit_price: unit, unit_cost: p.cost ?? null, total: unit * qty });
+  }
+  if (lines.length === 0 && errors.length === 0) errors.push('El carrito está vacío.');
+  const subtotal = lines.reduce((s, l) => s + l.total, 0);
+  const costTotal = lines.reduce((s, l) => s + (l.unit_cost ?? 0) * l.qty, 0);
+  return { lines, subtotal, shipping, total: subtotal + shipping, costTotal, errors: [...new Set(errors)] };
+}
+
+// Mensaje corto para WhatsApp: no lista los productos (eso queda en el panel).
+export function orderWhatsappText(template, orderId) {
+  const t = template || '¡Hola! Acabo de realizar un pedido por la página (pedido #{pedido}). Ya te envío el comprobante.';
+  return t.replace(/\{pedido\}/g, String(orderId));
+}

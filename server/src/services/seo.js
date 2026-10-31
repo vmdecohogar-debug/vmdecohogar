@@ -18,7 +18,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
     description: store.seo?.description || store.tagline || '',
     url: `${base}${pathname === '/' ? '/' : pathname}`,
     image: `${base}/logo.jpg`,
-    noindex: /^\/(admin|ingresar|carrito)/.test(pathname),
+    noindex: /^\/(admin|ingresar|carrito|finalizar|pedido)/.test(pathname),
     ld: [],
   };
   const social = Object.values(store.social ?? {}).filter(Boolean);
@@ -68,6 +68,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
   }
   if (pathname === '/productos') meta.title = `Todos los productos | ${name}`;
   if (pathname === '/contacto') meta.title = `Contacto | ${name}`;
+  if (pathname === '/mayoristas') meta.title = `Compras mayoristas | ${name}`;
   return meta;
 }
 
@@ -107,5 +108,5 @@ export async function sitemap(base = config.appUrl) {
 }
 
 export function robots(base = config.appUrl) {
-  return `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /ingresar\nDisallow: /carrito\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
+  return `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /ingresar\nDisallow: /carrito\nDisallow: /finalizar\nDisallow: /pedido/\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
 }

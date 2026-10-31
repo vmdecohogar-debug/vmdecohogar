@@ -14,6 +14,8 @@ import * as catalog from './services/catalog.js';
 import * as claims from './services/claims.js';
 import * as store from './services/store.js';
 import * as seo from './services/seo.js';
+import * as checkout from './services/checkout.js';
+import * as wholesale from './services/wholesale.js';
 
 const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery', 'claims'];
 
@@ -42,17 +44,22 @@ async function leader(req, _res, next) {
   return s?.is_leader ? next() : next(new AppError('El panel de jefa zonal se activa con 10 referidas activas.', 403));
 }
 
-// El precio mayorista solo se muestra a cuentas mayoristas activas (se habilitan en la etapa de compras).
-async function canSeeWholesale(req) {
+// Quién mira la tienda (sin sesión = público). No falla si el token venció.
+async function viewer(req) {
   const token = req.headers.authorization?.replace(/^Bearer /, '');
-  if (!token) return false;
+  if (!token) return null;
   try {
     const { id } = jwt.verify(token, config.jwtSecret);
-    const u = await direct.one('SELECT role, status FROM users WHERE id = $1', [id]);
-    return u?.role === 'wholesale' && u.status === 'active';
+    return await direct.one('SELECT id, name, role, status FROM users WHERE id = $1', [id]);
   } catch {
-    return false;
+    return null;
   }
+}
+
+// El precio mayorista solo se muestra a cuentas mayoristas activas.
+async function canSeeWholesale(req) {
+  const u = await viewer(req);
+  return u?.role === 'wholesale' && u.status === 'active';
 }
 
 // Envuelve handlers async para que los errores lleguen al manejador central.
@@ -87,10 +94,24 @@ export function createApp() {
   app.get('/api/store/home', h(async (req) => store.home({ showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/products', h(async (req) => store.publicProducts({ ...req.query, showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/products/:slug', h(async (req) => store.publicProduct(req.params.slug, { showWholesale: await canSeeWholesale(req) })));
+  app.get('/api/store/checkout', h(async () => checkout.publicCheckout()));
+  app.post('/api/store/quote', h(async (req) => checkout.quote(req.body.items, { wholesale: await canSeeWholesale(req) })));
+  app.post('/api/store/orders', h(async (req) => {
+    const v = await viewer(req);
+    return checkout.createOrder(req.body, v?.status === 'active' ? v : null);
+  }));
+  app.get('/api/store/orders/:token', h(async (req) => checkout.publicOrder(req.params.token)));
+  app.post('/api/store/orders/:token/proof', h(async (req) => checkout.markProofSent(req.params.token)));
+  app.post('/api/store/wholesale/register', h(async (req) => {
+    const u = await wholesale.register(req.body);
+    return u.status === 'active' ? { status: u.status, token: sign(u), user: u } : { status: u.status };
+  }));
 
   // Público
   app.post('/api/auth/login', h(async (req) => {
     const u = await sellers.login(req.body.phone, req.body.password);
+    if (u.role === 'wholesale' && u.status === 'pending') throw new AppError('Tu cuenta mayorista está pendiente de aprobación. Te avisamos por WhatsApp.', 403);
+    if (u.role === 'wholesale' && u.status === 'blocked') throw new AppError('Tu cuenta mayorista está pausada. Escribinos por WhatsApp.', 403);
     return { token: sign(u), user: { id: u.id, name: u.name, role: u.role, status: u.status } };
   }));
   app.post('/api/webhooks/mercadopago', h(async (req) => {
@@ -101,8 +122,9 @@ export function createApp() {
   app.use('/api', auth);
   app.get('/api/me', h(async (req) => {
     const s = req.user.role === 'seller' ? await direct.one('SELECT is_leader FROM sellers WHERE user_id = $1', [req.user.id]) : null;
-    const u = await direct.one('SELECT onboarded_at FROM users WHERE id = $1', [req.user.id]);
-    return { ...req.user, isLeader: !!s?.is_leader, onboarded: req.user.role === 'admin' || !!u?.onboarded_at };
+    const u = await direct.one('SELECT onboarded_at, phone, address, city, business FROM users WHERE id = $1', [req.user.id]);
+    const { onboarded_at: onb, ...contact } = u;
+    return { ...req.user, ...contact, isLeader: !!s?.is_leader, onboarded: req.user.role === 'admin' || !!onb };
   }));
   app.post('/api/me/onboarded', h(async (req) => {
     await direct.query('UPDATE users SET onboarded_at = COALESCE(onboarded_at, now()) WHERE id = $1', [req.user.id]);
@@ -192,6 +214,16 @@ export function createApp() {
   app.delete('/api/admin/store/banners/:id', admin, h(async (req) => store.deleteBanner(Number(req.params.id), req.user.id)));
   app.get('/api/admin/store/settings', admin, h(async () => store.storeSettings()));
   app.put('/api/admin/store/settings', admin, h(async (req) => store.saveStoreSettings(req.body, req.user.id)));
+  app.get('/api/admin/store/zones', admin, h(async () => checkout.listZones()));
+  app.post('/api/admin/store/zones', admin, h(async (req) => checkout.saveZone(req.body, req.user.id)));
+  app.delete('/api/admin/store/zones/:id', admin, h(async (req) => checkout.deleteZone(Number(req.params.id), req.user.id)));
+  app.get('/api/admin/store/checkout', admin, h(async () => ({ ...(await checkout.checkoutSettings()), mpConfigured: checkout.mpConfigured() })));
+  app.put('/api/admin/store/checkout', admin, h(async (req) => checkout.saveCheckoutSettings(req.body, req.user.id)));
+  app.get('/api/admin/store/wholesale', admin, h(async () => ({ customers: await wholesale.list(), settings: await wholesale.wholesaleSettings() })));
+  app.post('/api/admin/store/wholesale', admin, h(async (req) => wholesale.register(req.body, { byAdmin: req.user.id })));
+  app.post('/api/admin/store/wholesale/:id/status', admin, h(async (req) => wholesale.setStatus(Number(req.params.id), req.body.status, req.user.id)));
+  app.post('/api/admin/store/wholesale/invite', admin, h(async (req) => wholesale.newInvite(req.user.id, req.body.requireApproval)));
+  app.put('/api/admin/store/wholesale/settings', admin, h(async (req) => wholesale.setRequireApproval(req.body.requireApproval, req.user.id)));
   app.put('/api/admin/store/theme', admin, h(async (req) => store.saveTheme(req.body, req.user.id)));
 
   app.get('/api/admin/products', admin, h(async () => ({ products: await catalog.listProducts({ includeInactive: true }), categories: await catalog.listCategories() })));

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../auth.js';
 import { useStore, waLink } from './StoreContext.jsx';
 import { Ico, WhatsAppIcon } from './icons.jsx';
 
@@ -22,6 +23,7 @@ function SearchBox({ className = '' }) {
 
 function Header() {
   const { config, dark, toggle, cart } = useStore();
+  const { user, logout } = useAuth();
   const store = config?.store ?? {};
   return (
     <header className="s-header">
@@ -36,7 +38,16 @@ function Header() {
           <button type="button" className="s-iconbtn" onClick={toggle} aria-label={dark ? 'Usar modo claro' : 'Usar modo oscuro'} title={dark ? 'Modo claro' : 'Modo oscuro'}>
             <Ico name={dark ? 'sun' : 'moon'} />
           </button>
-          <Link to="/ingresar" className="s-iconbtn" aria-label="Ingresar" title="Ingresar"><Ico name="user" /></Link>
+          {user?.role === 'wholesale' ? (
+            <span className="s-account">
+              <span className="s-account-name">{user.name.split(' ')[0]}<small>Mayorista</small></span>
+              <button type="button" className="s-link" onClick={logout}>Salir</button>
+            </span>
+          ) : user?.role === 'admin' ? (
+            <Link to="/admin" className="s-iconbtn" aria-label="Panel de administración" title="Panel"><Ico name="user" /></Link>
+          ) : (
+            <Link to="/mayoristas" className="s-iconbtn" aria-label="Ingresar o crear cuenta mayorista" title="Mayoristas"><Ico name="user" /></Link>
+          )}
           <Link to="/carrito" className="s-iconbtn s-cartbtn" aria-label={`Carrito, ${cart.count} productos`} title="Carrito">
             <Ico name="cart" />
             {cart.count > 0 && <span className="s-badge">{cart.count > 99 ? '99+' : cart.count}</span>}
@@ -88,6 +99,7 @@ function Footer() {
             <li><Link to="/">Inicio</Link></li>
             <li><Link to="/productos">Productos</Link></li>
             <li><Link to="/contacto">Contacto</Link></li>
+            <li><Link to="/mayoristas">Compras mayoristas</Link></li>
           </ul>
         </div>
         <div>
