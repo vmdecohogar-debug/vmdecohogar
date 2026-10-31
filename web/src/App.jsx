@@ -12,6 +12,7 @@ import Appearance from './pages/admin/store/Appearance.jsx';
 import StoreSettings from './pages/admin/store/StoreSettings.jsx';
 import Shipping from './pages/admin/store/Shipping.jsx';
 import Wholesale from './pages/admin/store/Wholesale.jsx';
+import WebOrders from './pages/admin/store/WebOrders.jsx';
 import { StoreProvider } from './store/StoreContext.jsx';
 import StoreLayout from './store/StoreLayout.jsx';
 import { Cart, Contact, Home, NotFound, Product, Products } from './store/pages.jsx';
@@ -22,6 +23,7 @@ export { useAuth } from './auth.js';
 
 const ADMIN_NAV = [
   ['/admin', 'home', 'Inicio'],
+  ['/admin/pedidos', 'card', 'Pedidos'],
   ['/admin/productos', 'bag', 'Productos'],
   ['/admin/categorias', 'list', 'Categorías'],
   ['/admin/banners', 'star', 'Banners'],
@@ -64,6 +66,7 @@ function Admin() {
     <AdminLayout>
       <Routes>
         <Route index element={<StoreHome />} />
+        <Route path="pedidos" element={<WebOrders />} />
         <Route path="productos" element={<StoreProducts />} />
         <Route path="categorias" element={<StoreCategories />} />
         <Route path="banners" element={<StoreBanners />} />

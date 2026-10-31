@@ -265,3 +265,27 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
 .savebar { position: sticky; bottom: 72px; z-index: 5; padding: 10px 0; }
 @media (min-width: 900px) { .savebar { bottom: 0; } }
 .notice.warn { background: var(--warn-bg); color: var(--warn); }
+
+/* Pedidos de la tienda */
+.orders-grid { display: grid; gap: 12px; grid-template-columns: 1fr; margin-bottom: 16px; }
+@media (min-width: 1100px) { .orders-grid { grid-template-columns: 1fr 1fr; } }
+.order-card { margin: 0; }
+.order-client { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--beige-tint); margin-bottom: 8px; }
+.order-items li { padding: 8px 0; gap: 12px; }
+.order-totals { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 8px 0 12px; }
+.order-totals dt, .order-totals dd { margin: 0; }
+.order-totals dd { text-align: right; }
+.order-totals .profit { color: var(--ok); }
+.btn.danger-text { color: var(--bad); }
+.thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; flex: 0 0 auto; }
+@media print {
+  .topbar, .nav, .seg, .no-print, .stat, h1, .notice { display: none !important; }
+  .card { box-shadow: none; border: 0; }
+}
+.shopping li { gap: 12px; }
+.shopping-qty { font-size: 22px; min-width: 40px; text-align: right; }
+span.thumb { display: inline-block; background: var(--beige-tint); }
+.shopping li, .shopping li > .row { flex-wrap: nowrap; }
+@media (max-width: 599px) { .topbar .who { display: none; } .topbar .brand { white-space: nowrap; } }
+.order-items li { flex-wrap: nowrap; align-items: flex-start; }
+.order-items li > span:last-child { white-space: nowrap; }

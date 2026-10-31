@@ -15,6 +15,7 @@ import * as claims from './services/claims.js';
 import * as store from './services/store.js';
 import * as seo from './services/seo.js';
 import * as checkout from './services/checkout.js';
+import * as weborders from './services/weborders.js';
 import * as wholesale from './services/wholesale.js';
 
 const SETTING_KEYS = ['kit', 'commissions', 'mora', 'delivery', 'claims'];
@@ -224,6 +225,10 @@ export function createApp() {
   app.post('/api/admin/store/wholesale/:id/status', admin, h(async (req) => wholesale.setStatus(Number(req.params.id), req.body.status, req.user.id)));
   app.post('/api/admin/store/wholesale/invite', admin, h(async (req) => wholesale.newInvite(req.user.id, req.body.requireApproval)));
   app.put('/api/admin/store/wholesale/settings', admin, h(async (req) => wholesale.setRequireApproval(req.body.requireApproval, req.user.id)));
+  app.get('/api/admin/store/orders', admin, h(async (req) => ({ orders: await weborders.listOrders({ status: req.query.status }), summary: await weborders.salesSummary() })));
+  app.get('/api/admin/store/orders/shopping', admin, h(async () => weborders.shoppingList()));
+  app.post('/api/admin/store/orders/:id/status', admin, h(async (req) => weborders.setStatus(Number(req.params.id), req.body.status, req.user.id)));
+  app.post('/api/admin/store/orders/:id/payment', admin, h(async (req) => weborders.setPayment(Number(req.params.id), req.body.paymentStatus, req.user.id)));
   app.put('/api/admin/store/theme', admin, h(async (req) => store.saveTheme(req.body, req.user.id)));
 
   app.get('/api/admin/products', admin, h(async () => ({ products: await catalog.listProducts({ includeInactive: true }), categories: await catalog.listCategories() })));
