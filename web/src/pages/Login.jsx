@@ -21,7 +21,7 @@ export default function Login() {
   return (
     <div className="auth">
       <img className="logo" src="/logo.jpg" alt="VM Bazar y Deco" />
-      <h1 style={{ textAlign: 'center' }}>Red de vendedoras</h1>
+      <h1 style={{ textAlign: 'center' }}>Ingresar</h1>
       <form className="card stack" onSubmit={submit}>
         <Notice msg={msg} />
         <div>
@@ -35,7 +35,7 @@ export default function Login() {
         <button className="btn block" disabled={busy}>{busy ? 'Ingresando…' : 'Ingresar'}</button>
       </form>
       <p className="muted" style={{ textAlign: 'center' }}>
-        ¿Te invitaron? <Link to="/registro">Creá tu cuenta</Link>
+        <Link to="/">Volver a la tienda</Link>
       </p>
     </div>
   );

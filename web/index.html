@@ -1,14 +1,24 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-AR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#faf8f4" />
+    <meta name="theme-color" content="#f6f7f9" />
     <link rel="icon" href="/logo.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Nunito+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
-    <title>VM Bazar y Deco · Red de vendedoras</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@500;700&family=Roboto+Condensed:wght@400;600&display=swap" rel="stylesheet" />
+    <!--seo-->
+    <title>VM Bazar y Deco | Bazar, cocina, deco y organización</title>
+    <meta name="description" content="Tienda online de bazar y decoración: cocina, baño, deco, organización, limpieza, belleza y navidad." />
+    <!--/seo-->
+    <script>
+      // Modo oscuro antes de pintar, para que no parpadee.
+      try {
+        var m = JSON.parse(localStorage.getItem('vm_mode'));
+        if (m === 'dark' || (!m && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.dataset.theme = 'dark';
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

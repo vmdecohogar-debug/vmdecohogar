@@ -1,28 +1,59 @@
-/* Paleta tomada del logo de VM Bazar y Deco. Cambiar acá cambia toda la app. */
+/* Colores por uso. Los valores reales vienen del panel (Apariencia) y se aplican al cargar;
+   estos son los de arranque para que la página no parpadee. */
 :root {
-  --taupe: #5e5650;        /* letras del logo */
-  --taupe-soft: #8a827b;
-  --sage: #93a08a;         /* hojas */
-  --sage-dark: #6b7a63;    /* botones: el salvia del logo oscurecido para que el texto blanco se lea */
-  --sage-tint: #e9ede5;
-  --beige: #b8a995;        /* semillas */
-  --beige-tint: #f1ece4;
-  --cream: #faf8f4;        /* fondo */
-  --white: #ffffff;
+  --c-primary: #2f7fa6;      /* botones y links (celeste) */
+  --c-onPrimary: #ffffff;    /* texto sobre botones */
+  --c-primarySoft: #e2f2f9;  /* fondos suaves celestes */
+  --c-accent: #8e7cc3;       /* detalles (lavanda) */
+  --c-accentSoft: #efebf8;   /* fondos suaves lavanda */
+  --c-bg: #f6f7f9;           /* fondo de la página (gris claro) */
+  --c-surface: #ffffff;      /* tarjetas, encabezado */
+  --c-text: #3d424d;         /* texto (gris oscuro) */
+  --c-textSoft: #6b7280;     /* texto secundario */
+  --c-line: #e2e5ea;         /* bordes */
+  --c-footerBg: #3d424d;
+  --c-footerText: #f1f2f5;
 
-  --ok: #6b7a63;
-  --ok-bg: #e6ece1;
-  --warn: #9a6b1f;
-  --warn-bg: #f6ead2;
-  --bad: #a04a3c;
-  --bad-bg: #f5e1dc;
+  --f-brand: 'Cormorant Garamond', Georgia, serif;
+  --f-title: 'Montserrat', system-ui, sans-serif;
+  --f-body: 'Quicksand', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-banner: 'Playfair Display', Georgia, serif;
+  --f-bannerSub: 'Roboto Condensed', 'Arial Narrow', sans-serif;
 
-  --text: var(--taupe);
-  --text-soft: var(--taupe-soft);
-  --line: #e4ded5;
+  /* Nombres que usa el panel de administración (apuntan a los colores por uso). */
+  --taupe: var(--c-text);
+  --taupe-soft: var(--c-textSoft);
+  --sage: var(--c-primary);
+  --sage-dark: var(--c-primary);
+  --sage-tint: var(--c-primarySoft);
+  --beige: var(--c-accent);
+  --beige-tint: var(--c-accentSoft);
+  --cream: var(--c-bg);
+  --white: var(--c-surface);
+
+  --ok: #3f7d4e;
+  --ok-bg: #e3f1e6;
+  --warn: #92650f;
+  --warn-bg: #f7ecd4;
+  --bad: #b4443a;
+  --bad-bg: #f8e2df;
+
+  --text: var(--c-text);
+  --text-soft: var(--c-textSoft);
+  --line: var(--c-line);
   --radius: 14px;
-  --shadow: 0 1px 2px rgba(94, 86, 80, 0.06), 0 4px 16px rgba(94, 86, 80, 0.06);
+  --shadow: 0 1px 2px rgba(30, 35, 45, 0.05), 0 4px 16px rgba(30, 35, 45, 0.06);
 
-  --font-title: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-title: var(--f-title);
+  --font-body: var(--f-body);
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --c-primary: #7cc6e6; --c-onPrimary: #10232c; --c-primarySoft: #1d3440;
+  --c-accent: #b4a6e0; --c-accentSoft: #2b2740;
+  --c-bg: #15171c; --c-surface: #1e2128; --c-text: #e6e8ec; --c-textSoft: #a2a8b4; --c-line: #30343d;
+  --c-footerBg: #0f1115; --c-footerText: #d4d7de;
+  --ok: #8fd19e; --ok-bg: #1f3325; --warn: #e8c37a; --warn-bg: #3a3020; --bad: #f0a097; --bad-bg: #3d2423;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
 }
