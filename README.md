@@ -94,6 +94,7 @@ La dirección principal (`/`) es la tienda pública de VM Bazar y Deco; el panel
 - **Panel**: Productos, Categorías (agregar, editar, ordenar, borrar), Banners, Apariencia (12 colores por uso para modo claro y oscuro, tipografías por enlace de Google Fonts) y Tienda (márgenes, WhatsApp, contacto, redes, medios de pago, SEO).
 - **Compra**: carrito con precios del servidor, zona de envío con su costo, pago con Mercado Pago (Checkout Pro, necesita `MP_ACCESS_TOKEN`) o transferencia (alias/CBU y botón para mandar el comprobante por WhatsApp con un mensaje corto que solo dice el número de pedido). Cada pedido guarda nombre, teléfono, dirección, precios y costo de cada producto. Al confirmar se avisa que se despacha de 1 a 3 días hábiles.
 - **Mayoristas**: se registran en `/mayoristas` (quedan pendientes hasta aprobarlos), con el enlace de invitación del panel (quedan habilitados al instante) o los da de alta administración. Ven y pagan el precio mayorista en toda la tienda.
+- **Catálogo inicial**: `server/catalogo/` tiene los 256 productos del PDF de precios (nombre, descripción, categoría, costo, precio ×1,50 mayorista y ×1,65 lista, tal cual el PDF) con sus fotos. `npm run seed` los carga una sola vez en la base (fotos incluidas); con `LOAD_CATALOG=false` no se cargan. Los productos con dos medidas quedan como dos productos (VM-021-1 y VM-021-2).
 - **SEO**: el servidor completa título, descripción, vista previa para redes y datos de producto para Google en cada página, y publica `/sitemap.xml` y `/robots.txt`.
 
 ## Catálogo

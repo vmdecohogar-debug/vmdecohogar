@@ -228,7 +228,7 @@ export async function publicProduct(slug, { showWholesale = false } = {}) {
 
 // Inicio: banners, más vendidos, lo nuevo y categorías (el navegador elige 3 al azar en cada visita).
 export async function home({ showWholesale = false } = {}) {
-  const sold = `(SELECT COALESCE(SUM(oi.qty), 0) FROM order_items oi JOIN orders o ON o.id = oi.order_id
+  const sold = `(SELECT COALESCE(SUM(oi.qty), 0) FROM web_order_items oi JOIN web_orders o ON o.id = oi.order_id
                   WHERE oi.product_id = p.id AND o.status <> 'cancelled')`;
   const base = `SELECT ${PUBLIC_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.active AND p.list_price > 0`;
   const best = (await direct.query(`${base} ORDER BY ${sold} DESC, p.featured DESC, p.created_at DESC LIMIT 8`)).rows;

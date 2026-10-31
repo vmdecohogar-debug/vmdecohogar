@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'node:url';
 import { pool } from './index.js';
 import { migrate } from './migrate.js';
+import { loadCatalog } from './catalogo.js';
 import { normalizePhone } from '../services/sellers.js';
 
 // Productos de ejemplo de bazar y deco (precios a vendedora y sugeridos, en centavos).
@@ -20,7 +21,7 @@ const PRODUCTS = [
   ['PLA-001', 'Plato de sitio de ratán', 390000, 560000],
 ];
 
-export async function seed({ adminPhone = '1100000000', adminPassword, sampleProducts = true } = {}) {
+export async function seed({ adminPhone = '1100000000', adminPassword, sampleProducts = false, catalog = false } = {}) {
   if (!adminPassword) {
     if (process.env.NODE_ENV === 'production') throw new Error('Definí ADMIN_PASSWORD para crear el usuario de administración.');
     adminPassword = 'admin123';
@@ -38,11 +39,18 @@ export async function seed({ adminPhone = '1100000000', adminPassword, samplePro
       [sku, name, price, suggested],
     );
   }
+  // Catálogo de la tienda (una sola vez): 256 productos del PDF con fotos.
+  if (catalog) console.log('catálogo', await loadCatalog());
   await pool.query(`INSERT INTO zones (name, locality) SELECT 'Zona inicial', 'A definir' WHERE NOT EXISTS (SELECT 1 FROM zones)`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  seed({ adminPhone: process.env.ADMIN_PHONE || undefined, adminPassword: process.env.ADMIN_PASSWORD, sampleProducts: process.env.SEED_SAMPLE_PRODUCTS !== 'false' })
+  seed({
+    adminPhone: process.env.ADMIN_PHONE || undefined,
+    adminPassword: process.env.ADMIN_PASSWORD,
+    sampleProducts: process.env.SEED_SAMPLE_PRODUCTS === 'true',
+    catalog: process.env.LOAD_CATALOG !== 'false',
+  })
     .then(() => {
       console.log('Datos iniciales cargados. Admin: teléfono', process.env.ADMIN_PHONE ?? '11 0000 0000');
       return pool.end();

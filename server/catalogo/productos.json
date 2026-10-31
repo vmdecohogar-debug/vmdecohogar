@@ -1,0 +1,3881 @@
+{
+ "source": "catalogo-precios.pdf (2026-10-30)",
+ "products": [
+  {
+   "sku": "VM-005",
+   "name": "Bombonera de silicona chocolate",
+   "description": "Para bombones, chocolates y gomitas 19 × 10 cm Diseños surtidos",
+   "category": "Cocina",
+   "photo": "VM-005.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 198400,
+     "wholesale": 300000,
+     "list": 350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-011",
+   "name": "Set x2 cuchillos + pelapapas + tijera",
+   "description": "Todo lo básico para la cocina Colores: negro y beige",
+   "category": "Cocina",
+   "photo": "VM-011.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 682800,
+     "wholesale": 1020000,
+     "list": 1150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-007",
+   "name": "Rallador 4 caras Noir",
+   "description": "Acero inoxidable, 4 tipos de rallado 22 × 9 cm Color: negro",
+   "category": "Cocina",
+   "photo": "VM-007.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 462000,
+     "wholesale": 690000,
+     "list": 770000
+    }
+   ]
+  },
+  {
+   "sku": "VM-015",
+   "name": "Tarro cuadrado Ringo grande",
+   "description": "Ideal para galletitas, yerba o azúcar 19 × 12 × 12 cm · 1800 cc Color: negro",
+   "category": "Cocina",
+   "photo": "VM-015.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 202900,
+     "wholesale": 300000,
+     "list": 350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-009",
+   "name": "Vaso facetado acrílico premium",
+   "description": "Irrompible, ideal para la pileta o el jardín 410 cc",
+   "category": "Cocina",
+   "photo": "VM-009.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 120000,
+     "wholesale": 180000,
+     "list": 198000
+    }
+   ]
+  },
+  {
+   "sku": "VM-016",
+   "name": "Set de cubiertos x24 en caja",
+   "description": "6 tenedores, 6 cuchillos, 6 cucharas y 6 cucharitas Ideal para regalar Colores: beige y gris",
+   "category": "Cocina",
+   "photo": "VM-016.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1911200,
+     "wholesale": 2870000,
+     "list": 3150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-020",
+   "name": "Mate de acero",
+   "description": "9 × 7 cm · No incluye bombilla Colores: consultar disponibles",
+   "category": "Cocina",
+   "photo": "VM-020.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 463300,
+     "wholesale": 690000,
+     "list": 760000
+    }
+   ]
+  },
+  {
+   "sku": "VM-026",
+   "name": "Jarra de vidrio medidora 500 ml",
+   "description": "Con medidas marcadas, ideal para cocinar",
+   "category": "Cocina",
+   "photo": "VM-026.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 666700,
+     "wholesale": 1000000,
+     "list": 1100000
+    }
+   ]
+  },
+  {
+   "sku": "VM-021",
+   "name": "Molinillo pimentero de madera",
+   "description": "Chico: 20 cm Grande: 25 a 27 cm",
+   "category": "Cocina",
+   "photo": "VM-021.jpg",
+   "variants": [
+    {
+     "label": "Chico 20 cm",
+     "cost": 764600,
+     "wholesale": 1150000,
+     "list": 1270000
+    },
+    {
+     "label": "Grande 25 a 27 cm",
+     "cost": 979400,
+     "wholesale": 1470000,
+     "list": 1650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-027",
+   "name": "Vaso de vidrio con sorbete",
+   "description": "Colores surtidos, con tapa y sorbete",
+   "category": "Cocina",
+   "photo": "VM-027.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 279100,
+     "wholesale": 420000,
+     "list": 460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-025",
+   "name": "Set de cuchillos Gourmet x6 blanco",
+   "description": "3 cuchillos, pelapapas, tijera y soporte Color: blanco",
+   "category": "Cocina",
+   "photo": "VM-025.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1637600,
+     "wholesale": 2460000,
+     "list": 2700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-028",
+   "name": "Cubetera con base de silicona Círculos",
+   "description": "Hielos redondos, se desmoldan fácil 24 × 11 cm Colores surtidos",
+   "category": "Cocina",
+   "photo": "VM-028.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 161500,
+     "wholesale": 240000,
+     "list": 270000
+    }
+   ]
+  },
+  {
+   "sku": "VM-032",
+   "name": "Afilador eléctrico USB",
+   "description": "Cuchillos con filo en segundos 24 × 6 × 8 cm Colores surtidos",
+   "category": "Cocina",
+   "photo": "VM-032.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 546600,
+     "wholesale": 820000,
+     "list": 900000
+    }
+   ]
+  },
+  {
+   "sku": "VM-035",
+   "name": "Frasco de vidrio XL 3000 ml",
+   "description": "Con etiqueta: yerba, cereales o pastas",
+   "category": "Cocina",
+   "photo": "VM-035.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 624100,
+     "wholesale": 940000,
+     "list": 1050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-033",
+   "name": "Set de cuchillos Gourmet x6 negro",
+   "description": "3 cuchillos, pelapapas, tijera y soporte Color: negro",
+   "category": "Cocina",
+   "photo": "VM-033.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1637600,
+     "wholesale": 2460000,
+     "list": 2700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-036",
+   "name": "MUG Roma granito",
+   "description": "Plástico símil granito, liviano e irrompible Colores: gris claro, gris oscuro y negro",
+   "category": "Cocina",
+   "photo": "VM-036.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 79200,
+     "wholesale": 120000,
+     "list": 150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-034",
+   "name": "Frasco de vidrio XL 1500 ml",
+   "description": "Con etiqueta: azúcar, harina, legumbres o café",
+   "category": "Cocina",
+   "photo": "VM-034.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 459800,
+     "wholesale": 690000,
+     "list": 760000
+    }
+   ]
+  },
+  {
+   "sku": "VM-039",
+   "name": "Molde de teflón para 6 cupcakes",
+   "description": "Antiadherente 26 × 18 cm",
+   "category": "Cocina",
+   "photo": "VM-039.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 313600,
+     "wholesale": 470000,
+     "list": 520000
+    }
+   ]
+  },
+  {
+   "sku": "VM-042",
+   "name": "Frasco especiero con cuchara",
+   "description": "Vidrio con tapa y cucharita incluida 260 ml",
+   "category": "Cocina",
+   "photo": "VM-042.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 168600,
+     "wholesale": 250000,
+     "list": 280000
+    }
+   ]
+  },
+  {
+   "sku": "VM-050",
+   "name": "Pistola decoradora con picos",
+   "description": "Para decorar tortas y cupcakes 17,5 cm",
+   "category": "Cocina",
+   "photo": "VM-050.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 165000,
+     "wholesale": 250000,
+     "list": 270000
+    }
+   ]
+  },
+  {
+   "sku": "VM-047",
+   "name": "Coctelera plateada 550 ml",
+   "description": "Ideal para tragos en casa",
+   "category": "Cocina",
+   "photo": "VM-047.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 943600,
+     "wholesale": 1420000,
+     "list": 1560000
+    }
+   ]
+  },
+  {
+   "sku": "VM-052",
+   "name": "Pack x4 sorbetes de aluminio con cepillo",
+   "description": "Reutilizables 27 cm",
+   "category": "Cocina",
+   "photo": "VM-052.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 115500,
+     "wholesale": 170000,
+     "list": 250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-048",
+   "name": "Pack x6 cuchillos de acero",
+   "description": "22 cm",
+   "category": "Cocina",
+   "photo": "VM-048.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 531200,
+     "wholesale": 800000,
+     "list": 900000
+    }
+   ]
+  },
+  {
+   "sku": "VM-056",
+   "name": "Jarra de vidrio con 4 vasos",
+   "description": "Vidrio texturado Jarra de 1800 cc Incluye 4 vasos",
+   "category": "Cocina",
+   "photo": "VM-056.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1996200,
+     "wholesale": 2990000,
+     "list": 3300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-057",
+   "name": "Espátula para torta de acero inoxidable",
+   "description": "24 cm",
+   "category": "Cocina",
+   "photo": "VM-057.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 169400,
+     "wholesale": 250000,
+     "list": 280000
+    }
+   ]
+  },
+  {
+   "sku": "VM-062",
+   "name": "Rallador con mango de acero inoxidable",
+   "description": "22 cm",
+   "category": "Cocina",
+   "photo": "VM-062.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 169400,
+     "wholesale": 250000,
+     "list": 300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-058",
+   "name": "Taza de cerámica Nuez",
+   "description": "630 ml Colores: café, gris y manteca",
+   "category": "Cocina",
+   "photo": "VM-058.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 389200,
+     "wholesale": 580000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-064",
+   "name": "Cuchillo de carne grande",
+   "description": "20 cm Color: blanco",
+   "category": "Cocina",
+   "photo": "VM-064.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 392000,
+     "wholesale": 590000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-060",
+   "name": "Tazón de cerámica Nuez",
+   "description": "630 ml Colores: café, gris y manteca",
+   "category": "Cocina",
+   "photo": "VM-060.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 545700,
+     "wholesale": 820000,
+     "list": 900000
+    }
+   ]
+  },
+  {
+   "sku": "VM-066",
+   "name": "Manopla de silicona con tela",
+   "description": "Protege tus manos del calor 27 × 14 cm Color: beige",
+   "category": "Cocina",
+   "photo": "VM-066.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 521300,
+     "wholesale": 780000,
+     "list": 860000
+    }
+   ]
+  },
+  {
+   "sku": "VM-068",
+   "name": "Colador con manijas de acero inoxidable",
+   "description": "26 cm",
+   "category": "Cocina",
+   "photo": "VM-068.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 706400,
+     "wholesale": 1060000,
+     "list": 1170000
+    }
+   ]
+  },
+  {
+   "sku": "VM-075",
+   "name": "Plato copetinero circular de melamina",
+   "description": "Ideal para picadas 23 cm",
+   "category": "Cocina",
+   "photo": "VM-075.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 342100,
+     "wholesale": 510000,
+     "list": 560000
+    }
+   ]
+  },
+  {
+   "sku": "VM-072",
+   "name": "Set jarro  2 botellas degradé",
+   "description": "Jarra 1,2 L y botellas de 600 y 300 cc Colores: rosa, lila y negro",
+   "category": "Cocina",
+   "photo": "VM-072.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 920500,
+     "wholesale": 1380000,
+     "list": 1520000
+    }
+   ]
+  },
+  {
+   "sku": "VM-076",
+   "name": "Molde cuadrado de silicona",
+   "description": "Flexible y fácil de desmoldar 20 cm Color: gris",
+   "category": "Cocina",
+   "photo": "VM-076.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 410800,
+     "wholesale": 620000,
+     "list": 700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-074",
+   "name": "Pack x4 luncheras redondas de acero",
+   "description": "12 cm de diámetro",
+   "category": "Cocina",
+   "photo": "VM-074.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1478900,
+     "wholesale": 2220000,
+     "list": 2450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-078",
+   "name": "Molde de teflón para 9 cupcakes",
+   "description": "Antiadherente 26 × 26 cm",
+   "category": "Cocina",
+   "photo": "VM-078.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 379900,
+     "wholesale": 570000,
+     "list": 630000
+    }
+   ]
+  },
+  {
+   "sku": "VM-081",
+   "name": "Mandolina de verduras, colador y rallador",
+   "description": "6 cuchillas intercambiables + pelapapas 24 × 12 cm",
+   "category": "Cocina",
+   "photo": "VM-081.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 916900,
+     "wholesale": 1380000,
+     "list": 1700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-087",
+   "name": "Pimentero mini de acero inoxidable",
+   "description": "Pimienta recién molida en tu mesa 15 cm",
+   "category": "Cocina",
+   "photo": "VM-087.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 717000,
+     "wholesale": 1080000,
+     "list": 1190000
+    }
+   ]
+  },
+  {
+   "sku": "VM-083",
+   "name": "Dispenser de cereales",
+   "description": "Sirve la porción justa y mantiene el cereal crocante 42 cm de alto · 600 gr",
+   "category": "Cocina",
+   "photo": "VM-083.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1436200,
+     "wholesale": 2150000,
+     "list": 2310000
+    }
+   ]
+  },
+  {
+   "sku": "VM-088",
+   "name": "Bowl de melamina negro",
+   "description": "Chico: 11 cm Mediano: 14 cm",
+   "category": "Cocina",
+   "photo": "VM-088.jpg",
+   "variants": [
+    {
+     "label": "Chico 11 cm",
+     "cost": 83200,
+     "wholesale": 120000,
+     "list": 250000
+    },
+    {
+     "label": "Mediano 14 cm",
+     "cost": 124900,
+     "wholesale": 190000,
+     "list": 420000
+    }
+   ]
+  },
+  {
+   "sku": "VM-085",
+   "name": "Apoya utensilios de silicona",
+   "description": "Mantiene la mesada limpia mientras cocinás 14 × 13 cm Color gris",
+   "category": "Cocina",
+   "photo": "VM-085.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 241300,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-091",
+   "name": "Bandeja oval grande de melamina negra",
+   "description": "Ideal para servir y picadas 35 x 25 cm",
+   "category": "Cocina",
+   "photo": "VM-091.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 354100,
+     "wholesale": 530000,
+     "list": 590000
+    }
+   ]
+  },
+  {
+   "sku": "VM-094",
+   "name": "Exprimidor de limón de acero inoxidable",
+   "description": "20 cm",
+   "category": "Cocina",
+   "photo": "VM-094.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 290100,
+     "wholesale": 440000,
+     "list": 470000
+    }
+   ]
+  },
+  {
+   "sku": "VM-098",
+   "name": "Bandeja rectangular de melamina negra jaspeada",
+   "description": "34 × 16 cm",
+   "category": "Cocina",
+   "photo": "VM-098.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 301900,
+     "wholesale": 450000,
+     "list": 500000
+    }
+   ]
+  },
+  {
+   "sku": "VM-095",
+   "name": "Portatazas cromado para 6 tazas",
+   "description": "Colgá tus tazas y ganá espacio 35 × 15 cm",
+   "category": "Cocina",
+   "photo": "VM-095.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 206600,
+     "wholesale": 310000,
+     "list": 390000
+    }
+   ]
+  },
+  {
+   "sku": "VM-102",
+   "name": "Fuente grande de melamina negra estilo grill",
+   "description": "30 cm con manijas",
+   "category": "Cocina",
+   "photo": "VM-102.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 364600,
+     "wholesale": 550000,
+     "list": 600000
+    }
+   ]
+  },
+  {
+   "sku": "VM-097",
+   "name": "Set x6 tazas de vidrio con plato",
+   "description": "180 ml",
+   "category": "Cocina",
+   "photo": "VM-097.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1393900,
+     "wholesale": 2090000,
+     "list": 2300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-103",
+   "name": "Decantador de aceitunas",
+   "description": "Separa el líquido, ideal para picadas",
+   "category": "Cocina",
+   "photo": "VM-103.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1018600,
+     "wholesale": 1530000,
+     "list": 1690000
+    }
+   ]
+  },
+  {
+   "sku": "VM-104",
+   "name": "Molinillo manual 2 en 1 sal y pimienta",
+   "description": "Acero, dos especias en uno 20 cm",
+   "category": "Cocina",
+   "photo": "VM-104.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 597500,
+     "wholesale": 900000,
+     "list": 1280000
+    }
+   ]
+  },
+  {
+   "sku": "VM-107",
+   "name": "Molde para 4 helados",
+   "description": "Hacé tus helados caseros 13 x 9 × 6 cm",
+   "category": "Cocina",
+   "photo": "VM-107.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 215600,
+     "wholesale": 320000,
+     "list": 360000
+    }
+   ]
+  },
+  {
+   "sku": "VM-105",
+   "name": "Tabla escurridor plegable",
+   "description": "Tabla de picar más escurridor en 1 37 × 27 × 12,5 cm Colores: blanco y gris",
+   "category": "Cocina",
+   "photo": "VM-105.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 768600,
+     "wholesale": 1150000,
+     "list": 1270000
+    }
+   ]
+  },
+  {
+   "sku": "VM-117",
+   "name": "Contenedor con 2 cubeteras",
+   "description": "Con tapa transparente y pala Color: amarillo",
+   "category": "Cocina",
+   "photo": "VM-117.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 556000,
+     "wholesale": 830000,
+     "list": 920000
+    }
+   ]
+  },
+  {
+   "sku": "VM-106",
+   "name": "Dispensador dosificador para repostería",
+   "description": "Masa de panqueques, cupcakes y waffles sin enchastre 1 litro",
+   "category": "Cocina",
+   "photo": "VM-106.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 883700,
+     "wholesale": 1330000,
+     "list": 1460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-119",
+   "name": "Jarra de vidrio con tapa de madera y filtro",
+   "description": "1,8 litros",
+   "category": "Cocina",
+   "photo": "VM-119.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 773300,
+     "wholesale": 1160000,
+     "list": 1250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-121",
+   "name": "Jarro de vidrio con asa y tapa de bambú",
+   "description": "680 ml · Ideal para jugos, licuados, café frío o tragos Colores: transparente, negro y dorado",
+   "category": "Cocina",
+   "photo": "VM-121.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 605300,
+     "wholesale": 910000,
+     "list": 1200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-128",
+   "name": "Barra imantada para cuchillos 33 cm",
+   "description": "Mantiene tus cuchillos ordenados y a mano · Color negro",
+   "category": "Cocina",
+   "photo": "VM-128.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 450400,
+     "wholesale": 680000,
+     "list": 750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-125",
+   "name": "Compotera Nude clásica",
+   "description": "Ideal para postres, cereales, snacks o salsas 11,5 × 6 cm · Colores surtidos: blanco, beige, negro y gris",
+   "category": "Cocina",
+   "photo": "VM-125.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 88000,
+     "wholesale": 130000,
+     "list": 150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-130",
+   "name": "Compotera Roma granito",
+   "description": "Ideal para postres, cereales, snacks o salsas · 13,5 × 7,5 cm Colores: gris oscuro y negro",
+   "category": "Cocina",
+   "photo": "VM-130.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 47800,
+     "wholesale": 70000,
+     "list": 100000
+    }
+   ]
+  },
+  {
+   "sku": "VM-127",
+   "name": "Frasco de vidrio con tapa de bambú",
+   "description": "Capacidad: 1.068 ml · 15 cm de alto Ideal para legumbres, pastas, galletitas o cereales",
+   "category": "Cocina",
+   "photo": "VM-127.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 430600,
+     "wholesale": 650000,
+     "list": 780000
+    }
+   ]
+  },
+  {
+   "sku": "VM-137",
+   "name": "Set x5 tuppers de acero con tapa",
+   "description": "Acero inoxidable con tapas blancas Medidas: 10, 12, 14, 16 y 18 cm",
+   "category": "Cocina",
+   "photo": "VM-137.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 585500,
+     "wholesale": 880000,
+     "list": 970000
+    }
+   ]
+  },
+  {
+   "sku": "VM-138",
+   "name": "Pisa papas de acero inoxidable",
+   "description": "Puré suave y sin grumos · 22 cm",
+   "category": "Cocina",
+   "photo": "VM-138.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 223300,
+     "wholesale": 330000,
+     "list": 370000
+    }
+   ]
+  },
+  {
+   "sku": "VM-146",
+   "name": "Mantel PVC 137 × 183 cm",
+   "description": "Fácil de limpiar · Colores: gris y blanco",
+   "category": "Cocina",
+   "photo": "VM-146.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 490000,
+     "wholesale": 740000,
+     "list": 850000
+    }
+   ]
+  },
+  {
+   "sku": "VM-140",
+   "name": "Cubiertero de cajón extensible",
+   "description": "Se extiende a ambos lados · 56 × 37,5 × 5 cm · Gris",
+   "category": "Cocina",
+   "photo": "VM-140.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 364900,
+     "wholesale": 550000,
+     "list": 1590000
+    }
+   ]
+  },
+  {
+   "sku": "VM-149",
+   "name": "Molde rectangular grande antiadherente",
+   "description": "De teflón · 42 × 28 × 5 cm · Ideal para bizcochos, budines y tortas",
+   "category": "Cocina",
+   "photo": "VM-149.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 454100,
+     "wholesale": 680000,
+     "list": 960000
+    }
+   ]
+  },
+  {
+   "sku": "VM-142",
+   "name": "Taza nube",
+   "description": "Vidrio, viene en caja individual · 350 cc",
+   "category": "Cocina",
+   "photo": "VM-142.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 458900,
+     "wholesale": 690000,
+     "list": 760000
+    }
+   ]
+  },
+  {
+   "sku": "VM-150",
+   "name": "Vaso doble vidrio 360 cc",
+   "description": "Doble pared de vidrio · Viene en caja individual",
+   "category": "Cocina",
+   "photo": "VM-150.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 394100,
+     "wholesale": 590000,
+     "list": 660000
+    }
+   ]
+  },
+  {
+   "sku": "VM-151",
+   "name": "Pack x6 vasos de vidrio forma lata",
+   "description": "350 a 400 cc",
+   "category": "Cocina",
+   "photo": "VM-151.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1243200,
+     "wholesale": 1860000,
+     "list": 2050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-157",
+   "name": "Balanza digital de cocina",
+   "description": "Hasta 10 kg, pantalla digital Ideal para recetas y repostería",
+   "category": "Cocina",
+   "photo": "VM-157.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 583300,
+     "wholesale": 870000,
+     "list": 970000
+    }
+   ]
+  },
+  {
+   "sku": "VM-152",
+   "name": "Vaso tramado con sorbete",
+   "description": "410 cc · Viene en caja individual",
+   "category": "Cocina",
+   "photo": "VM-152.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 264000,
+     "wholesale": 400000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-160",
+   "name": "Bowl de vidrio con soporte de madera",
+   "description": "Ideal para frutas, ensaladas o centro de mesa",
+   "category": "Cocina",
+   "photo": "VM-160.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 781600,
+     "wholesale": 1170000,
+     "list": 1450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-154",
+   "name": "Picador manual a hilo",
+   "description": "Tirás del hilo y pica cebolla, ajo y verduras en segundos Sin electricidad, fácil de lavar",
+   "category": "Cocina",
+   "photo": "VM-154.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 385300,
+     "wholesale": 580000,
+     "list": 700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-163",
+   "name": "Olla eléctrica multicocina",
+   "description": "Cociná, salteá y guisá en un solo equipo Antiadherente, con tapa de vidrio",
+   "category": "Cocina",
+   "photo": "VM-163.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 3744000,
+     "wholesale": 5620000,
+     "list": 6650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-164",
+   "name": "Panquequera eléctrica",
+   "description": "Panqueques y crepes perfectos en minutos Antiadherente y fácil de usar",
+   "category": "Cocina",
+   "photo": "VM-164.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2636400,
+     "wholesale": 3950000,
+     "list": 4380000
+    }
+   ]
+  },
+  {
+   "sku": "VM-168",
+   "name": "Mixer Star Trak",
+   "description": "Licuado procesado, batido en segundos Práctico y fácil de limpiar",
+   "category": "Cocina",
+   "photo": "VM-168.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1716000,
+     "wholesale": 2570000,
+     "list": 3190000
+    }
+   ]
+  },
+  {
+   "sku": "VM-165",
+   "name": "Sartén grill antiadherente de hierro fundido Oryx",
+   "description": "Ideal para carnes y verduras a la plancha Apta para inducción, mango símil madera 18 × 18,5 cm",
+   "category": "Cocina",
+   "photo": "VM-165.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1570900,
+     "wholesale": 2360000,
+     "list": 2800000
+    }
+   ]
+  },
+  {
+   "sku": "VM-176",
+   "name": "Botella de noche con vaso",
+   "description": "Vidrio rayado, 1 litro El vaso hace de tapa Ideal para la mesa de luz Colores: ámbar, negro y transparente",
+   "category": "Cocina",
+   "photo": "VM-176.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 852100,
+     "wholesale": 1280000,
+     "list": 1410000
+    }
+   ]
+  },
+  {
+   "sku": "VM-166",
+   "name": "Wok de acero al carbono 33 cm",
+   "description": "Ideal para salteados y cocina oriental",
+   "category": "Cocina",
+   "photo": "VM-166.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 965200,
+     "wholesale": 1450000,
+     "list": 1700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-181",
+   "name": "Prensa pisa papas",
+   "description": "Puré suave y sin grumos en segundos También sirve para calabaza y batata",
+   "category": "Cocina",
+   "photo": "VM-181.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1205400,
+     "wholesale": 1810000,
+     "list": 1990000
+    }
+   ]
+  },
+  {
+   "sku": "VM-182",
+   "name": "Cuchara balanza digital",
+   "description": "Medí y pesá en un solo paso Ideal para repostería, café y especias",
+   "category": "Cocina",
+   "photo": "VM-182.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 703100,
+     "wholesale": 1050000,
+     "list": 1160000
+    }
+   ]
+  },
+  {
+   "sku": "VM-237",
+   "name": "Coctelera",
+   "description": "Para preparar tus tragos favoritos en casa con recetas impresas",
+   "category": "Cocina",
+   "photo": "VM-237.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 619900,
+     "wholesale": 930000,
+     "list": 1020000
+    }
+   ]
+  },
+  {
+   "sku": "VM-228",
+   "name": "Termo de acero 1,4 L",
+   "description": "Mantiene la temperatura por horas Colores: negro, verde y blanco",
+   "category": "Cocina",
+   "photo": "VM-228.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1610000,
+     "wholesale": 2420000,
+     "list": 2660000
+    }
+   ]
+  },
+  {
+   "sku": "VM-238",
+   "name": "Rack con 6 especieros",
+   "description": "Frascos de vidrio con tapa negra Tu cocina ordenada y con estilo",
+   "category": "Cocina",
+   "photo": "VM-238.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 957600,
+     "wholesale": 1440000,
+     "list": 1600000
+    }
+   ]
+  },
+  {
+   "sku": "VM-230",
+   "name": "Sartén antiadherente 26 cm",
+   "description": "Cocina parejo y no se pega nada 26 × 5 cm",
+   "category": "Cocina",
+   "photo": "VM-230.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1670000,
+     "wholesale": 2500000,
+     "list": 2760000
+    }
+   ]
+  },
+  {
+   "sku": "VM-239",
+   "name": "Tabla de bambú",
+   "description": "Resistente y fácil de limpiar 40 × 34 cm",
+   "category": "Cocina",
+   "photo": "VM-239.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 446400,
+     "wholesale": 670000,
+     "list": 740000
+    }
+   ]
+  },
+  {
+   "sku": "VM-241",
+   "name": "Sartén para desayuno 3 divisiones",
+   "description": "Cociná huevo, panceta y panqueques a la vez 18,5 × 33 cm · Colores: gris y beige",
+   "category": "Cocina",
+   "photo": "VM-241.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1771200,
+     "wholesale": 2660000,
+     "list": 2920000
+    }
+   ]
+  },
+  {
+   "sku": "VM-274",
+   "name": "Cazuela de cerámica Kira",
+   "description": "Diseño acanalado, terminación mate 15 cm Colores: negro y beige",
+   "category": "Cocina",
+   "photo": "VM-274.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 610500,
+     "wholesale": 920000,
+     "list": 1010000
+    }
+   ]
+  },
+  {
+   "sku": "VM-267",
+   "name": "Wok de acero",
+   "description": "Descripción pendiente de confirmar",
+   "category": "Cocina",
+   "photo": "VM-267.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 724000,
+     "wholesale": 1090000,
+     "list": 1200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-275",
+   "name": "Cazuela de cerámica Vainilla Art",
+   "description": "Blanca con salpicado negro 600 cc",
+   "category": "Cocina",
+   "photo": "VM-275.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 610500,
+     "wholesale": 920000,
+     "list": 1010000
+    }
+   ]
+  },
+  {
+   "sku": "VM-273",
+   "name": "Plato Nude",
+   "description": "Diseño liso y moderno De melamina Colores: blanco, negro, gris y beige",
+   "category": "Cocina",
+   "photo": "VM-273.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 144900,
+     "wholesale": 220000,
+     "list": 250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-276",
+   "name": "Juego de latas Tambito",
+   "description": "Yerbero y azucarero Colores: blanco, negro y rosa",
+   "category": "Cocina",
+   "photo": "VM-276.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 487900,
+     "wholesale": 730000,
+     "list": 810000
+    }
+   ]
+  },
+  {
+   "sku": "VM-279",
+   "name": "Rociador de aceite",
+   "description": "Rocío fino y parejo Spray 110 ml",
+   "category": "Cocina",
+   "photo": "VM-279.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 198800,
+     "wholesale": 300000,
+     "list": 328000
+    }
+   ]
+  },
+  {
+   "sku": "VM-282",
+   "name": "Copas rayadas x6",
+   "description": "Vidrio acanalado Colores: negro y transparente",
+   "category": "Cocina",
+   "photo": "VM-282.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1441200,
+     "wholesale": 2160000,
+     "list": 2400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-280",
+   "name": "Rociador de aceite",
+   "description": "Rocío fino y parejo Gatillo 225 ml",
+   "category": "Cocina",
+   "photo": "VM-280.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 242400,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-283",
+   "name": "Fuente de acero inoxidable",
+   "description": "Ideal para horno 40 × 30 cm 27 × 20 cm",
+   "category": "Cocina",
+   "photo": "VM-283.jpg",
+   "variants": [
+    {
+     "label": "Grande 40 × 30 cm",
+     "cost": 380000,
+     "wholesale": 570000,
+     "list": 650000
+    },
+    {
+     "label": "Chica 27 × 20 cm",
+     "cost": 242400,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-281",
+   "name": "Escurridor extensible para bacha",
+   "description": "Acero inoxidable, extensible Se ajusta al ancho de la bacha",
+   "category": "Cocina",
+   "photo": "VM-281.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 623700,
+     "wholesale": 940000,
+     "list": 1050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-284",
+   "name": "Vasos rayados x6",
+   "description": "Vidrio acanalado Colores: negro y transparente",
+   "category": "Cocina",
+   "photo": "VM-284.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1491100,
+     "wholesale": 2240000,
+     "list": 2460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-285",
+   "name": "Set x3 moldes desmontables redondos",
+   "description": "Con traba lateral, antiadherentes 24 cm, 26 cm y 28 cm",
+   "category": "Cocina",
+   "photo": "VM-285.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1017100,
+     "wholesale": 1530000,
+     "list": 1700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-288",
+   "name": "Papel para freidora de aire x50",
+   "description": "Accesorios para freidora de aire",
+   "category": "Cocina",
+   "photo": "VM-288.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 242400,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-286",
+   "name": "Set x3 moldes desmontables cuadrados",
+   "description": "Con traba lateral, antiadherentes 24 cm, 26 cm y 28 cm",
+   "category": "Cocina",
+   "photo": "VM-286.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1017100,
+     "wholesale": 1530000,
+     "list": 2150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-289",
+   "name": "Frasco de vidrio cuadrillé con tapa negra",
+   "description": "Vidrio con textura de cuadros 706 cc 1100 cc",
+   "category": "Cocina",
+   "photo": "VM-289.jpg",
+   "variants": [
+    {
+     "label": "706 cc",
+     "cost": 424200,
+     "wholesale": 640000,
+     "list": 700000
+    },
+    {
+     "label": "1100 cc",
+     "cost": 484800,
+     "wholesale": 730000,
+     "list": 800000
+    }
+   ]
+  },
+  {
+   "sku": "VM-287",
+   "name": "Molde de silicona con división",
+   "description": "Accesorios para freidora de aire",
+   "category": "Cocina",
+   "photo": "VM-287.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 257500,
+     "wholesale": 390000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-292",
+   "name": "Pizzera de teflón",
+   "description": "Antiadherente 35 cm 29 cm",
+   "category": "Cocina",
+   "photo": "VM-292.jpg",
+   "variants": [
+    {
+     "label": "35 cm",
+     "cost": 400400,
+     "wholesale": 600000,
+     "list": 660000
+    },
+    {
+     "label": "29 cm",
+     "cost": 313200,
+     "wholesale": 470000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-293",
+   "name": "Copa de vino de rombo x6",
+   "description": "Vidrio negro ahumado",
+   "category": "Cocina",
+   "photo": "VM-293.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1599800,
+     "wholesale": 2400000,
+     "list": 2650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-300",
+   "name": "Botella de whisky de vidrio 1 litro",
+   "description": "Vidrio tallado, ideal para whisky, licores o para decorar la barra Tramas surtidas",
+   "category": "Cocina",
+   "photo": "VM-300.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 781200,
+     "wholesale": 1170000,
+     "list": 1300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-298",
+   "name": "Vasos hexagonales x6",
+   "description": "Vidrio transparente",
+   "category": "Cocina",
+   "photo": "VM-298.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1085700,
+     "wholesale": 1630000,
+     "list": 1800000
+    }
+   ]
+  },
+  {
+   "sku": "VM-301",
+   "name": "Vaso XL de fútbol con sorbete",
+   "description": "750 cc De plástico Diseños Boca y River",
+   "category": "Cocina",
+   "photo": "VM-301.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 190200,
+     "wholesale": 290000,
+     "list": 310000
+    }
+   ]
+  },
+  {
+   "sku": "VM-299",
+   "name": "Botellón de vidrio 950 ml",
+   "description": "Ideal para agua, jugos o limonada Vidrio transparente No incluye tapa",
+   "category": "Cocina",
+   "photo": "VM-299.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 444700,
+     "wholesale": 670000,
+     "list": 750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-302",
+   "name": "Vaso tubo con sorbete",
+   "description": "650 ml Doble capa, terminación mate Incluye tapa y sorbete Colores: rosa, celeste y beige",
+   "category": "Cocina",
+   "photo": "VM-302.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 598900,
+     "wholesale": 900000,
+     "list": 1000000
+    }
+   ]
+  },
+  {
+   "sku": "VM-303",
+   "name": "Vaso de vidrio con banda y tapa de silicona",
+   "description": "Ideal para llevar el café Colores: celeste, lila, rosa y verde",
+   "category": "Cocina",
+   "photo": "VM-303.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 239600,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-333",
+   "name": "Botella pico mini con stickers",
+   "description": "Incluye plancha de stickers para personalizarla 350 cc Ideal para el cole o el jardín Diseños: princesa rosa, animalitos verde, superhéroes celeste y unicornio lila",
+   "category": "Cocina",
+   "photo": "VM-333.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 269200,
+     "wholesale": 400000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-304",
+   "name": "Copas de champagne rombo x6",
+   "description": "Vidrio negro ahumado",
+   "category": "Cocina",
+   "photo": "VM-304.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1426700,
+     "wholesale": 2140000,
+     "list": 2460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-334",
+   "name": "Portacubiertos de acero inoxidable",
+   "description": "4 compartimientos, cubiertos ordenados y a mano en la mesada Interior desmontable, fácil de lavar",
+   "category": "Cocina",
+   "photo": "VM-334.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 513400,
+     "wholesale": 770000,
+     "list": 850000
+    }
+   ]
+  },
+  {
+   "sku": "VM-332",
+   "name": "Botella cohete infantil",
+   "description": "320 ml Diseños Mickey, Minnie, Avengers y Gaby",
+   "category": "Cocina",
+   "photo": "VM-332.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 469500,
+     "wholesale": 700000,
+     "list": 770000
+    }
+   ]
+  },
+  {
+   "sku": "VM-343",
+   "name": "Lonchera 850 ml con cubiertos",
+   "description": "Incluye cuchara y tenedor Colores surtidos",
+   "category": "Cocina",
+   "photo": "VM-343.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 531200,
+     "wholesale": 800000,
+     "list": 900000
+    }
+   ]
+  },
+  {
+   "sku": "VM-344",
+   "name": "Set salero y pimentero negro y blanco",
+   "description": "Tapa de acero Uno negro y uno blanco",
+   "category": "Cocina",
+   "photo": "VM-344.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 280000,
+     "wholesale": 420000,
+     "list": 460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-349",
+   "name": "Servilletero con base de bambú",
+   "description": "Metal negro y bambú 15 × 6 × 14 cm",
+   "category": "Cocina",
+   "photo": "VM-349.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 568900,
+     "wholesale": 850000,
+     "list": 940000
+    }
+   ]
+  },
+  {
+   "sku": "VM-345",
+   "name": "Plato playo enlosado 25 cm",
+   "description": "Estilo campo, súper resistente Colores blanco y negro",
+   "category": "Cocina",
+   "photo": "VM-345.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 321100,
+     "wholesale": 480000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-350",
+   "name": "Cubetera de silicona 8 hielos cuadrados",
+   "description": "Flexible, desmolda fácil 21,5 × 11,5 × 5 cm",
+   "category": "Cocina",
+   "photo": "VM-350.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 346500,
+     "wholesale": 520000,
+     "list": 570000
+    }
+   ]
+  },
+  {
+   "sku": "VM-346",
+   "name": "Plato hondo enlosado 25 cm",
+   "description": "Estilo campo, súper resistente Colores blanco y negro",
+   "category": "Cocina",
+   "photo": "VM-346.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 193800,
+     "wholesale": 290000,
+     "list": 320000
+    }
+   ]
+  },
+  {
+   "sku": "VM-351",
+   "name": "Hielera de acero con manijas",
+   "description": "Ideal para tragos y reuniones",
+   "category": "Cocina",
+   "photo": "VM-351.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 581500,
+     "wholesale": 870000,
+     "list": 960000
+    }
+   ]
+  },
+  {
+   "sku": "VM-353",
+   "name": "Picador de verduras con cuchilla de acero",
+   "description": "Cuchilla de acero, pica en segundos 22 × 9 cm Color blanco",
+   "category": "Cocina",
+   "photo": "VM-353.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 517600,
+     "wholesale": 780000,
+     "list": 850000
+    }
+   ]
+  },
+  {
+   "sku": "VM-362",
+   "name": "Vaso de vidrio tipo lata con tapa de bambú y sorbete",
+   "description": "Vaso de vidrio tipo lata Con tapa de bambú y sorbete Ideal para jugos, tragos y café frío",
+   "category": "Cocina",
+   "photo": "VM-362.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 333300,
+     "wholesale": 500000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-359",
+   "name": "Frasco de vidrio con tapa de metal 1750 ml",
+   "description": "Ideal para pastas, legumbres y cereales 1750 ml",
+   "category": "Cocina",
+   "photo": "VM-359.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 558100,
+     "wholesale": 840000,
+     "list": 920000
+    }
+   ]
+  },
+  {
+   "sku": "VM-363",
+   "name": "Colador plegable de silicona",
+   "description": "Se pliega y ocupa poco lugar Con asas para agarrar fácil Silicona, fácil de limpiar",
+   "category": "Cocina",
+   "photo": "VM-363.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 265200,
+     "wholesale": 400000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-361",
+   "name": "Sandwichera de acero Oryx OR-1900",
+   "description": "Tostados perfectos en minutos Placas antiadherentes, fácil de limpiar Luces indicadoras de encendido, listo para usar Color negro con tapa de acero",
+   "category": "Cocina",
+   "photo": "VM-361.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1812700,
+     "wholesale": 2720000,
+     "list": 3050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-364",
+   "name": "Escurridor plegable de platos con cubiertero",
+   "description": "Se pliega y ocupa poco lugar Blanco y gris",
+   "category": "Cocina",
+   "photo": "VM-364.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 508100,
+     "wholesale": 760000,
+     "list": 850000
+    }
+   ]
+  },
+  {
+   "sku": "VM-367",
+   "name": "Huevera plástica deslizante",
+   "description": "Se desliza y ordena los huevos solo Capacidad para un maple 30 huevos)",
+   "category": "Cocina",
+   "photo": "VM-367.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 299700,
+     "wholesale": 450000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-380",
+   "name": "Cubetera flexible de 32 con base de silicona",
+   "description": "Base flexible de silicona, desmolda fácil 32 cubitos 32 x 18 cm",
+   "category": "Cocina",
+   "photo": "VM-380.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 334100,
+     "wholesale": 500000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-372",
+   "name": "Vaso nube",
+   "description": "Vidrio con forma de onda 500 cc",
+   "category": "Cocina",
+   "photo": "VM-372.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 402200,
+     "wholesale": 600000,
+     "list": 660000
+    }
+   ]
+  },
+  {
+   "sku": "VM-378",
+   "name": "Cierra bolsas x10",
+   "description": "Pack x10 cierrabolsas de plástico Para mantener frescos los alimentos Colores surtidos",
+   "category": "Cocina",
+   "photo": "VM-378.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 188500,
+     "wholesale": 280000,
+     "list": 310000
+    }
+   ]
+  },
+  {
+   "sku": "VM-376",
+   "name": "Taza burbuja",
+   "description": "Vidrio con diseño de burbujas, moderno y original 350 cc Viene en caja individual",
+   "category": "Cocina",
+   "photo": "VM-376.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 345800,
+     "wholesale": 520000,
+     "list": 580000
+    }
+   ]
+  },
+  {
+   "sku": "VM-158",
+   "name": "Selladora de bolsas 20 cm",
+   "description": "Sellá bolsas de plástico para conservar alimentos Fácil de usar, con palanca Marca Oryx · 20 cm",
+   "category": "Cocina",
+   "photo": "VM-158.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1959400,
+     "wholesale": 2940000,
+     "list": 3230000
+    }
+   ]
+  },
+  {
+   "sku": "VM-379",
+   "name": "Vaso burbuja 350 cc",
+   "description": "Vidrio con diseño de burbujas, moderno y original Capacidad: 350 cc",
+   "category": "Cocina",
+   "photo": "VM-379.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 289000,
+     "wholesale": 430000,
+     "list": 480000
+    }
+   ]
+  },
+  {
+   "sku": "VM-388",
+   "name": "Sellador de bolsas a pila",
+   "description": "Sella bolsas de plástico en segundos para conservar alimentos 10 × 4,5 cm Funciona a pilas, sin cables",
+   "category": "Cocina",
+   "photo": "VM-388.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 241200,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-385",
+   "name": "Plato playo mediano de melamina negra jaspeada",
+   "description": "Ideal para servir, picadas y platos principales 22 cm de diámetro x 3 cm de alto Melamina resistente en color negro jaspeado",
+   "category": "Cocina",
+   "photo": "VM-385.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 208100,
+     "wholesale": 310000,
+     "list": 350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-390",
+   "name": "Batidor de acero inoxidable con raspador 30 cm",
+   "description": "Batí y raspá el bowl en un solo utensilio 30 cm Colores: gris y beige",
+   "category": "Cocina",
+   "photo": "VM-390.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 354500,
+     "wholesale": 530000,
+     "list": 600000
+    }
+   ]
+  },
+  {
+   "sku": "VM-386",
+   "name": "Salsera triple de melamina negra jaspeada",
+   "description": "Tres salseras en una, ideal para salsas, aderezos y picadas 23,5 × 8 cm Melamina en color negro jaspeado",
+   "category": "Cocina",
+   "photo": "VM-386.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 156200,
+     "wholesale": 230000,
+     "list": 260000
+    }
+   ]
+  },
+  {
+   "sku": "VM-391",
+   "name": "Set multifuncional 3 en 1: bowl, colador y tapa rallador",
+   "description": "Bowl, colador y tapa rallador en un solo set 24 cm Acero inoxidable",
+   "category": "Cocina",
+   "photo": "VM-391.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1155300,
+     "wholesale": 1730000,
+     "list": 1910000
+    }
+   ]
+  },
+  {
+   "sku": "VM-022",
+   "name": "Set x2 dispensers de vidrio con bandeja de bambú",
+   "description": "Ideal para baño o cocina 500 ml cada uno",
+   "category": "Baño",
+   "photo": "VM-022.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 885500,
+     "wholesale": 1330000,
+     "list": 1460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-082",
+   "name": "Set de baño x3 de vidrio transparente",
+   "description": "Dispenser 430 ml, porta cepillo y jabonera",
+   "category": "Baño",
+   "photo": "VM-082.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 763400,
+     "wholesale": 1150000,
+     "list": 950000
+    }
+   ]
+  },
+  {
+   "sku": "VM-065",
+   "name": "Dispenser de baño negro",
+   "description": "6,5 × 18 cm Color: negro",
+   "category": "Baño",
+   "photo": "VM-065.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 518800,
+     "wholesale": 780000,
+     "list": 860000
+    }
+   ]
+  },
+  {
+   "sku": "VM-090",
+   "name": "Dispenser de vidrio Pure Soap",
+   "description": "Detalle de bambú 500 cc",
+   "category": "Baño",
+   "photo": "VM-090.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 381200,
+     "wholesale": 570000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-067",
+   "name": "Esquinero de metal para ducha",
+   "description": "Ideal para ordenar shampoo, jabón y acondicionador 26 × 6 cm de metal resistente Colores: negro y blanco",
+   "category": "Baño",
+   "photo": "VM-067.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 424200,
+     "wholesale": 640000,
+     "list": 700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-093",
+   "name": "Escobilla de baño con tapa de bambú",
+   "description": "Acero inoxidable y bambú 42 cm Colores: negra y blanca",
+   "category": "Baño",
+   "photo": "VM-093.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 995000,
+     "wholesale": 1490000,
+     "list": 1640000
+    }
+   ]
+  },
+  {
+   "sku": "VM-099",
+   "name": "Dispenser cuadrado con visor",
+   "description": "Visor para ver cuánto queda 13 × 6 × 20 cm Colores: negro y blanco",
+   "category": "Baño",
+   "photo": "VM-099.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 271500,
+     "wholesale": 410000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-133",
+   "name": "Organizador esquinero de 2 estantes",
+   "description": "Acero cromado con gancho para esponja 31 × 36,5 cm",
+   "category": "Baño",
+   "photo": "VM-133.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 961900,
+     "wholesale": 1440000,
+     "list": 1600000
+    }
+   ]
+  },
+  {
+   "sku": "VM-112",
+   "name": "Neceser completo de viaje",
+   "description": "Incluye jabonera, porta cepillo, esponja y cepillo 22 × 12 cm Color: gris",
+   "category": "Baño",
+   "photo": "VM-112.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 526200,
+     "wholesale": 790000,
+     "list": 850000
+    }
+   ]
+  },
+  {
+   "sku": "VM-147",
+   "name": "Fundas desechables para inodoro",
+   "description": "Para viajes y baños públicos · 36,5 × 42 cm aprox.",
+   "category": "Baño",
+   "photo": "VM-147.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 170000,
+     "wholesale": 260000,
+     "list": 300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-123",
+   "name": "Tubo organizador para rollos de papel higiénico",
+   "description": "Capacidad: 4 rollos · 53 × 15 cm · Metal negro",
+   "category": "Baño",
+   "photo": "VM-123.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 776300,
+     "wholesale": 1160000,
+     "list": 1300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-148",
+   "name": "Set de baño Tuly x4",
+   "description": "Dispenser, jabonera, porta cepillos y canasto Diseño acanalado Colores: cobalto, blanco, beige y gris",
+   "category": "Baño",
+   "photo": "VM-148.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 754000,
+     "wholesale": 1130000,
+     "list": 1250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-174",
+   "name": "Caja organizadora de maquillaje chica",
+   "description": "Acrílico transparente, ideal para labiales 9 × 6,5 cm Viene en caja",
+   "category": "Baño",
+   "photo": "VM-174.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 305100,
+     "wholesale": 460000,
+     "list": 500000
+    }
+   ]
+  },
+  {
+   "sku": "VM-278",
+   "name": "Organizador de maquillaje con cajón",
+   "description": "Con divisiones y cajón 21 × 10,5 × 10 cm Colores: blanco con celeste, verde pastel o rosa",
+   "category": "Baño",
+   "photo": "VM-278.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 265800,
+     "wholesale": 400000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-175",
+   "name": "Escobilla para baño plateada",
+   "description": "Acero inoxidable, terminación brillante Porta escobilla cilíndrico con tapa 10 × 36 cm",
+   "category": "Baño",
+   "photo": "VM-175.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 713400,
+     "wholesale": 1070000,
+     "list": 1200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-294",
+   "name": "Espejo de mesa con base de bambú",
+   "description": "16,6 × 22 cm",
+   "category": "Baño",
+   "photo": "VM-294.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 549000,
+     "wholesale": 820000,
+     "list": 950000
+    }
+   ]
+  },
+  {
+   "sku": "VM-268",
+   "name": "Alfombra BATH",
+   "description": "Pelo corto, suave al pisar 40 x 60 cm Color: beige",
+   "category": "Baño",
+   "photo": "VM-268.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 523600,
+     "wholesale": 790000,
+     "list": 860000
+    }
+   ]
+  },
+  {
+   "sku": "VM-296",
+   "name": "Dispenser de porcelana media luna",
+   "description": "Diseño en arco con relieve Válvula plateada Colores: negro y blanco",
+   "category": "Baño",
+   "photo": "VM-296.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 619100,
+     "wholesale": 930000,
+     "list": 1050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-337",
+   "name": "Dispenser de vidrio con líneas plateado",
+   "description": "Válvula plateada",
+   "category": "Baño",
+   "photo": "VM-337.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 233800,
+     "wholesale": 350000,
+     "list": 390000
+    }
+   ]
+  },
+  {
+   "sku": "VM-340",
+   "name": "Portacosmético Wash Bag Grande",
+   "description": "Impermeable, ideal para viajes Frente traslúcido y manijas Colores blanco y rosa",
+   "category": "Baño",
+   "photo": "VM-340.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 411900,
+     "wholesale": 620000,
+     "list": 700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-338",
+   "name": "Dispenser de vidrio negro mate",
+   "description": "Terminación mate",
+   "category": "Baño",
+   "photo": "VM-338.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 294700,
+     "wholesale": 440000,
+     "list": 490000
+    }
+   ]
+  },
+  {
+   "sku": "VM-354",
+   "name": "Organizador de viaje para colgar",
+   "description": "24 × 18 × 10 cm Compartimientos para cosméticos y accesorios Colores rosa, negro y gris",
+   "category": "Baño",
+   "photo": "VM-354.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 735300,
+     "wholesale": 1100000,
+     "list": 1250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-339",
+   "name": "Escobilla de silicona flexible con base",
+   "description": "Flexible, no retiene suciedad 36 cm Color blanco",
+   "category": "Baño",
+   "photo": "VM-339.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 265200,
+     "wholesale": 400000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-356",
+   "name": "Set de baño Tuly x2",
+   "description": "Dispenser y porta cepillos Diseño acanalado Colores beige, blanco y cobalto",
+   "category": "Baño",
+   "photo": "VM-356.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 397100,
+     "wholesale": 600000,
+     "list": 660000
+    }
+   ]
+  },
+  {
+   "sku": "VM-365",
+   "name": "Organizador de algodón alto con tapa",
+   "description": "Acrílico transparente con tapa 20 cm de alto",
+   "category": "Baño",
+   "photo": "VM-365.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 328000,
+     "wholesale": 490000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-374",
+   "name": "Caja organizadora de maquillaje grande",
+   "description": "Acrílico transparente con compartimientos 17,5 × 9,5 × 6,8 cm Viene en caja",
+   "category": "Baño",
+   "photo": "VM-374.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 391900,
+     "wholesale": 590000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-002",
+   "name": "Florero Aura cuello alto",
+   "description": "22 cm de alto Colores: blanco y negro",
+   "category": "Deco",
+   "photo": "VM-002.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 211700,
+     "wholesale": 320000,
+     "list": 350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-366",
+   "name": "Organizador de discos de algodón con tapa de bambú",
+   "description": "Acrílico con tapa de bambú 17 cm de alto",
+   "category": "Baño",
+   "photo": "VM-366.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 423300,
+     "wholesale": 630000,
+     "list": 700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-012",
+   "name": "Espejo de mesa tocador con luz LED",
+   "description": "Ideal para maquillarte con buena luz 40 cm de alto aprox. Colores: negro, rosa y blanco",
+   "category": "Deco",
+   "photo": "VM-012.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 988000,
+     "wholesale": 1480000,
+     "list": 1650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-373",
+   "name": "Set de baño x4 piezas mate",
+   "description": "Dispenser, vaso, portacepillo y jabonera Colores: blanco, gris y negro Terminación mate",
+   "category": "Baño",
+   "photo": "VM-373.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 814000,
+     "wholesale": 1220000,
+     "list": 1350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-029",
+   "name": "Individual redondo con flecos",
+   "description": "Fibra natural, ideal para una mesa cálida 38 cm Color: natural claro",
+   "category": "Deco",
+   "photo": "VM-029.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 273800,
+     "wholesale": 410000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-031",
+   "name": "Bandeja marmolada chica",
+   "description": "28 × 12 cm Colores negro y blanco Símil mármol, ideal para servir o decorar",
+   "category": "Deco",
+   "photo": "VM-031.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 338800,
+     "wholesale": 510000,
+     "list": 570000
+    }
+   ]
+  },
+  {
+   "sku": "VM-071",
+   "name": "Estante de red con canasto",
+   "description": "Incluye tornillos y tarugos 45 x 36 cm",
+   "category": "Deco",
+   "photo": "VM-071.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1342800,
+     "wholesale": 2010000,
+     "list": 2250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-038",
+   "name": "Canasto Pipa grande con agarre",
+   "description": "Ideal para organizar placard, baño o cocina 37 × 26 × 16 cm Colores: negro, gris, blanco y beige",
+   "category": "Deco",
+   "photo": "VM-038.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 521800,
+     "wholesale": 780000,
+     "list": 870000
+    }
+   ]
+  },
+  {
+   "sku": "VM-101",
+   "name": "Barra de luz con sensor 40 cm",
+   "description": "Se enciende sola al detectar movimiento Luz fría y cálida, carga con USB",
+   "category": "Deco",
+   "photo": "VM-101.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 575800,
+     "wholesale": 860000,
+     "list": 950000
+    }
+   ]
+  },
+  {
+   "sku": "VM-055",
+   "name": "Florero Aura mini",
+   "description": "9 cm de alto Colores: blanco y negro",
+   "category": "Deco",
+   "photo": "VM-055.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 79100,
+     "wholesale": 120000,
+     "list": 200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-114",
+   "name": "Lámpara LED con sensor y base magnética",
+   "description": "Se enciende sola, carga con USB 18 cm",
+   "category": "Deco",
+   "photo": "VM-114.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 757200,
+     "wholesale": 1140000,
+     "list": 1220000
+    }
+   ]
+  },
+  {
+   "sku": "VM-115",
+   "name": "Lámpara de mesa de metal plateada",
+   "description": "Luz cálida, fría o neutra, carga con USB 23,5 cm",
+   "category": "Deco",
+   "photo": "VM-115.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 930100,
+     "wholesale": 1400000,
+     "list": 1540000
+    }
+   ]
+  },
+  {
+   "sku": "VM-139",
+   "name": "Organizador Kora acrílico giratorio",
+   "description": "Gira 360° · 11,5 × 11 cm · Acrílico transparente",
+   "category": "Deco",
+   "photo": "VM-139.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 400400,
+     "wholesale": 600000,
+     "list": 670000
+    }
+   ]
+  },
+  {
+   "sku": "VM-116",
+   "name": "Barra de luz con sensor 20 cm",
+   "description": "Se enciende sola al detectar movimiento Luz fría y cálida, carga con USB",
+   "category": "Deco",
+   "photo": "VM-116.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 476100,
+     "wholesale": 710000,
+     "list": 790000
+    }
+   ]
+  },
+  {
+   "sku": "VM-145",
+   "name": "Espejo de mesa",
+   "description": "28 cm · Colores: rosa y blanco",
+   "category": "Deco",
+   "photo": "VM-145.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 990000,
+     "wholesale": 1480000,
+     "list": 1650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-131",
+   "name": "Organizador circular giratorio Geo",
+   "description": "Gira 360° para tener todo a mano Ideal para maquillaje, cremas o artículos de escritorio 14 × 12 cm · Color blanco",
+   "category": "Deco",
+   "photo": "VM-131.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 361900,
+     "wholesale": 540000,
+     "list": 600000
+    }
+   ]
+  },
+  {
+   "sku": "VM-153",
+   "name": "Lámpara LED de escritorio ACC0180",
+   "description": "Ideal para estudiar, trabajar o leer · Luz LED de bajo consumo",
+   "category": "Deco",
+   "photo": "VM-153.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 733300,
+     "wholesale": 1100000,
+     "list": 1210000
+    }
+   ]
+  },
+  {
+   "sku": "VM-169",
+   "name": "Tacho de basura con sensor",
+   "description": "Se abre solo al acercar la mano Higiénico y moderno",
+   "category": "Deco",
+   "photo": "VM-169.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2162100,
+     "wholesale": 3240000,
+     "list": 3800000
+    }
+   ]
+  },
+  {
+   "sku": "VM-221",
+   "name": "Mesa auxiliar trébol",
+   "description": "30 × 30 × 41 cm Ideal para living, dormitorio o al lado del sillón",
+   "category": "Deco",
+   "photo": "VM-221.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2320000,
+     "wholesale": 3480000,
+     "list": 3830000
+    }
+   ]
+  },
+  {
+   "sku": "VM-172",
+   "name": "Tira LED RGB 3 metros",
+   "description": "Luces de colores con control remoto Ideal para decorar dormitorio, escritorio o TV",
+   "category": "Deco",
+   "photo": "VM-172.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 547600,
+     "wholesale": 820000,
+     "list": 950000
+    }
+   ]
+  },
+  {
+   "sku": "VM-222",
+   "name": "Mesa auxiliar espejada con luz LED",
+   "description": "Tapa espejada con borde de luz LED ondulado Patas de madera natural, estilo nórdico Ideal para living o dormitorio",
+   "category": "Deco",
+   "photo": "VM-222.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 4050000,
+     "wholesale": 6080000,
+     "list": 6700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-214",
+   "name": "Juego de sábanas Oryx Twin",
+   "description": "Suaves y frescas, con funda de almohada Colores: gris claro, rosa, topo, gris oscuro, crema y blanco",
+   "category": "Deco",
+   "photo": "VM-214.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1160000,
+     "wholesale": 1740000,
+     "list": 1920000
+    }
+   ]
+  },
+  {
+   "sku": "VM-223",
+   "name": "Mesa auxiliar con luz LED",
+   "description": "Bandeja redonda blanca y base de madera en cruz Luz LED cálida que le da un toque moderno Ideal para living o dormitorio",
+   "category": "Deco",
+   "photo": "VM-223.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 4050000,
+     "wholesale": 6080000,
+     "list": 6700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-224",
+   "name": "Mesa auxiliar de bambú plegable",
+   "description": "Tapa redonda tipo bandeja con borde Patas de metal negras que se pliegan Se guarda fácil y ocupa poco espacio Ideal para living, dormitorio o balcón",
+   "category": "Deco",
+   "photo": "VM-224.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 4050000,
+     "wholesale": 6080000,
+     "list": 6700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-290",
+   "name": "Espejo ovalado irrompible",
+   "description": "Polímero de alta resistencia Chico: 20 × 30 cm Grande: 30 x 40 cm",
+   "category": "Deco",
+   "photo": "VM-290.jpg",
+   "variants": [
+    {
+     "label": "Chico 20 × 30 cm",
+     "cost": 342600,
+     "wholesale": 510000,
+     "list": 550000
+    },
+    {
+     "label": "Grande 30 × 40 cm",
+     "cost": 703000,
+     "wholesale": 1050000,
+     "list": 1150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-226",
+   "name": "Cartel luminoso LED con letras",
+   "description": "Armá tus propias frases y mensajes Ideal para decorar dormitorio, local o eventos",
+   "category": "Deco",
+   "photo": "VM-226.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 654500,
+     "wholesale": 980000,
+     "list": 1080000
+    }
+   ]
+  },
+  {
+   "sku": "VM-295",
+   "name": "Espejo de mesa oval doble faz",
+   "description": "Doble faz, giratorio con dos caras 18 × 15 cm",
+   "category": "Deco",
+   "photo": "VM-295.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 731300,
+     "wholesale": 1100000,
+     "list": 1250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-236",
+   "name": "Bandeja de desayuno con manijas",
+   "description": "Ideal para desayunos en la cama o servir 40 × 28 × 2 cm",
+   "category": "Deco",
+   "photo": "VM-236.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 342300,
+     "wholesale": 510000,
+     "list": 570000
+    }
+   ]
+  },
+  {
+   "sku": "VM-297",
+   "name": "Set x3 espejos redondos",
+   "description": "Marco con relieve de rombos 25 cm cada uno Colores: dorado y plateado",
+   "category": "Deco",
+   "photo": "VM-297.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 948400,
+     "wholesale": 1420000,
+     "list": 1580000
+    }
+   ]
+  },
+  {
+   "sku": "VM-330",
+   "name": "Espejo de pared osito de peluche",
+   "description": "Marco suave, ideal para cuartos infantiles 30 cm Colores: blanco y gris",
+   "category": "Deco",
+   "photo": "VM-330.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1052000,
+     "wholesale": 1580000,
+     "list": 1750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-347",
+   "name": "Organizador Cora escalonado",
+   "description": "Escalón para ver todo a simple vista 9,5 × 15 × 11 cm Transparente",
+   "category": "Deco",
+   "photo": "VM-347.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 231000,
+     "wholesale": 350000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-331",
+   "name": "Espejo conejito con marco de peluche",
+   "description": "Ideal para cuartos infantiles 30 × 30 cm Color: blanco",
+   "category": "Deco",
+   "photo": "VM-331.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1052000,
+     "wholesale": 1580000,
+     "list": 1750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-348",
+   "name": "Organizador Cora rectangular con divisiones",
+   "description": "Ideal para maquillaje, cremas y perfumes 18 × 15 × 12 cm Transparente",
+   "category": "Deco",
+   "photo": "VM-348.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 313200,
+     "wholesale": 470000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-335",
+   "name": "Organizador de acrílico con espacios",
+   "description": "Divisiones para maquillaje y accesorios 17 × 10 × 8 cm Colores surtidos",
+   "category": "Deco",
+   "photo": "VM-335.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 278400,
+     "wholesale": 420000,
+     "list": 480000
+    }
+   ]
+  },
+  {
+   "sku": "VM-358",
+   "name": "Bandeja multiuso para cama de madera",
+   "description": "Ideal para desayunar en la cama 30 × 50 cm",
+   "category": "Deco",
+   "photo": "VM-358.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1195000,
+     "wholesale": 1790000,
+     "list": 1990000
+    }
+   ]
+  },
+  {
+   "sku": "VM-360",
+   "name": "Individual PVC metalizado 38 cm",
+   "description": "PVC metalizado 38 cm Colores plateado y dorado",
+   "category": "Deco",
+   "photo": "VM-360.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 238400,
+     "wholesale": 360000,
+     "list": 400000
+    }
+   ]
+  },
+  {
+   "sku": "VM-001",
+   "name": "Organizador de pared porta rollo Oslo",
+   "description": "Porta rollo con estante para el celular o el perfume 30 × 14 × 29 cm Color: blanco",
+   "category": "Organización",
+   "photo": "VM-001.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 777900,
+     "wholesale": 1170000,
+     "list": 1300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-382",
+   "name": "Camino de mesa Tusor",
+   "description": "Tela tusor con trama, le da un toque elegante a la mesa 2 metros Colores: gris y avellana",
+   "category": "Deco",
+   "photo": "VM-382.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 489500,
+     "wholesale": 730000,
+     "list": 810000
+    }
+   ]
+  },
+  {
+   "sku": "VM-003",
+   "name": "Set x3 perchas de madera",
+   "description": "Resistentes, ideales para sacos y camperas 43,5 cm",
+   "category": "Organización",
+   "photo": "VM-003.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 456300,
+     "wholesale": 680000,
+     "list": 750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-004",
+   "name": "Caja de plástico plegable grande",
+   "description": "Se pliega y ocupa poco lugar 29 × 20 cm Colores surtidos",
+   "category": "Organización",
+   "photo": "VM-004.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 387600,
+     "wholesale": 580000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-017",
+   "name": "Secaplatos de plástico 2 pisos",
+   "description": "Más espacio en menos lugar 30 × 24 × 33 cm Color: negro",
+   "category": "Organización",
+   "photo": "VM-017.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1296800,
+     "wholesale": 1950000,
+     "list": 2150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-113",
+   "name": "Carrito slim de 4 niveles con ruedas",
+   "description": "Ideal para espacios chicos: baño, cocina o lavadero Colores: blanco y negro",
+   "category": "Organización",
+   "photo": "VM-113.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1334700,
+     "wholesale": 2000000,
+     "list": 2210000
+    }
+   ]
+  },
+  {
+   "sku": "VM-041",
+   "name": "Cajonera plástica 3 cajones",
+   "description": "Ideal para escritorio, baño o maquillaje 21 × 15 × 15 cm Colores: beige, blanco y gris",
+   "category": "Organización",
+   "photo": "VM-041.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 780300,
+     "wholesale": 1170000,
+     "list": 1300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-120",
+   "name": "Rack organizador para microondas",
+   "description": "Ganá espacio en la cocina: microondas arriba y estantes para ordenar 50 × 27 × 51 cm · Color: blanco",
+   "category": "Organización",
+   "photo": "VM-120.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1030300,
+     "wholesale": 1550000,
+     "list": 1700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-043",
+   "name": "Set x10 perchas de metal",
+   "description": "Finas, ahorran espacio en el placard Colores: negro y gris",
+   "category": "Organización",
+   "photo": "VM-043.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 430000,
+     "wholesale": 640000,
+     "list": 750000
+    }
+   ]
+  },
+  {
+   "sku": "VM-122",
+   "name": "Organizador bajo mesada de 2 estantes",
+   "description": "Aprovechá el espacio debajo de la bacha o en la alacena 37,6 × 20,6 × 33,5 cm · Colores: negro y blanco",
+   "category": "Organización",
+   "photo": "VM-122.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1065200,
+     "wholesale": 1600000,
+     "list": 1760000
+    }
+   ]
+  },
+  {
+   "sku": "VM-132",
+   "name": "Cesto Laundry para ropa sucia",
+   "description": "Ideal para la ropa sucia Manijas de bambú 35 × 44 cm Colores: gris y blanco",
+   "category": "Organización",
+   "photo": "VM-132.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 525300,
+     "wholesale": 790000,
+     "list": 890000
+    }
+   ]
+  },
+  {
+   "sku": "VM-215",
+   "name": "Conservadora Star Trak 14 litros",
+   "description": "Ideal para playa, camping y viajes 37 × 28 × 25 cm Colores: azul y verde",
+   "category": "Organización",
+   "photo": "VM-215.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1420000,
+     "wholesale": 2130000,
+     "list": 2350000
+    }
+   ]
+  },
+  {
+   "sku": "VM-141",
+   "name": "Organizador con manija de 3 divisiones",
+   "description": "15 × 14 × 11 cm · Color blanco",
+   "category": "Organización",
+   "photo": "VM-141.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 277200,
+     "wholesale": 420000,
+     "list": 460000
+    }
+   ]
+  },
+  {
+   "sku": "VM-216",
+   "name": "Conservadora Star Trak 5 litros",
+   "description": "Compacta, ideal para salidas y viajes",
+   "category": "Organización",
+   "photo": "VM-216.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 890000,
+     "wholesale": 1340000,
+     "list": 1470000
+    }
+   ]
+  },
+  {
+   "sku": "VM-144",
+   "name": "Zapatero de 4 estantes",
+   "description": "Capacidad para 8 pares · Ideal para dormitorio, entrada o placard",
+   "category": "Organización",
+   "photo": "VM-144.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 467900,
+     "wholesale": 700000,
+     "list": 790000
+    }
+   ]
+  },
+  {
+   "sku": "VM-231",
+   "name": "Caja organizadora plegable Oryx",
+   "description": "De tela, ideal para ropa, juguetes o accesorios 39 × 26 × 22 cm",
+   "category": "Organización",
+   "photo": "VM-231.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1010000,
+     "wholesale": 1520000,
+     "list": 1670000
+    }
+   ]
+  },
+  {
+   "sku": "VM-277",
+   "name": "Perchero, zapatero, recibidor",
+   "description": "Ganchos arriba y 4 estantes 60 × 28 × 154 cm Color: negro",
+   "category": "Organización",
+   "photo": "VM-277.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1478000,
+     "wholesale": 2220000,
+     "list": 2450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-375",
+   "name": "Cesto de ropa sucia plegable",
+   "description": "Se pliega y ocupa poco espacio cuando no lo usas 40 x 23 × 47 cm Estructura de metal y tela Color blanco Ideal para baño, dormitorio y lavadero",
+   "category": "Organización",
+   "photo": "VM-375.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 701500,
+     "wholesale": 1050000,
+     "list": 1160000
+    }
+   ]
+  },
+  {
+   "sku": "VM-329",
+   "name": "Percha infantil de terciopelo",
+   "description": "Antideslizante 28 cm Colores: celeste y rosa",
+   "category": "Organización",
+   "photo": "VM-329.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 53600,
+     "wholesale": 80000,
+     "list": 100000
+    }
+   ]
+  },
+  {
+   "sku": "VM-389",
+   "name": "Estante esquinero organizador",
+   "description": "Aprovechá el rincón de la cocina, el baño o el lavadero 34 × 22 × 15 cm Plástico y aluminio",
+   "category": "Organización",
+   "photo": "VM-389.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 320800,
+     "wholesale": 480000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-357",
+   "name": "Bolsa organizadora para ropa de cama",
+   "description": "Ideal para colchados, sábanas y frazadas 58 × 38 × 34 cm Color gris",
+   "category": "Organización",
+   "photo": "VM-357.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 395200,
+     "wholesale": 590000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-040",
+   "name": "Repasador de microfibra",
+   "description": "Súper absorbente, seca sin dejar pelusa 25 × 25 cm",
+   "category": "Limpieza",
+   "photo": "VM-040.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 273600,
+     "wholesale": 410000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-109",
+   "name": "Pack x10 filtros adhesivos para rejilla",
+   "description": "Evitan que se tapen las cañerías 10 × 10 cm",
+   "category": "Limpieza",
+   "photo": "VM-109.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 103000,
+     "wholesale": 150000,
+     "list": 170000
+    }
+   ]
+  },
+  {
+   "sku": "VM-045",
+   "name": "Dispenser de detergente con esponja",
+   "description": "Presionás la esponja y sale detergente 385 ml Incluye esponja",
+   "category": "Limpieza",
+   "photo": "VM-045.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 310300,
+     "wholesale": 470000,
+     "list": 550000
+    }
+   ]
+  },
+  {
+   "sku": "VM-110",
+   "name": "Filtro para bacha de acero inoxidable",
+   "description": "9 cm",
+   "category": "Limpieza",
+   "photo": "VM-110.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 181800,
+     "wholesale": 270000,
+     "list": 300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-108",
+   "name": "Balde plegable de silicona",
+   "description": "Se pliega y ocupa poco lugar 23 × 18 cm",
+   "category": "Limpieza",
+   "photo": "VM-108.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 623700,
+     "wholesale": 940000,
+     "list": 1000000
+    }
+   ]
+  },
+  {
+   "sku": "VM-111",
+   "name": "Cepillo limpia marcos y ranuras",
+   "description": "Llega a los rincones de ventanas y rieles 13 × 8 cm",
+   "category": "Limpieza",
+   "photo": "VM-111.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 53800,
+     "wholesale": 80000,
+     "list": 200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-124",
+   "name": "Cuelga escoba doble",
+   "description": "Colgá escobas, secadores y mopas sin que ocupen lugar 22 × 3 cm aprox. · Plástico resistente",
+   "category": "Limpieza",
+   "photo": "VM-124.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 389400,
+     "wholesale": 580000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-234",
+   "name": "Esponja virulana con agarre",
+   "description": "Limpia ollas y sartenes sin tocar la virulana Colores surtidos",
+   "category": "Limpieza",
+   "photo": "VM-234.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 80800,
+     "wholesale": 120000,
+     "list": 150000
+    }
+   ]
+  },
+  {
+   "sku": "VM-136",
+   "name": "Cepillo flexible para cocina",
+   "description": "Mango flexible que llega a todos los rincones · 30 cm",
+   "category": "Limpieza",
+   "photo": "VM-136.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 76900,
+     "wholesale": 120000,
+     "list": 200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-235",
+   "name": "Filtro para bacha de silicona",
+   "description": "Evita que se tape la cañería 11 cm · Colores surtidos",
+   "category": "Limpieza",
+   "photo": "VM-235.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 158700,
+     "wholesale": 240000,
+     "list": 300000
+    }
+   ]
+  },
+  {
+   "sku": "VM-143",
+   "name": "Escurridor plano de silicona con orificio (bandeja de silicona para canilla)",
+   "description": "Deja escurrir el agua y mantiene la mesada seca",
+   "category": "Limpieza",
+   "photo": "VM-143.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 180400,
+     "wholesale": 270000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-306",
+   "name": "Organizador de cocina para canilla",
+   "description": "Para esponja y detergente, siempre a mano 27 cm",
+   "category": "Limpieza",
+   "photo": "VM-306.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 461500,
+     "wholesale": 690000,
+     "list": 780000
+    }
+   ]
+  },
+  {
+   "sku": "VM-336",
+   "name": "Set x5 paños de microfibra",
+   "description": "Colores surtidos",
+   "category": "Limpieza",
+   "photo": "VM-336.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 250000,
+     "wholesale": 380000,
+     "list": 450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-381",
+   "name": "Limpia vidrios Mik con mango de bambú",
+   "description": "Mango de bambú y cabezal de plástico, ideal para vidrios y espejos 22,5 × 23,5 cm",
+   "category": "Limpieza",
+   "photo": "VM-381.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 227000,
+     "wholesale": 340000,
+     "list": 380000
+    }
+   ]
+  },
+  {
+   "sku": "VM-173",
+   "name": "Limpiador automático de brochas de maquillaje",
+   "description": "Lava y seca tus brochas en segundos",
+   "category": "Belleza",
+   "photo": "VM-173.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 510000,
+     "wholesale": 760000,
+     "list": 1050000
+    }
+   ]
+  },
+  {
+   "sku": "VM-352",
+   "name": "Soporte para 4 escobas adhesivo",
+   "description": "Se pega a la pared sin agujeros 30 × 8 × 5 cm Colores blanco y negro",
+   "category": "Limpieza",
+   "photo": "VM-352.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 372200,
+     "wholesale": 560000,
+     "list": 650000
+    }
+   ]
+  },
+  {
+   "sku": "VM-383",
+   "name": "Organizador de mesada",
+   "description": "Ordená jabones, esponjas y accesorios junto a la bacha Colores: negro y gris",
+   "category": "Limpieza",
+   "photo": "VM-383.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 141900,
+     "wholesale": 210000,
+     "list": 250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-217",
+   "name": "Depiladora facial Flawless",
+   "description": "Recargable, suave con la piel y sin dolor Tamaño de bolsillo, ideal para llevar en la cartera Colores: rosa y negro",
+   "category": "Belleza",
+   "photo": "VM-217.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 650000,
+     "wholesale": 980000,
+     "list": 1080000
+    }
+   ]
+  },
+  {
+   "sku": "VM-355",
+   "name": "Recipiente multiuso plegable de silicona",
+   "description": "Se pliega y ocupa poco lugar 34 × 29 cm",
+   "category": "Limpieza",
+   "photo": "VM-355.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 464700,
+     "wholesale": 700000,
+     "list": 790000
+    }
+   ]
+  },
+  {
+   "sku": "VM-384",
+   "name": "Set x3 esponjas diferentes",
+   "description": "Una para cada uso: vajilla, superficies y limpieza pesada Colores surtidos",
+   "category": "Limpieza",
+   "photo": "VM-384.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 520900,
+     "wholesale": 780000,
+     "list": 860000
+    }
+   ]
+  },
+  {
+   "sku": "VM-232",
+   "name": "Set de brochas de maquillaje Huada Beauty",
+   "description": "Color negro, cerdas suaves Ideales para base, polvo y sombras",
+   "category": "Belleza",
+   "photo": "VM-232.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 650000,
+     "wholesale": 980000,
+     "list": 1080000
+    }
+   ]
+  },
+  {
+   "sku": "VM-233",
+   "name": "Set x7 brochas de maquillaje DMY con mango cristal",
+   "description": "Cerdas suaves para un acabado profesional Ideal para regalar",
+   "category": "Belleza",
+   "photo": "VM-233.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 700000,
+     "wholesale": 1050000,
+     "list": 1160000
+    }
+   ]
+  },
+  {
+   "sku": "VM-368",
+   "name": "Árbol de Navidad 60 cm",
+   "description": "Compacto y fácil de armar Ideal para mesas, escritorios y espacios chicos Colores blanco y verde",
+   "category": "Navidad",
+   "photo": "VM-368.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 727300,
+     "wholesale": 1090000,
+     "list": 1200000
+    }
+   ]
+  },
+  {
+   "sku": "VM-341",
+   "name": "Cepillo de aire caliente Oryx 5 en 1",
+   "description": "Seca, alisa, riza, da volumen y peina 3 niveles de temperatura Fácil de usar y de llevar",
+   "category": "Belleza",
+   "photo": "VM-341.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2200000,
+     "wholesale": 3300000,
+     "list": 3830000
+    }
+   ]
+  },
+  {
+   "sku": "VM-369",
+   "name": "Árbol de Navidad 90 cm",
+   "description": "Frondoso y fácil de armar Ideal para departamentos y rincones del living Colores blanco y verde",
+   "category": "Navidad",
+   "photo": "VM-369.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 909100,
+     "wholesale": 1360000,
+     "list": 1500000
+    }
+   ]
+  },
+  {
+   "sku": "VM-370",
+   "name": "Árbol de Navidad 120 cm",
+   "description": "Frondoso y fácil de armar Ideal para decorar el living en estas fiestas Colores blanco y verde",
+   "category": "Navidad",
+   "photo": "VM-370.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1636400,
+     "wholesale": 2450000,
+     "list": 2700000
+    }
+   ]
+  },
+  {
+   "sku": "VM-371",
+   "name": "Árbol de Navidad 150 cm",
+   "description": "Grande y frondoso, se luce en cualquier ambiente Ideal para el living, la entrada de tu casa o local Colores blanco y verde",
+   "category": "Navidad",
+   "photo": "VM-371.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 3030300,
+     "wholesale": 4550000,
+     "list": 5000000
+    }
+   ]
+  },
+  {
+   "sku": "VM-023",
+   "name": "Lunchera térmica Corazón",
+   "description": "Mantiene la temperatura de tu comida 23 × 20 × 16 cm Color: rosa",
+   "category": "Infantiles",
+   "photo": "VM-023.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1346400,
+     "wholesale": 2020000,
+     "list": 2230000
+    }
+   ]
+  },
+  {
+   "sku": "VM-219",
+   "name": "Set x48 marcadores acrílicos doble punta",
+   "description": "Punta pincel y punta fina, colores intensos Sirven para madera, piedra, vidrio, cerámica y tela",
+   "category": "Infantiles",
+   "photo": "VM-219.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2715200,
+     "wholesale": 4070000,
+     "list": 4480000
+    }
+   ]
+  },
+  {
+   "sku": "VM-227",
+   "name": "Set x12 marcadores para cerámica y porcelana",
+   "description": "Personalizá tazas, platos y vajilla",
+   "category": "Infantiles",
+   "photo": "VM-227.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 551500,
+     "wholesale": 830000,
+     "list": 910000
+    }
+   ]
+  },
+  {
+   "sku": "VM-229",
+   "name": "Set x24 marcadores doble punta",
+   "description": "Colores intensos, ideales para dibujar y decorar",
+   "category": "Infantiles",
+   "photo": "VM-229.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 878800,
+     "wholesale": 1320000,
+     "list": 1450000
+    }
+   ]
+  },
+  {
+   "sku": "VM-328",
+   "name": "Piscina infantil Mor 1.500 litros",
+   "description": "Estructura con patas, más grande y resistente Ideal para disfrutar el verano en familia",
+   "category": "Infantiles",
+   "photo": "VM-328.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 6200000,
+     "wholesale": 9300000,
+     "list": 10250000
+    }
+   ]
+  },
+  {
+   "sku": "VM-326",
+   "name": "Piscina infantil Mor 400 litros",
+   "description": "Estructura con patas, fácil de armar Ideal para los más chiquitos",
+   "category": "Infantiles",
+   "photo": "VM-326.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 2990000,
+     "wholesale": 4480000,
+     "list": 4950000
+    }
+   ]
+  },
+  {
+   "sku": "VM-387",
+   "name": "Lapicero x4 con base",
+   "description": "Cuatro lapiceros con base para tener todo ordenado en el escritorio 11 × 8 × 7 cm Diseños surtidos: Princesas o Avengers (sujeto a stock)",
+   "category": "Infantiles",
+   "photo": "VM-387.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 1203800,
+     "wholesale": 1810000,
+     "list": 2000000
+    }
+   ]
+  },
+  {
+   "sku": "VM-327",
+   "name": "Piscina infantil Mor 1.000 litros",
+   "description": "Estructura con patas, fácil de armar Ideal para disfrutar el verano en casa",
+   "category": "Infantiles",
+   "photo": "VM-327.jpg",
+   "variants": [
+    {
+     "label": null,
+     "cost": 5200000,
+     "wholesale": 7800000,
+     "list": 8600000
+    }
+   ]
+  }
+ ]
+}

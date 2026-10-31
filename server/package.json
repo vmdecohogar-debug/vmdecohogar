@@ -8,6 +8,7 @@
     "dev": "node --watch src/index.js",
     "migrate": "node src/db/migrate.js",
     "seed": "node src/db/seed.js",
+    "catalogo": "node src/db/catalogo.js",
     "demo": "node src/db/demo.js",
     "daily": "node src/jobs/daily.js",
     "test": "node --test"

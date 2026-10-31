@@ -14,7 +14,7 @@ before(async () => {
   const db = await import('../src/db/index.js');
   await db.pool.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
   const { seed } = await import('../src/db/seed.js');
-  await seed();
+  await seed({ sampleProducts: true });
   m = {
     config,
     db,
