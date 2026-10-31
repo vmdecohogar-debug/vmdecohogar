@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
+import { useAuth } from '../auth.js';
 import { pesos } from '../format.js';
 import { useStore, waLink } from './StoreContext.jsx';
 import { Carousel, CategoryMosaic, Price, ProductGrid, ProductPhoto } from './components.jsx';
 import { Ico, WhatsAppIcon } from './icons.jsx';
 
-function useData(path) {
+// Los precios dependen de quién mira (público o mayorista): al ingresar o salir se vuelve a pedir.
+export function useData(path) {
+  const { user } = useAuth();
+  const who = user?.id ?? 0;
   const [state, setState] = useState({ data: null, error: null });
   useEffect(() => {
     let live = true;
     setState((s) => ({ data: s.data, error: null }));
     api(path).then((data) => live && setState({ data, error: null }), (e) => live && setState({ data: null, error: e.message }));
     return () => { live = false; };
-  }, [path]);
+  }, [path, who]);
   return state;
 }
 
@@ -164,8 +168,21 @@ export function Product() {
 }
 
 export function Cart() {
-  const { cart, config } = useStore();
+  const { cart } = useStore();
+  const [quote, setQuote] = useState(null);
+  const { user } = useAuth();
   useTitle('Carrito');
+  const key = cart.items.map((i) => `${i.id}:${i.qty}`).join(',');
+  useEffect(() => {
+    if (!cart.items.length) { setQuote(null); return undefined; }
+    let live = true;
+    api('/store/quote', { method: 'POST', body: { items: cart.items.map((i) => ({ productId: i.id, qty: i.qty })) } })
+      .then((q) => live && setQuote(q), () => {});
+    return () => { live = false; };
+  }, [key, user?.id]);
+  const line = (id) => quote?.lines.find((l) => l.productId === id);
+  const wholesale = quote?.priceType === 'wholesale';
+
   return (
     <section className="s-section s-wrap s-narrow">
       <h1 className="s-page-title">Tu carrito</h1>
@@ -176,32 +193,39 @@ export function Cart() {
         </div>
       ) : (
         <>
+          {wholesale && <p className="s-pill">Estás comprando con precio mayorista</p>}
+          {quote?.errors?.length > 0 && <div className="notice warn">{quote.errors.join(' ')} Lo sacamos del total.</div>}
           <ul className="s-cart">
-            {cart.items.map((i) => (
-              <li key={i.id}>
-                <Link to={`/producto/${i.slug}`} className="s-cart-img"><ProductPhoto product={i} /></Link>
-                <div className="s-cart-info">
-                  <Link to={`/producto/${i.slug}`} className="s-cart-name">{i.name}</Link>
-                  <div className="s-cart-unit">{pesos(i.list_price)} c/u</div>
-                  <div className="s-qty small">
-                    <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Quitar uno">−</button>
-                    <span>{i.qty}</span>
-                    <button type="button" onClick={() => cart.setQty(i.id, i.qty + 1)} aria-label="Agregar uno">+</button>
+            {cart.items.map((i) => {
+              const l = line(i.id);
+              const unit = l?.unit_price ?? i.list_price;
+              return (
+                <li key={i.id} className={quote && !l ? 's-unavailable' : ''}>
+                  <Link to={`/producto/${i.slug}`} className="s-cart-img"><ProductPhoto product={i} /></Link>
+                  <div className="s-cart-info">
+                    <Link to={`/producto/${i.slug}`} className="s-cart-name">{i.name}</Link>
+                    <div className="s-cart-unit">{quote && !l ? 'No disponible' : `${pesos(unit)} c/u`}</div>
+                    <div className="s-qty small">
+                      <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Quitar uno">−</button>
+                      <span>{i.qty}</span>
+                      <button type="button" onClick={() => cart.setQty(i.id, i.qty + 1)} aria-label="Agregar uno">+</button>
+                    </div>
                   </div>
-                </div>
-                <div className="s-cart-right">
-                  <strong>{pesos(i.qty * i.list_price)}</strong>
-                  <button type="button" className="s-iconbtn" onClick={() => cart.setQty(i.id, 0)} aria-label={`Quitar ${i.name}`}><Ico name="trash" size={18} /></button>
-                </div>
-              </li>
-            ))}
+                  <div className="s-cart-right">
+                    <strong>{pesos(i.qty * unit)}</strong>
+                    <button type="button" className="s-iconbtn" onClick={() => cart.setQty(i.id, 0)} aria-label={`Quitar ${i.name}`}><Ico name="trash" size={18} /></button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
           <div className="s-cart-total">
             <span>Subtotal</span>
-            <strong>{pesos(cart.total)}</strong>
+            <strong>{pesos(quote?.subtotal ?? cart.total)}</strong>
           </div>
-          <p className="s-note">El envío se calcula según tu zona en el próximo paso. {config?.store?.dispatchNote}</p>
-          <button type="button" className="s-btn s-btn-block" disabled title="Se habilita en la próxima etapa">Finalizar compra (próximamente)</button>
+          <p className="s-note">El envío se calcula según tu zona en el próximo paso.</p>
+          <Link to="/finalizar" className="s-btn s-btn-block">Finalizar compra</Link>
+          {!user && <p className="s-note s-center-text">¿Comprás por mayor? <Link to="/mayoristas">Ingresá o pedí tu cuenta</Link> para ver precios mayoristas.</p>}
           <div className="s-center"><Link to="/productos">Seguir comprando</Link></div>
         </>
       )}

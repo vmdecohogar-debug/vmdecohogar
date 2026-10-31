@@ -94,6 +94,9 @@ test('tienda pública: búsqueda sin tildes, categoría, sin costo ni mayorista'
 });
 
 test('banners: link seguro, orden y baja', { skip }, async () => {
+  const [navidad] = await store.listBanners();
+  assert.equal(navidad.link, '/categoria/navidad', 'banner de Navidad cargado de entrada');
+  await store.deleteBanner(navidad.id, ADMIN);
   const a = await store.saveBanner({ image_url: '/uploads/a.jpg', link: '/categoria/cocina', title: 'Ofertas' }, ADMIN);
   const b = await store.saveBanner({ image_url: '/uploads/b.jpg' }, ADMIN);
   await assert.rejects(store.saveBanner({ image_url: '/uploads/c.jpg', link: 'javascript:alert(1)' }, ADMIN), /link/);

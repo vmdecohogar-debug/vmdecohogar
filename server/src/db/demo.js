@@ -29,7 +29,7 @@ async function kitPaid(sellerId, productId, qty = 3) {
   await registerPayment({ obligationId: obligation.id, amount: obligation.amount, method: 'cash' }, ADMIN);
 }
 
-await seed();
+await seed({ sampleProducts: true });
 if ((await direct.one('SELECT COUNT(*)::int AS n FROM sellers')).n > 0) {
   console.log('Ya hay vendedoras cargadas: no se crea la red de ejemplo.');
   await pool.end();

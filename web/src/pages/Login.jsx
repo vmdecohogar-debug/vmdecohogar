@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
-import { useAuth } from '../App.jsx';
+import { useAuth } from '../auth.js';
 import { Notice, useAction } from '../components/ui.jsx';
 
 export default function Login() {
@@ -35,6 +35,8 @@ export default function Login() {
         <button className="btn block" disabled={busy}>{busy ? 'Ingresando…' : 'Ingresar'}</button>
       </form>
       <p className="muted" style={{ textAlign: 'center' }}>
+        ¿Comprás por mayor? <Link to="/mayoristas">Pedí tu cuenta mayorista</Link>
+        <br />
         <Link to="/">Volver a la tienda</Link>
       </p>
     </div>

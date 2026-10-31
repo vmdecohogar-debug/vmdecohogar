@@ -228,7 +228,7 @@ export async function publicProduct(slug, { showWholesale = false } = {}) {
 
 // Inicio: banners, más vendidos, lo nuevo y categorías (el navegador elige 3 al azar en cada visita).
 export async function home({ showWholesale = false } = {}) {
-  const sold = `(SELECT COALESCE(SUM(oi.qty), 0) FROM order_items oi JOIN orders o ON o.id = oi.order_id
+  const sold = `(SELECT COALESCE(SUM(oi.qty), 0) FROM web_order_items oi JOIN web_orders o ON o.id = oi.order_id
                   WHERE oi.product_id = p.id AND o.status <> 'cancelled')`;
   const base = `SELECT ${PUBLIC_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.active AND p.list_price > 0`;
   const best = (await direct.query(`${base} ORDER BY ${sold} DESC, p.featured DESC, p.created_at DESC LIMIT 8`)).rows;
@@ -349,6 +349,8 @@ export async function storeCounts() {
             (SELECT COUNT(*)::int FROM products WHERE active AND category_id IS NULL) AS uncategorized,
             (SELECT COUNT(*)::int FROM products WHERE active AND image_url IS NULL) AS without_photo,
             (SELECT COUNT(*)::int FROM categories WHERE active) AS categories,
-            (SELECT COUNT(*)::int FROM banners WHERE active) AS banners`,
+            (SELECT COUNT(*)::int FROM banners WHERE active) AS banners,
+            (SELECT COUNT(*)::int FROM web_orders WHERE status = 'new') AS new_orders,
+            (SELECT COUNT(*)::int FROM web_orders WHERE payment_status = 'proof_sent' AND status <> 'cancelled') AS to_confirm`,
   );
 }

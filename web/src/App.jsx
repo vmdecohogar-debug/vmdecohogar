@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { api, session } from './api.js';
+import { AuthCtx, useAuth } from './auth.js';
 import { Icon } from './components/ui.jsx';
 import Login from './pages/Login.jsx';
 import StoreHome from './pages/admin/store/StoreHome.jsx';
@@ -9,19 +10,25 @@ import StoreCategories from './pages/admin/store/Categories.jsx';
 import StoreBanners from './pages/admin/store/Banners.jsx';
 import Appearance from './pages/admin/store/Appearance.jsx';
 import StoreSettings from './pages/admin/store/StoreSettings.jsx';
+import Shipping from './pages/admin/store/Shipping.jsx';
+import Wholesale from './pages/admin/store/Wholesale.jsx';
+import WebOrders from './pages/admin/store/WebOrders.jsx';
 import { StoreProvider } from './store/StoreContext.jsx';
 import StoreLayout from './store/StoreLayout.jsx';
 import { Cart, Contact, Home, NotFound, Product, Products } from './store/pages.jsx';
+import { Checkout, OrderStatus, WholesalePage } from './store/checkout.jsx';
 import './store/store.css';
 
-const AuthCtx = createContext(null);
-export const useAuth = () => useContext(AuthCtx);
+export { useAuth } from './auth.js';
 
 const ADMIN_NAV = [
   ['/admin', 'home', 'Inicio'],
+  ['/admin/pedidos', 'card', 'Pedidos'],
   ['/admin/productos', 'bag', 'Productos'],
   ['/admin/categorias', 'list', 'Categorías'],
   ['/admin/banners', 'star', 'Banners'],
+  ['/admin/envios', 'box', 'Envíos y pagos'],
+  ['/admin/mayoristas', 'users', 'Mayoristas'],
   ['/admin/apariencia', 'brush', 'Apariencia'],
   ['/admin/tienda', 'gear', 'Tienda'],
 ];
@@ -59,9 +66,12 @@ function Admin() {
     <AdminLayout>
       <Routes>
         <Route index element={<StoreHome />} />
+        <Route path="pedidos" element={<WebOrders />} />
         <Route path="productos" element={<StoreProducts />} />
         <Route path="categorias" element={<StoreCategories />} />
         <Route path="banners" element={<StoreBanners />} />
+        <Route path="envios" element={<Shipping />} />
+        <Route path="mayoristas" element={<Wholesale />} />
         <Route path="apariencia" element={<Appearance />} />
         <Route path="tienda" element={<StoreSettings />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
@@ -105,6 +115,9 @@ export default function App() {
                   <Route path="/categoria/:slug" element={<Products />} />
                   <Route path="/producto/:slug" element={<Product />} />
                   <Route path="/carrito" element={<Cart />} />
+                  <Route path="/finalizar" element={<Checkout />} />
+                  <Route path="/pedido/:token" element={<OrderStatus />} />
+                  <Route path="/mayoristas" element={<WholesalePage />} />
                   <Route path="/contacto" element={<Contact />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

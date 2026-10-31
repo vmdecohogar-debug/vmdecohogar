@@ -173,6 +173,11 @@ export async function handleMercadoPagoNotification(paymentId) {
   });
   const mp = await res.json();
   if (!res.ok || mp.status !== 'approved') return { ignored: true };
+  // Pedidos de la tienda online
+  if (String(mp.external_reference ?? '').startsWith('web:')) {
+    const { webOrderPaidByMercadoPago } = await import('./checkout.js');
+    return webOrderPaidByMercadoPago(mp);
+  }
   const ref = `mp:${mp.id}`;
   if (await direct.one('SELECT 1 FROM payments WHERE external_ref = $1', [ref])) return { duplicate: true };
   const ob = await direct.one('SELECT id, seller_id FROM obligations WHERE id = $1', [Number(mp.external_reference)]);
