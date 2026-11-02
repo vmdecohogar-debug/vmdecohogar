@@ -93,6 +93,47 @@ test('tienda pública: búsqueda sin tildes, categoría, sin costo ni mayorista'
   assert.ok(cfg.theme.light.primary);
 });
 
+test('descuento: precio tachado en la tienda, se cobra el promocional y se puede quitar', { skip }, async () => {
+  const [item] = (await store.publicProducts({ q: 'bombonera' })).items;
+  const d = await store.setDiscount(item.id, 20, ADMIN);
+  assert.equal(d.discount_pct, 20);
+  assert.equal(d.promo_list_price, 270000); // $3.300 − 20% = $2.640 → $2.700
+  assert.equal(d.promo_wholesale_price, 240000); // $3.000 − 20% = $2.400
+  assert.equal(d.list_price, 330000, 'el precio normal no se pisa');
+
+  const pub = (await store.publicProducts({ q: 'bombonera' })).items[0];
+  assert.equal(pub.list_price, 270000);
+  assert.equal(pub.list_price_before, 330000);
+  assert.equal(pub.discount_pct, 20);
+  assert.equal(pub.wholesale_price_before, undefined);
+  const w = (await store.publicProducts({ q: 'bombonera', showWholesale: true })).items[0];
+  assert.equal(w.wholesale_price, 240000);
+  assert.equal(w.wholesale_price_before, 300000);
+
+  const checkout = await import('../src/services/checkout.js');
+  const q = await checkout.quote([{ productId: item.id, qty: 2 }]);
+  assert.equal(q.subtotal, 540000, 'se cobra el precio promocional');
+  const qw = await checkout.quote([{ productId: item.id, qty: 1 }], { wholesale: true });
+  assert.equal(qw.subtotal, 240000);
+
+  // Guardar el producto desde el formulario sin tocar el descuento lo conserva; cambiar el costo lo recalcula.
+  const kept = await store.saveStoreProduct({ ...d, cost: 198400 }, ADMIN);
+  assert.equal(kept.promo_list_price, 270000);
+  const { discount_pct: _d, ...noDiscount } = d;
+  const kept2 = await store.saveStoreProduct({ ...noDiscount, cost: 300000 }, ADMIN);
+  assert.equal(kept2.list_price, 500000); // $3.000 × 1,65 = $4.950 → $5.000
+  assert.equal(kept2.promo_list_price, 400000);
+  await store.saveStoreProduct({ ...kept2, cost: 198400 }, ADMIN);
+
+  await assert.rejects(store.setDiscount(item.id, 120, ADMIN), /entre 1 y 99/);
+  const off = await store.setDiscount(item.id, null, ADMIN);
+  assert.equal(off.discount_pct, null);
+  assert.equal(off.promo_list_price, null);
+  const back = (await store.publicProducts({ q: 'bombonera' })).items[0];
+  assert.equal(back.list_price, 330000);
+  assert.equal(back.list_price_before, null);
+});
+
 test('banners: link seguro, orden y baja', { skip }, async () => {
   const [navidad] = await store.listBanners();
   assert.equal(navidad.link, '/categoria/navidad', 'banner de Navidad cargado de entrada');
@@ -121,4 +162,34 @@ test('SEO: título, descripción y datos de producto para Google', { skip }, asy
   const map = await seo.sitemap('https://vmbazar.com.ar');
   assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/categoria\/cocina<\/loc>/);
   assert.match(map, new RegExp(`/producto/${p.slug}<`));
+});
+
+test('Páginas informativas: preguntas frecuentes, tiempos de respuesta y privacidad con su SEO', { skip }, async () => {
+  const info = await seo.storeInfo();
+  assert.ok(info.faq.groups.length >= 5);
+  assert.ok(info.compromiso.items.some((i) => i.time === 'Dentro de las 12 horas'));
+  assert.match(info.privacidad.sections.map((s) => s.p.join(' ')).join(' '), /AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA/);
+
+  const faq = await seo.pageMeta('/preguntas-frecuentes', 'https://vmbazar.com.ar');
+  assert.equal(faq.title, 'Preguntas frecuentes | VM Bazar y Deco');
+  assert.ok(faq.description.length > 50 && faq.description.length <= 170);
+  assert.ok(!faq.noindex);
+  assert.match(seo.injectMeta('<!--seo--><!--/seo-->', faq), /"@type":"FAQPage"/);
+  for (const path of ['/tiempos-de-respuesta', '/privacidad', '/productos', '/contacto', '/mayoristas']) {
+    const m = await seo.pageMeta(path, 'https://vmbazar.com.ar');
+    assert.ok(m.description && m.description !== (await seo.pageMeta('/')).description, `${path} tiene descripción propia`);
+  }
+  const map = await seo.sitemap('https://vmbazar.com.ar');
+  assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/preguntas-frecuentes<\/loc>/);
+  assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/privacidad<\/loc>/);
+});
+
+test('robots.txt deja a Google leer la tienda y le cierra el panel y los pedidos', () => {
+  return import('../src/services/seo.js').then(({ robots }) => {
+    const r = robots('https://vmbazar.com.ar');
+    assert.match(r, /^Allow: \/api\/store\/$/m);
+    assert.match(r, /^Disallow: \/admin$/m);
+    assert.match(r, /^Disallow: \/api\/store\/orders$/m);
+    assert.match(r, /^Sitemap: https:\/\/vmbazar.com.ar\/sitemap.xml$/m);
+  });
 });

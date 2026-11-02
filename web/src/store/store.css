@@ -133,6 +133,13 @@
 .s-price-wholesale { font-size: 13px; font-weight: 700; color: var(--c-accent); }
 .s-price.big .s-price-list { font-size: 28px; }
 .s-price.big .s-price-wholesale { font-size: 16px; }
+.s-price-before { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--c-textSoft); }
+.s-price-before s, .s-price-wholesale s { opacity: 0.75; font-weight: 400; }
+.s-price.big .s-price-before { font-size: 16px; }
+.s-off { background: var(--c-primary); color: var(--c-onPrimary); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 99px; }
+.s-price-promo { color: var(--c-primary); }
+.s-card-img { position: relative; }
+.s-tag-off { position: absolute; top: 8px; left: 8px; background: var(--c-primary); color: var(--c-onPrimary); font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 99px; letter-spacing: 0.3px; }
 @media (min-width: 700px) { .s-card-title { font-size: 15px; } .s-card-body { padding: 12px 14px 14px; } }
 
 /* Mosaico de categorías: una grande y dos chicas */

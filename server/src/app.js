@@ -81,6 +81,7 @@ export function createApp() {
   app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
+  app.get('/api/store/info', h(async () => seo.storeInfo()));
   app.get('/robots.txt', (_req, res) => res.type('text/plain').send(seo.robots()));
   app.get('/sitemap.xml', async (_req, res, next) => {
     try {
@@ -209,6 +210,7 @@ export function createApp() {
   app.post('/api/admin/store/products', admin, h(async (req) => store.saveStoreProduct(req.body, req.user.id)));
   app.post('/api/admin/store/products/:id/out-of-stock', admin, h(async (req) => store.setOutOfStock(Number(req.params.id), req.body.outOfStock, req.user.id)));
   app.post('/api/admin/store/products/recalc', admin, h(async (req) => store.recalcPrices(req.user.id)));
+  app.post('/api/admin/store/products/:id/discount', admin, h(async (req) => store.setDiscount(Number(req.params.id), req.body?.discount_pct, req.user.id)));
   app.get('/api/admin/store/categories', admin, h(async () => store.listCategories({ includeInactive: true })));
   app.post('/api/admin/store/categories', admin, h(async (req) => store.saveCategory(req.body, req.user.id)));
   app.put('/api/admin/store/categories/order', admin, h(async (req) => store.reorder('categories', req.body.ids, req.user.id)));

@@ -28,6 +28,34 @@ export function computePrices(p, { margins = { list: 65, wholesale: 50 }, roundi
   return { list_price: list, wholesale_price: wholesale, errors };
 }
 
+// Precio con descuento: precio × (1 − %/100), redondeado hacia arriba a los $`rounding` como el resto.
+// Devuelve null si no hay descuento o si, por el redondeo, no queda más barato que el precio normal.
+export function discountedPrice(price, discountPct, rounding = 100) {
+  const d = Number(discountPct);
+  if (!(price > 0) || !(d > 0) || !(d < 100)) return null;
+  const step = Math.max(1, Math.round(Number(rounding) || 0)) * 100;
+  const promo = Math.ceil(Math.round(price * (1 - d / 100)) / step) * step;
+  return promo < price ? promo : null;
+}
+
+// Valida el % de descuento que carga administración: vacío o 0 = sin descuento.
+export function cleanDiscount(v) {
+  if (v == null || v === '' || Number(v) === 0) return { pct: null, errors: [] };
+  const n = Number(String(v).replace(',', '.'));
+  if (!Number.isFinite(n) || n <= 0 || n >= 100) return { pct: null, errors: ['El descuento tiene que ser un % entre 1 y 99.'] };
+  return { pct: Math.round(n * 100) / 100, errors: [] };
+}
+
+// Precios promocionales de lista y mayorista para un producto con descuento.
+export function promoPrices({ list_price, wholesale_price, discount_pct }, rounding = 100) {
+  const errors = [];
+  if (discount_pct == null) return { promo_list_price: null, promo_wholesale_price: null, errors };
+  const promoList = discountedPrice(list_price, discount_pct, rounding);
+  if (promoList == null) errors.push('Con ese descuento y el redondeo, el precio no baja. Probá con un % más alto.');
+  const promoWholesale = discountedPrice(wholesale_price, discount_pct, rounding) ?? (wholesale_price > 0 ? Math.min(wholesale_price, promoList ?? wholesale_price) : null);
+  return { promo_list_price: promoList, promo_wholesale_price: promoWholesale, errors };
+}
+
 // "Organización y Baño" → "organizacion-y-bano"
 export function slugify(text) {
   return String(text ?? '')

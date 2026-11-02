@@ -4,6 +4,7 @@ import { config } from '../config.js';
 import { direct, tx } from '../db/index.js';
 import { formatPesos } from '../rules/index.js';
 import { orderWhatsappText, priceOrder, wholesaleMinimum } from '../rules/store.js';
+import { SALE_LIST, SALE_WHOLESALE } from './store.js';
 import { AppError, audit, getSettings } from './common.js';
 import { normalizePhone } from './sellers.js';
 
@@ -29,7 +30,8 @@ export async function publicCheckout() {
 async function productsFor(items, db = direct) {
   const ids = [...new Set((items ?? []).map((i) => Number(i.productId ?? i.id)).filter(Number.isInteger))];
   if (!ids.length) return [];
-  return (await db.query('SELECT id, sku, name, slug, image_url, list_price, wholesale_price, cost, active, out_of_stock FROM products WHERE id = ANY($1)', [ids])).rows;
+  return (await db.query(`SELECT id, sku, name, slug, image_url, ${SALE_LIST} AS list_price, ${SALE_WHOLESALE} AS wholesale_price, cost, active, out_of_stock
+       FROM products p WHERE id = ANY($1)`, [ids])).rows;
 }
 
 // Mínimo de compra para un mayorista (null = no tiene, por ejemplo si administración se lo sacó).

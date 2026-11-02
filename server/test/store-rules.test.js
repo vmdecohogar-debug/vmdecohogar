@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cleanTheme, computePrices, fontFamilyFromUrl, priceFromCost, safeLink, slugify } from '../src/rules/store.js';
+import { cleanDiscount, cleanTheme, computePrices, discountedPrice, fontFamilyFromUrl, priceFromCost, promoPrices, safeLink, slugify } from '../src/rules/store.js';
 
 test('precio desde el costo con margen y redondeo hacia arriba a los $100', () => {
   assert.equal(priceFromCost(198400, 50), 300000); // $1.984 × 1,50 = $2.976 → $3.000
@@ -50,4 +50,24 @@ test('links de banners: solo web o páginas de la tienda', () => {
   assert.equal(safeLink('javascript:alert(1)'), null);
   assert.equal(safeLink('//evil.com'), null);
   assert.equal(safeLink(''), null);
+});
+
+test('descuento: precio promocional redondeado hacia arriba a los $100', () => {
+  assert.equal(discountedPrice(330000, 20), 270000); // $3.300 − 20% = $2.640 → $2.700
+  assert.equal(discountedPrice(300000, 10), 270000); // $3.000 − 10% = $2.700 justo
+  assert.equal(discountedPrice(50000, 1), null, 'si con el redondeo no baja, no hay promo');
+  assert.equal(discountedPrice(330000, null), null);
+  assert.deepEqual(promoPrices({ list_price: 330000, wholesale_price: 300000, discount_pct: 20 }),
+    { promo_list_price: 270000, promo_wholesale_price: 240000, errors: [] });
+  assert.deepEqual(promoPrices({ list_price: 330000, wholesale_price: 300000, discount_pct: null }),
+    { promo_list_price: null, promo_wholesale_price: null, errors: [] });
+  assert.equal(promoPrices({ list_price: 50000, wholesale_price: 50000, discount_pct: 1 }).errors.length, 1);
+});
+
+test('descuento: valida el %', () => {
+  assert.deepEqual(cleanDiscount(''), { pct: null, errors: [] });
+  assert.deepEqual(cleanDiscount(0), { pct: null, errors: [] });
+  assert.deepEqual(cleanDiscount('15,5'), { pct: 15.5, errors: [] });
+  assert.equal(cleanDiscount(100).errors.length, 1);
+  assert.equal(cleanDiscount('abc').errors.length, 1);
 });
