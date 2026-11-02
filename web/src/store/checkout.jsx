@@ -277,7 +277,7 @@ export function WholesalePage() {
   return (
     <section className="s-section s-wrap s-narrow">
       <h1 className="s-page-title">Compras mayoristas</h1>
-      <p>Con una cuenta mayorista ves y pagás los precios por mayor en toda la tienda.</p>
+      <p>Las compras mayoristas son para <strong>emprendedores y locales</strong> que revenden. Con una cuenta mayorista ves y pagás los precios por mayor en toda la tienda.</p>
       {minNote}
       <div className="s-contact">
         <div className="s-box">
