@@ -26,7 +26,7 @@ p { margin: 0 0 12px; }
   display: flex; align-items: center; gap: 10px;
   padding: 10px 16px; background: var(--white); border-bottom: 1px solid var(--line);
 }
-.topbar img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.topbar img { width: 42px; height: 42px; object-fit: contain; }
 .topbar .brand { font-family: var(--font-title); font-size: 20px; font-weight: 600; }
 .topbar .who { margin-left: auto; font-size: 13px; color: var(--text-soft); text-align: right; }
 .topbar button { margin-left: 8px; }
@@ -142,7 +142,7 @@ th { font-size: 13px; color: var(--text-soft); font-weight: 700; }
 @media (min-width: 900px) { .cartbar { left: 220px; bottom: 0; } }
 
 .auth { max-width: 420px; margin: 0 auto; padding: 24px 16px; }
-.auth .logo { display: block; width: 160px; height: 160px; margin: 8px auto 16px; border-radius: 50%; object-fit: cover; }
+.auth .logo { display: block; width: 160px; height: 160px; margin: 8px auto 16px; object-fit: contain; }
 .code { font-family: ui-monospace, monospace; font-size: 20px; font-weight: 800; letter-spacing: 1px; }
 @media (max-width: 420px) { .topbar .brand { font-size: 17px; } }
 
