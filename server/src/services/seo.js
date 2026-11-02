@@ -53,7 +53,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
   let m = /^\/producto\/([a-z0-9-]+)\/?$/.exec(pathname);
   if (m) {
     const p = await direct.one(
-      `SELECT p.name, p.description, p.image_url, COALESCE(p.promo_list_price, p.list_price) AS list_price, p.sku, p.stock, p.out_of_stock, c.name AS category FROM products p
+      `SELECT p.name, p.description, p.image_url, p.extra_images, COALESCE(p.promo_list_price, p.list_price) AS list_price, p.sku, p.stock, p.out_of_stock, c.name AS category FROM products p
          LEFT JOIN categories c ON c.id = p.category_id WHERE p.slug = $1 AND p.active AND p.list_price > 0`,
       [m[1]],
     );
@@ -64,7 +64,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
       meta.type = 'product';
       meta.ld.push({
         '@context': 'https://schema.org', '@type': 'Product', name: p.name, sku: p.sku, description: p.description || undefined,
-        image: p.image_url ? [abs(base, p.image_url)] : undefined, category: p.category || undefined,
+        image: p.image_url ? [p.image_url, ...(p.extra_images ?? [])].map((u) => abs(base, u)) : undefined, category: p.category || undefined,
         brand: { '@type': 'Brand', name },
         offers: {
           '@type': 'Offer', price: money(p.list_price), priceCurrency: 'ARS', url: meta.url,

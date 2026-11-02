@@ -4,7 +4,7 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.js';
 import { pesos } from '../format.js';
 import { useStore, waLink } from './StoreContext.jsx';
-import { Carousel, CategoryMosaic, MinimumBar, Price, ProductGrid, ProductPhoto, SkeletonGrid, SkeletonLines } from './components.jsx';
+import { Carousel, CategoryMosaic, MinimumBar, Price, ProductGallery, ProductGrid, ProductPhoto, SkeletonGrid, SkeletonLines } from './components.jsx';
 import { Ico, WhatsAppIcon } from './icons.jsx';
 
 // Los precios dependen de quién mira (público o mayorista): al ingresar o salir se vuelve a pedir.
@@ -159,7 +159,7 @@ export function Product() {
           <Link to="/">Inicio</Link> / {p.category_slug ? <Link to={`/categoria/${p.category_slug}`}>{p.category_name}</Link> : <Link to="/productos">Productos</Link>} / <span>{p.name}</span>
         </nav>
         <div className="s-detail">
-          <ProductPhoto product={p} className="s-detail-photo" />
+          <ProductGallery product={p} />
           <div className="s-detail-info">
             <h1 className="s-detail-title">{p.name}</h1>
             <div className="s-sku">Código {p.sku}</div>

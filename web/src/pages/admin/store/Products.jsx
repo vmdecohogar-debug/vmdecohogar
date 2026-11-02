@@ -3,15 +3,16 @@ import { api } from '../../../api.js';
 import { pesos, toCents } from '../../../format.js';
 import { Badge, Loading, Notice, useAction, useApi } from '../../../components/ui.jsx';
 import { discountedPrice, marginOf, priceFromCost } from '../../../pricing.js';
-import { ImageField } from './ImageField.jsx';
+import { GalleryField } from './ImageField.jsx';
 
 const money = (c) => (c == null ? '' : String(c / 100).replace('.', ','));
 const EMPTY = {
-  name: '', sku: '', category_id: '', description: '', image_url: '', price_mode: 'margin', cost: '',
+  name: '', sku: '', category_id: '', description: '', images: [], price_mode: 'margin', cost: '',
   list_margin: '', wholesale_margin: '', list_price: '', wholesale_price: '', stock: '', featured: false, discount_pct: '', out_of_stock: false,
 };
 const toForm = (p) => ({
-  id: p.id, name: p.name, sku: p.sku, category_id: p.category_id ?? '', description: p.description ?? '', image_url: p.image_url ?? '',
+  id: p.id, name: p.name, sku: p.sku, category_id: p.category_id ?? '', description: p.description ?? '',
+  images: [p.image_url, ...(p.extra_images ?? [])].filter(Boolean),
   price_mode: p.price_mode, cost: money(p.cost), list_margin: p.list_margin ?? '', wholesale_margin: p.wholesale_margin ?? '',
   list_price: money(p.list_price), wholesale_price: money(p.wholesale_price), stock: String(p.stock ?? ''), featured: p.featured,
   discount_pct: p.discount_pct ?? '',
@@ -56,7 +57,11 @@ function ProductForm({ initial, categories, settings, onDone, onCancel }) {
     <form className="card stack" onSubmit={save}>
       <h2>{f.id ? 'Editar producto' : 'Nuevo producto'}</h2>
       <Notice msg={msg} />
-      <ImageField value={f.image_url} onChange={(url) => setF((x) => ({ ...x, image_url: url }))} onError={(text) => setMsg({ type: 'error', text })} />
+      <GalleryField
+        value={f.images}
+        onChange={(fn) => setF((x) => ({ ...x, images: fn(x.images) }))}
+        onError={(text) => setMsg({ type: 'error', text })}
+      />
       <div><label htmlFor="p-name">Nombre</label><input id="p-name" value={f.name} onChange={set('name')} required /></div>
       <div className="grid two">
         <div>
