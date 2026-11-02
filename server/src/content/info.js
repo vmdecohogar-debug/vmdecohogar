@@ -15,11 +15,12 @@ function channels(store) {
   return list.length ? list.join(', ') : 'WhatsApp, desde el botón verde de la página';
 }
 
-// Consultas en 12 h y horario lunes a sábado 9 a 18: confirmados por nadia (2026-11-02). El resto de los plazos es una propuesta a confirmar.
+// Confirmados por nadia (2026-11-02): consultas en 12 h, horario lunes a sábado 9 a 18, pedidos confirmados en horario de atención.
+// El resto de los plazos es la propuesta inicial.
 export const RESPONSE_TIMES = [
   { key: 'consultas', label: 'Consultas por WhatsApp', time: 'Dentro de las 12 horas', detail: 'Contadas dentro de nuestro horario de atención. Muchas veces respondemos mucho antes.' },
   { key: 'mail', label: 'Consultas por mail o formulario', time: 'Dentro de las 12 horas', detail: 'Contadas dentro del horario de atención. Si la consulta es urgente, preferí WhatsApp.' },
-  { key: 'pedido', label: 'Confirmación de tu pedido', time: 'El mismo día hábil', detail: 'Para pedidos hechos antes de las 14 h. Los que llegan más tarde se confirman el siguiente día hábil.' },
+  { key: 'pedido', label: 'Confirmación de tu pedido', time: 'En el momento', detail: 'Si lo hacés dentro de nuestro horario de atención. Los pedidos que llegan fuera de horario se confirman apenas abrimos, el siguiente día hábil.' },
   { key: 'transferencia', label: 'Verificación de transferencias', time: 'Hasta 24 horas hábiles', detail: 'Desde que nos mandás el comprobante. Con Mercado Pago la acreditación es automática.' },
   { key: 'despacho', label: 'Preparación y despacho', time: 'De 1 a 3 días hábiles', detail: 'Desde que el pago está acreditado. Te avisamos por WhatsApp cuando sale tu pedido.' },
   { key: 'mayoristas', label: 'Alta de cuentas mayoristas', time: 'Hasta 48 horas hábiles', detail: 'Revisamos cada solicitud y te avisamos por WhatsApp cuando tu cuenta está habilitada.' },
@@ -108,8 +109,7 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         h: '1. Quién es responsable de tus datos',
         p: [
-          // CONFIRMAR: nombre del titular o razón social y CUIT, que la ley pide identificar.
-          `El responsable de la base de datos es ${name}${where}. Para cualquier consulta sobre tus datos podés escribirnos por ${contacto}.`,
+          `El responsable de la base de datos es Alejo Ignacio Vera, CUIT 20-37542387-2, titular de ${name}${where}. Para cualquier consulta sobre tus datos podés escribirnos por ${contacto}.`,
         ],
       },
       {
