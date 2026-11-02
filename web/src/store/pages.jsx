@@ -249,7 +249,7 @@ export function Cart() {
             <strong>{pesos(quote?.subtotal ?? cart.total)}</strong>
           </div>
           <MinimumBar minimum={quote?.minimum} />
-          <p className="s-note">El envío se calcula según tu zona en el próximo paso.</p>
+          <p className="s-note">El envío se calcula con tu código postal en el próximo paso.</p>
           {quote?.minimum && !quote.minimum.reached
             ? <button type="button" className="s-btn s-btn-block" disabled>Finalizar compra</button>
             : <Link to="/finalizar" className="s-btn s-btn-block">Finalizar compra</Link>}

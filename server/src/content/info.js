@@ -44,9 +44,9 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         title: 'Compras',
         items: [
-          { q: '¿Cómo compro?', a: 'Elegí los productos, sumalos al carrito y tocá "Finalizar compra". Completá tus datos y la dirección de entrega, elegí la zona de envío y el medio de pago. Al terminar te mostramos el resumen de tu pedido y te contactamos por WhatsApp para confirmarlo.' },
+          { q: '¿Cómo compro?', a: 'Elegí los productos, sumalos al carrito y tocá "Finalizar compra". Completá tus datos, tu código postal y la dirección de entrega (ahí calculamos el envío) y elegí el medio de pago. Al terminar te mostramos el resumen de tu pedido y te contactamos por WhatsApp para confirmarlo.' },
           { q: '¿Necesito crear una cuenta para comprar?', a: 'No. Podés comprar como invitado con tu nombre, teléfono y dirección. Solo los clientes mayoristas tienen cuenta, para ver sus precios.' },
-          { q: '¿Los precios son finales?', a: 'Sí, los precios publicados son precios finales en pesos argentinos. El envío se suma aparte según tu zona y lo ves antes de pagar.' },
+          { q: '¿Los precios son finales?', a: 'Sí, los precios publicados son precios finales en pesos argentinos. El envío se suma aparte según la distancia hasta tu domicilio y lo ves antes de pagar.' },
           { q: '¿Cómo sé si hay stock?', a: 'Los productos publicados están disponibles. Si al preparar tu pedido falta algo, te avisamos por WhatsApp antes de despachar y te ofrecemos cambiarlo por otro o devolverte ese importe.' },
         ],
       },
@@ -61,7 +61,9 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         title: 'Envíos',
         items: [
-          { q: '¿Hacen envíos? ¿Cuánto cuestan?', a: 'Sí. El costo depende de la zona de entrega y lo ves al elegir tu zona en "Finalizar compra", antes de pagar.' },
+          { q: '¿Hacen envíos? ¿Cuánto cuestan?', a: 'Sí, enviamos en moto. En "Finalizar compra" escribís tu código postal y te mostramos el costo al instante, antes de pagar. El precio depende de la distancia desde nuestro local hasta tu domicilio.' },
+          { q: '¿Cómo se calcula el costo del envío?', a: 'Con tu código postal ubicamos tu localidad y calculamos la distancia. Cuando completás la calle y el número, lo ajustamos a tu dirección exacta. El costo es una tarifa fija más un monto por kilómetro, como un viaje en moto de aplicación, y siempre lo ves antes de confirmar el pedido. El que figura en tu pedido es el que pagás.' },
+          { q: '¿Hasta dónde llegan?', a: 'Si tu domicilio queda más lejos de lo que cubrimos en moto, la página te avisa al poner tu código postal. En ese caso escribinos por WhatsApp y buscamos otra forma de hacértelo llegar.' },
           { q: '¿Cuánto tarda en llegar mi pedido?', a: `${dispatch} El plazo empieza a contar cuando el pago está acreditado. Te avisamos por WhatsApp cuando sale.` },
           { q: '¿Puedo retirar mi pedido?', a: `Consultanos por WhatsApp y coordinamos el retiro${where}.` },
         ],
@@ -115,7 +117,7 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         h: '2. Qué datos recolectamos',
         p: [
-          'Cuando hacés un pedido: tu nombre, teléfono, dirección y localidad de entrega, zona de envío y, si las dejás, notas para la entrega. También guardamos el detalle del pedido (productos, importes, medio de pago y estado).',
+          'Cuando hacés un pedido: tu nombre, teléfono, dirección, código postal y localidad de entrega, la distancia calculada para el envío y, si las dejás, notas para la entrega. También guardamos el detalle del pedido (productos, importes, medio de pago y estado).',
           'Si te registrás como cliente mayorista: tu nombre, teléfono, contraseña (guardada cifrada, nadie puede leerla) y, si los cargás, tu mail, dirección, localidad y el nombre de tu negocio.',
           'No recolectamos datos sensibles ni los datos de tu tarjeta: los pagos con tarjeta se procesan dentro de Mercado Pago, con su propia política de privacidad.',
         ],
@@ -130,7 +132,7 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         h: '4. Con quién los compartimos',
         p: [
-          'Solo con quienes necesitamos para darte el servicio: el transporte o mensajería que entrega tu pedido (nombre, teléfono y dirección), Mercado Pago cuando elegís pagar por ese medio, y los proveedores que alojan la página y la base de datos. Los servidores de esos proveedores pueden estar fuera de Argentina; trabajamos con empresas que aplican medidas de seguridad adecuadas.',
+          'Solo con quienes necesitamos para darte el servicio: el transporte o mensajería que entrega tu pedido (nombre, teléfono y dirección), el servicio público de normalización de direcciones del Estado argentino (Georef), al que le consultamos tu dirección y código postal (sin tu nombre ni teléfono) para calcular la distancia del envío, Mercado Pago cuando elegís pagar por ese medio, y los proveedores que alojan la página y la base de datos. Los servidores de esos proveedores pueden estar fuera de Argentina; trabajamos con empresas que aplican medidas de seguridad adecuadas.',
           'También podemos informar datos a autoridades cuando una ley o una orden judicial lo exija.',
         ],
       },

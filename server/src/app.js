@@ -15,6 +15,7 @@ import * as claims from './services/claims.js';
 import * as store from './services/store.js';
 import * as seo from './services/seo.js';
 import * as checkout from './services/checkout.js';
+import * as shipping from './services/shipping.js';
 import * as weborders from './services/weborders.js';
 import * as wholesale from './services/wholesale.js';
 
@@ -97,6 +98,13 @@ export function createApp() {
   app.get('/api/store/products', h(async (req) => store.publicProducts({ ...req.query, showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/products/:slug', h(async (req) => store.publicProduct(req.params.slug, { showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/checkout', h(async () => checkout.publicCheckout()));
+  app.get('/api/store/shipping/cp/:cp', h(async (req) => ({ localities: shipping.localitiesFor(req.params.cp).map((l) => l.name) })));
+  app.post('/api/store/shipping/quote', h(async (req) => {
+    const v = await viewer(req);
+    const wholesale = v?.role === 'wholesale' && v.status === 'active';
+    const subtotal = req.body.items ? (await checkout.quote(req.body.items, { wholesale, viewer: v })).subtotal : 0;
+    return shipping.quoteShipping({ ...req.body, subtotal });
+  }));
   app.post('/api/store/quote', h(async (req) => {
     const v = await viewer(req);
     return checkout.quote(req.body.items, { wholesale: v?.role === 'wholesale' && v.status === 'active', viewer: v });
@@ -221,6 +229,10 @@ export function createApp() {
   app.delete('/api/admin/store/banners/:id', admin, h(async (req) => store.deleteBanner(Number(req.params.id), req.user.id)));
   app.get('/api/admin/store/settings', admin, h(async () => store.storeSettings()));
   app.put('/api/admin/store/settings', admin, h(async (req) => store.saveStoreSettings(req.body, req.user.id)));
+  app.get('/api/admin/store/shipping', admin, h(async () => shipping.shippingSettings()));
+  app.put('/api/admin/store/shipping', admin, h(async (req) => shipping.saveShippingSettings(req.body, req.user.id)));
+  app.post('/api/admin/store/shipping/locate', admin, h(async (req) => shipping.locateOrigin(req.body)));
+  app.post('/api/admin/store/shipping/try', admin, h(async (req) => shipping.quoteShipping(req.body)));
   app.get('/api/admin/store/zones', admin, h(async () => checkout.listZones()));
   app.post('/api/admin/store/zones', admin, h(async (req) => checkout.saveZone(req.body, req.user.id)));
   app.delete('/api/admin/store/zones/:id', admin, h(async (req) => checkout.deleteZone(Number(req.params.id), req.user.id)));

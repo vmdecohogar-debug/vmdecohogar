@@ -23,6 +23,8 @@ before(async () => {
   web = await import('../src/services/weborders.js');
   A = await store.saveStoreProduct({ name: 'Rallador', cost: 462000 }, 1); // lista 7.700, costo 4.620
   B = await store.saveStoreProduct({ name: 'Mantel', price_mode: 'manual', list_price: 500000, wholesale_price: 400000 }, 1); // sin costo
+  process.env.GEOREF_OFF = '1';
+  await (await import('../src/services/shipping.js')).saveShippingSettings({ mode: 'zones' }, 1); // estas pruebas usan zonas fijas
   zone = (await checkout.publicCheckout()).zones[0];
 });
 
