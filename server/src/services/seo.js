@@ -37,7 +37,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
   let m = /^\/producto\/([a-z0-9-]+)\/?$/.exec(pathname);
   if (m) {
     const p = await direct.one(
-      `SELECT p.name, p.description, p.image_url, p.list_price, p.sku, p.stock, c.name AS category FROM products p
+      `SELECT p.name, p.description, p.image_url, COALESCE(p.promo_list_price, p.list_price) AS list_price, p.sku, p.stock, c.name AS category FROM products p
          LEFT JOIN categories c ON c.id = p.category_id WHERE p.slug = $1 AND p.active AND p.list_price > 0`,
       [m[1]],
     );

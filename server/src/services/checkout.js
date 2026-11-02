@@ -3,6 +3,7 @@ import { randomBytes } from 'node:crypto';
 import { config } from '../config.js';
 import { direct, tx } from '../db/index.js';
 import { orderWhatsappText, priceOrder } from '../rules/store.js';
+import { SALE_LIST, SALE_WHOLESALE } from './store.js';
 import { AppError, audit, getSettings } from './common.js';
 import { normalizePhone } from './sellers.js';
 
@@ -28,7 +29,8 @@ export async function publicCheckout() {
 async function productsFor(items, db = direct) {
   const ids = [...new Set((items ?? []).map((i) => Number(i.productId ?? i.id)).filter(Number.isInteger))];
   if (!ids.length) return [];
-  return (await db.query('SELECT id, sku, name, slug, image_url, list_price, wholesale_price, cost, active FROM products WHERE id = ANY($1)', [ids])).rows;
+  return (await db.query(`SELECT id, sku, name, slug, image_url, ${SALE_LIST} AS list_price, ${SALE_WHOLESALE} AS wholesale_price, cost, active
+       FROM products p WHERE id = ANY($1)`, [ids])).rows;
 }
 
 // Precios actuales del carrito (el navegador puede tener precios viejos).
