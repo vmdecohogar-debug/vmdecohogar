@@ -128,6 +128,7 @@ test('compra mínima mayorista de $50.000 y mayoristas eximidos desde el panel',
 
   const ws = await wholesale.setMinOrder(2000000, 1);
   assert.equal(ws.minOrder, 2000000);
+  assert.equal((await store.publicConfig()).store.wholesaleMinOrder, 2000000, 'la página de mayoristas avisa el mínimo');
   assert.equal((await wholesale.newInvite(1)).minOrder, 2000000, 'generar enlace no borra el mínimo');
   assert.equal((await checkout.quote([{ productId: P.id, qty: 3 }], { wholesale: true, viewer })).minimum.reached, true);
   await assert.rejects(wholesale.setMinOrder(-5, 1), /inválido/);
