@@ -81,6 +81,7 @@ export function createApp() {
   app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
+  app.get('/api/store/info', h(async () => seo.storeInfo()));
   app.get('/robots.txt', (_req, res) => res.type('text/plain').send(seo.robots()));
   app.get('/sitemap.xml', async (_req, res, next) => {
     try {
@@ -96,7 +97,6 @@ export function createApp() {
   app.get('/api/store/products', h(async (req) => store.publicProducts({ ...req.query, showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/products/:slug', h(async (req) => store.publicProduct(req.params.slug, { showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/checkout', h(async () => checkout.publicCheckout()));
-  app.get('/api/store/info', h(async () => seo.storeInfo()));
   app.post('/api/store/quote', h(async (req) => checkout.quote(req.body.items, { wholesale: await canSeeWholesale(req) })));
   app.post('/api/store/orders', h(async (req) => {
     const v = await viewer(req);
