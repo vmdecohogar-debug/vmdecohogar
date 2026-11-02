@@ -240,6 +240,9 @@ export function OrderStatus() {
 
 export function WholesalePage() {
   const { user, login } = useAuth();
+  const { config } = useStore();
+  const min = config?.store?.wholesaleMinOrder ?? 0;
+  const minNote = min > 0 ? <p className="s-pill">Compra mínima mayorista: {pesos(min)} (sin contar el envío)</p> : null;
   const [params] = useSearchParams();
   const invite = params.get('inv') ?? '';
   const [f, setF] = useState({ name: '', business: '', phone: '', email: '', city: '', password: '' });
@@ -266,6 +269,7 @@ export function WholesalePage() {
       <section className="s-section s-wrap s-narrow s-empty">
         <h1 className="s-page-title">Hola, {user.name.split(' ')[0]}</h1>
         <p>Tu cuenta mayorista está activa: ya ves los precios mayoristas en toda la tienda.</p>
+        {minNote}
         <Link to="/productos" className="s-btn">Ver productos</Link>
       </section>
     );
@@ -274,6 +278,7 @@ export function WholesalePage() {
     <section className="s-section s-wrap s-narrow">
       <h1 className="s-page-title">Compras mayoristas</h1>
       <p>Con una cuenta mayorista ves y pagás los precios por mayor en toda la tienda.</p>
+      {minNote}
       <div className="s-contact">
         <div className="s-box">
           <h2>¿Ya tenés cuenta?</h2>

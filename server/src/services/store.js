@@ -253,6 +253,9 @@ export async function home({ showWholesale = false } = {}) {
 export async function publicConfig() {
   const { store, theme } = await storeSettings();
   const { margins: _m, rounding: _r, ...pub } = store;
+  // Compra mínima mayorista (centavos; 0 = sin mínimo), para avisarla en la página de mayoristas.
+  const ws = (await getSettings()).wholesale ?? {};
+  pub.wholesaleMinOrder = Math.max(0, Number(ws.minOrder ?? 5000000) || 0);
   return { store: pub, theme, categories: (await listCategories()).map(({ own_image_url: _o, ...c }) => c) };
 }
 
