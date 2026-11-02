@@ -320,3 +320,7 @@
 .s-404-cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0 24px; }
 .s-404-cats a { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 999px; padding: 8px 14px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .s-404-cats a:hover { border-color: var(--c-primary); }
+
+/* Costo de envío calculado por código postal */
+.s-ship-quote { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 4px; }
+.s-ship-quote small { flex-basis: 100%; color: var(--c-textSoft); }
