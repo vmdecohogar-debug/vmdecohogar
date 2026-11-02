@@ -26,7 +26,7 @@ export default function Register() {
   if (done) {
     return (
       <div className="auth">
-        <img className="logo" src="/logo.jpg" alt="VM Bazar y Deco" />
+        <img className="logo" src="/logo.png" alt="VM Bazar y Deco" />
         <div className="card stack">
           <h2>¡Listo, {done.name.split(' ')[0]}!</h2>
           <p>Tu cuenta quedó pendiente de aprobación. Te avisamos por WhatsApp cuando esté activa.</p>
@@ -39,7 +39,7 @@ export default function Register() {
 
   return (
     <div className="auth">
-      <img className="logo" src="/logo.jpg" alt="VM Bazar y Deco" />
+      <img className="logo" src="/logo.png" alt="VM Bazar y Deco" />
       <h1 style={{ textAlign: 'center' }}>Sumate a la red</h1>
       <form className="card stack" onSubmit={submit}>
         <Notice msg={msg} />

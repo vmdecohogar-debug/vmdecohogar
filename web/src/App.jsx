@@ -39,7 +39,7 @@ function AdminLayout({ children }) {
   return (
     <div className="app">
       <header className="topbar">
-        <img src="/logo.jpg" alt="VM Bazar y Deco" />
+        <img src="/logo.png" alt="VM Bazar y Deco" />
         <span className="brand">VM Bazar y Deco</span>
         <span className="who">Administración</span>
         <a className="btn secondary small" href="/" target="_blank" rel="noopener noreferrer">Ver tienda</a>

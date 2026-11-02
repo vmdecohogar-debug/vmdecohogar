@@ -20,7 +20,7 @@ export default function Login() {
 
   return (
     <div className="auth">
-      <img className="logo" src="/logo.jpg" alt="VM Bazar y Deco" />
+      <img className="logo" src="/logo.png" alt="VM Bazar y Deco" />
       <h1 style={{ textAlign: 'center' }}>Ingresar</h1>
       <form className="card stack" onSubmit={submit}>
         <Notice msg={msg} />

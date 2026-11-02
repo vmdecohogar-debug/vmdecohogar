@@ -30,7 +30,7 @@ function Header() {
       {store.dispatchNote && <div className="s-topnote"><Ico name="truck" size={16} /> {store.dispatchNote}</div>}
       <div className="s-header-row s-wrap">
         <Link to="/" className="s-brand" aria-label={`${store.name ?? 'VM Bazar y Deco'}, inicio`}>
-          <img src="/logo.jpg" alt="" width="44" height="44" />
+          <img src="/logo.png" alt="" width="48" height="48" />
           <span>{store.name ?? 'VM Bazar y Deco'}</span>
         </Link>
         <SearchBox className="s-search-desktop" />
