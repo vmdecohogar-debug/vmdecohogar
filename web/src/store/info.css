@@ -1,0 +1,42 @@
+/* Páginas informativas: preguntas frecuentes, tiempos de respuesta y privacidad. */
+.s-info { padding-bottom: 40px; line-height: 1.6; }
+.s-info .s-page-title { margin-bottom: 8px; }
+.s-info-intro { color: var(--c-textSoft); margin: 0 0 20px; }
+.s-info-updated { color: var(--c-textSoft); font-size: 14px; margin: 0 0 20px; }
+.s-info h2 { font-family: var(--f-title); font-size: 17px; font-weight: 700; margin: 0 0 10px; }
+
+.s-faq-group { margin-top: 24px; }
+.s-faq { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 12px; margin-bottom: 8px; }
+.s-faq summary {
+  cursor: pointer; list-style: none; padding: 14px 44px 14px 16px; font-weight: 600; position: relative; min-height: 44px;
+}
+.s-faq summary::-webkit-details-marker { display: none; }
+.s-faq summary::after {
+  content: '+'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 22px; font-weight: 400; color: var(--c-primary);
+}
+.s-faq[open] summary::after { content: '−'; }
+.s-faq summary:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; border-radius: 12px; }
+.s-faq p { margin: 0; padding: 0 16px 16px; color: var(--c-textSoft); }
+.s-info-links { margin-top: 24px; color: var(--c-textSoft); }
+.s-info-links a { color: var(--c-primary); }
+
+.s-times { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 10px; }
+.s-times li {
+  display: flex; gap: 14px; align-items: flex-start; background: var(--c-surface);
+  border: 1px solid var(--c-line); border-radius: 12px; padding: 16px;
+}
+.s-times svg { color: var(--c-primary); flex: 0 0 auto; margin-top: 2px; }
+.s-times h2 { font-size: 15px; margin: 0; }
+.s-times-value { display: block; color: var(--c-primary); font-size: 18px; margin: 2px 0 4px; }
+.s-times p { margin: 0; color: var(--c-textSoft); font-size: 14px; }
+@media (min-width: 720px) { .s-times { grid-template-columns: 1fr 1fr; } }
+
+.s-legal { margin-top: 22px; }
+.s-legal p { margin: 0 0 10px; }
+
+.s-info-ask {
+  margin-top: 28px; padding: 20px; text-align: center; border-radius: 14px;
+  background: var(--c-primarySoft); display: grid; gap: 10px; justify-items: center;
+}
+.s-info-ask p { margin: 0; font-weight: 600; }

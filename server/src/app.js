@@ -81,6 +81,7 @@ export function createApp() {
   app.use('/uploads', express.static(config.uploadsDir, { maxAge: '30d' }));
 
   app.get('/api/health', h(() => ({ ok: true })));
+  app.get('/api/store/info', h(async () => seo.storeInfo()));
   app.get('/robots.txt', (_req, res) => res.type('text/plain').send(seo.robots()));
   app.get('/sitemap.xml', async (_req, res, next) => {
     try {

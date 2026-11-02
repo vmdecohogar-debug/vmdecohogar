@@ -3,12 +3,28 @@
 import { config } from '../config.js';
 import { direct } from '../db/index.js';
 import { storeSettings } from './store.js';
+import { getSettings } from './common.js';
+import { faqJsonLd, infoPages } from '../content/info.js';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // JSON dentro de <script>: se escapan "<" para que un texto no pueda cerrar la etiqueta.
 const jsonLd = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 const abs = (base, url) => (!url ? null : /^https?:\/\//.test(url) ? url : `${base}${url}`);
 const money = (cents) => (cents / 100).toFixed(2);
+
+// Descripción para Google y para la vista previa al compartir (hasta ~160 caracteres) de las páginas fijas.
+const DEFAULT_DESCRIPTION = (name) => `Tienda online de bazar y decoración ${name}: cocina, baño, deco, organización, limpieza y más. Envíos y precios mayoristas.`;
+const FIXED_PAGES = (name) => ({
+  '/productos': { title: `Todos los productos | ${name}`, description: `Todos los productos de ${name}: bazar, cocina, baño, deco, organización, limpieza, belleza e infantiles. Comprá online con envío.` },
+  '/contacto': { title: `Contacto | ${name}`, description: `Contactá a ${name} por WhatsApp, teléfono o mail. Consultas sobre productos, envíos, pagos y compras mayoristas.` },
+  '/mayoristas': { title: `Compras mayoristas | ${name}`, description: `Comprá por mayor en ${name}: registrate como cliente mayorista y accedé a precios especiales en bazar y deco.` },
+});
+
+// Páginas informativas (preguntas frecuentes, tiempos de respuesta, privacidad) completadas con los datos del panel.
+export async function storeInfo(store) {
+  const s = await getSettings();
+  return infoPages(store ?? (await storeSettings()).store, { wholesaleMin: Number(s.wholesale?.minOrder) || 0 });
+}
 
 export async function pageMeta(pathname, base = config.appUrl) {
   const { store } = await storeSettings();
@@ -66,9 +82,15 @@ export async function pageMeta(pathname, base = config.appUrl) {
       meta.image = abs(base, c.image_url) ?? meta.image;
     } else meta.noindex = true;
   }
-  if (pathname === '/productos') meta.title = `Todos los productos | ${name}`;
-  if (pathname === '/contacto') meta.title = `Contacto | ${name}`;
-  if (pathname === '/mayoristas') meta.title = `Compras mayoristas | ${name}`;
+  const fixed = FIXED_PAGES(name)[pathname.replace(/\/$/, '') || '/'];
+  if (fixed) Object.assign(meta, fixed);
+  const info = Object.values(await storeInfo(store)).find((pg) => pg.path === pathname.replace(/\/$/, ''));
+  if (info) {
+    meta.title = `${info.title} | ${name}`;
+    meta.description = info.description;
+    if (info.groups) meta.ld.push(faqJsonLd(info));
+  }
+  if (!meta.description) meta.description = DEFAULT_DESCRIPTION(name);
   return meta;
 }
 
@@ -101,12 +123,33 @@ export async function sitemap(base = config.appUrl) {
     url('/', null, '1.0'),
     url('/productos', null, '0.8'),
     url('/contacto', null, '0.5'),
+    url('/preguntas-frecuentes', null, '0.5'),
+    url('/tiempos-de-respuesta', null, '0.4'),
+    url('/privacidad', null, '0.3'),
     ...cats.map((c) => url(`/categoria/${c.slug}`, null, '0.8')),
     ...products.map((p) => url(`/producto/${p.slug}`, p.updated_at, '0.7')),
     '</urlset>',
   ].join('\n');
 }
 
+// robots.txt: qué puede recorrer Google. Las páginas privadas (panel, carrito, pedidos) quedan afuera.
+// /api/store/ queda permitido porque Google arma las páginas de la tienda pidiendo esos datos:
+// si se bloquea, ve los productos vacíos.
 export function robots(base = config.appUrl) {
-  return `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /ingresar\nDisallow: /carrito\nDisallow: /finalizar\nDisallow: /pedido/\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
+  return [
+    'User-agent: *',
+    'Allow: /',
+    'Allow: /api/store/',
+    'Disallow: /api/',
+    'Disallow: /admin',
+    'Disallow: /ingresar',
+    'Disallow: /carrito',
+    'Disallow: /finalizar',
+    'Disallow: /pedido/',
+    'Disallow: /api/store/orders',
+    'Disallow: /*?*orden=',
+    '',
+    `Sitemap: ${base}/sitemap.xml`,
+    '',
+  ].join('\n');
 }
