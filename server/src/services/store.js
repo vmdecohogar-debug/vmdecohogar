@@ -134,7 +134,7 @@ export async function reorder(table, ids, adminId) {
 
 export async function listBanners({ includeInactive = false } = {}) {
   const { rows } = await direct.query(
-    `SELECT id, image_url, link, title, subtitle, position, active FROM banners ${includeInactive ? '' : 'WHERE active'} ORDER BY position, id`,
+    `SELECT id, image_url, mobile_image_url, link, title, subtitle, position, active FROM banners ${includeInactive ? '' : 'WHERE active'} ORDER BY position, id`,
   );
   return rows;
 }
@@ -142,15 +142,16 @@ export async function listBanners({ includeInactive = false } = {}) {
 export async function saveBanner(data, adminId) {
   if (!data.image_url) throw new AppError('Falta la imagen del banner.');
   if (data.link && !safeLink(data.link)) throw new AppError('El link tiene que empezar con https:// o con / (una página de la tienda).');
-  const vals = [data.image_url, safeLink(data.link), str(data.title, 120) || null, str(data.subtitle, 200) || null, data.active ?? true];
+  const vals = [data.image_url, safeLink(data.link), str(data.title, 120) || null, str(data.subtitle, 200) || null, data.active ?? true,
+    data.mobile_image_url || null];
   let b;
   if (data.id) {
-    b = await direct.one('UPDATE banners SET image_url = $2, link = $3, title = $4, subtitle = $5, active = $6 WHERE id = $1 RETURNING *', [data.id, ...vals]);
+    b = await direct.one('UPDATE banners SET image_url = $2, link = $3, title = $4, subtitle = $5, active = $6, mobile_image_url = $7 WHERE id = $1 RETURNING *', [data.id, ...vals]);
     if (!b) throw new AppError('Banner no encontrado', 404);
   } else {
     b = await direct.one(
-      `INSERT INTO banners (image_url, link, title, subtitle, active, position)
-       VALUES ($1, $2, $3, $4, $5, (SELECT COALESCE(MAX(position), 0) + 1 FROM banners)) RETURNING *`,
+      `INSERT INTO banners (image_url, link, title, subtitle, active, mobile_image_url, position)
+       VALUES ($1, $2, $3, $4, $5, $6, (SELECT COALESCE(MAX(position), 0) + 1 FROM banners)) RETURNING *`,
       vals,
     );
   }
@@ -169,7 +170,7 @@ export async function deleteBanner(id, adminId) {
 
 // Lo que ve el público. El costo nunca sale de acá; el mayorista solo para cuentas habilitadas.
 const PUBLIC_FIELDS = `p.id, p.slug, p.sku, p.name, p.description, p.image_url, p.list_price, p.wholesale_price, p.stock,
-  p.featured, p.created_at, c.name AS category_name, c.slug AS category_slug`;
+  p.out_of_stock, p.featured, p.created_at, c.name AS category_name, c.slug AS category_slug`;
 
 function forViewer(p, showWholesale) {
   const { wholesale_price: w, ...rest } = p;
@@ -197,13 +198,15 @@ export async function publicProducts({ category, q, sort = 'new', page = 1, limi
   const order = {
     new: 'p.created_at DESC, p.id DESC', price_asc: 'p.list_price, p.id', price_desc: 'p.list_price DESC, p.id', name: 'p.name, p.id',
   }[sort] ?? 'p.created_at DESC, p.id DESC';
+  // Los que no tienen stock van al final.
+  const orderSql = `p.out_of_stock, ${order}`;
   const lim = Math.min(Math.max(Number(limit) || 24, 1), 60);
   const offset = (Math.max(Number(page) || 1, 1) - 1) * lim;
   const whereSql = where.join(' AND ');
   const total = (await direct.one(`SELECT COUNT(*)::int AS n FROM products p WHERE ${whereSql}`, params)).n;
   const { rows } = await direct.query(
     `SELECT ${PUBLIC_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id
-      WHERE ${whereSql} ORDER BY ${order} LIMIT ${lim} OFFSET ${offset}`,
+      WHERE ${whereSql} ORDER BY ${orderSql} LIMIT ${lim} OFFSET ${offset}`,
     params,
   );
   return { items: rows.map((p) => forViewer(p, showWholesale)), total, page: Math.max(Number(page) || 1, 1), pages: Math.ceil(total / lim), category: cat };
@@ -219,7 +222,7 @@ export async function publicProduct(slug, { showWholesale = false } = {}) {
   const { rows } = await direct.query(
     `SELECT ${PUBLIC_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id
       WHERE p.active AND p.list_price > 0 AND p.id <> $1 AND p.category_id IS NOT DISTINCT FROM $2
-      ORDER BY random() LIMIT 4`,
+      ORDER BY p.out_of_stock, random() LIMIT 4`,
     [p.id, p.category_id],
   );
   const { category_id: _c, ...product } = p;
@@ -231,8 +234,8 @@ export async function home({ showWholesale = false } = {}) {
   const sold = `(SELECT COALESCE(SUM(oi.qty), 0) FROM web_order_items oi JOIN web_orders o ON o.id = oi.order_id
                   WHERE oi.product_id = p.id AND o.status <> 'cancelled')`;
   const base = `SELECT ${PUBLIC_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.active AND p.list_price > 0`;
-  const best = (await direct.query(`${base} ORDER BY ${sold} DESC, p.featured DESC, p.created_at DESC LIMIT 8`)).rows;
-  const newest = (await direct.query(`${base} ORDER BY p.created_at DESC, p.id DESC LIMIT 8`)).rows;
+  const best = (await direct.query(`${base} ORDER BY p.out_of_stock, ${sold} DESC, p.featured DESC, p.created_at DESC LIMIT 8`)).rows;
+  const newest = (await direct.query(`${base} ORDER BY p.out_of_stock, p.created_at DESC, p.id DESC LIMIT 8`)).rows;
   return {
     banners: await listBanners(),
     bestSellers: best.map((p) => forViewer(p, showWholesale)),
@@ -250,7 +253,7 @@ export async function publicConfig() {
 // ---------- Productos (administración) ----------
 
 const ADMIN_FIELDS = `p.id, p.sku, p.slug, p.name, p.description, p.image_url, p.cost, p.list_price, p.wholesale_price, p.price_mode,
-  p.list_margin, p.wholesale_margin, p.category_id, c.name AS category_name, p.stock, p.active, p.featured, p.created_at, p.updated_at`;
+  p.list_margin, p.wholesale_margin, p.category_id, c.name AS category_name, p.stock, p.out_of_stock, p.active, p.featured, p.created_at, p.updated_at`;
 
 export async function adminProducts() {
   const { rows } = await direct.query(
@@ -320,9 +323,18 @@ export async function saveStoreProduct(data, adminId) {
         [...values, sku, slugify(`${name} ${sku}`)],
       );
     }
+    if (data.out_of_stock != null) await db.query('UPDATE products SET out_of_stock = $2 WHERE id = $1', [p.id, !!data.out_of_stock]);
     await audit(db, adminId, data.id ? 'update' : 'create', 'product', p.id, { name, ...row, ...prices, errors: undefined });
     return db.one(`SELECT ${ADMIN_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.id = $1`, [p.id]);
   });
+}
+
+// Marca un producto con o sin stock (sin stock se ve en la tienda pero no se puede comprar).
+export async function setOutOfStock(id, outOfStock, adminId) {
+  const p = await direct.one('UPDATE products SET out_of_stock = $2, updated_at = now() WHERE id = $1 RETURNING id, out_of_stock', [id, !!outOfStock]);
+  if (!p) throw new AppError('Producto no encontrado', 404);
+  await audit(direct, adminId, 'stock', 'product', id, { outOfStock: !!outOfStock });
+  return p;
 }
 
 // Recalcula los precios de todos los productos "por margen" (por ejemplo, después de cambiar los márgenes generales).
@@ -348,6 +360,7 @@ export async function storeCounts() {
     `SELECT (SELECT COUNT(*)::int FROM products WHERE active) AS products,
             (SELECT COUNT(*)::int FROM products WHERE active AND category_id IS NULL) AS uncategorized,
             (SELECT COUNT(*)::int FROM products WHERE active AND image_url IS NULL) AS without_photo,
+            (SELECT COUNT(*)::int FROM products WHERE active AND out_of_stock) AS out_of_stock,
             (SELECT COUNT(*)::int FROM categories WHERE active) AS categories,
             (SELECT COUNT(*)::int FROM banners WHERE active) AS banners,
             (SELECT COUNT(*)::int FROM web_orders WHERE status = 'new') AS new_orders,

@@ -42,7 +42,12 @@ export function Notice({ msg }) {
 
 export function Loading({ error }) {
   if (error) return <div className="notice error">{error}</div>;
-  return <p className="muted">Cargando…</p>;
+  return (
+    <div className="skel-wrap" aria-busy="true" aria-label="Cargando">
+      <div className="skel skel-title" />
+      {[0, 1, 2, 3, 4].map((k) => <div key={k} className="skel skel-row" />)}
+    </div>
+  );
 }
 
 export function Semaphore({ value }) {

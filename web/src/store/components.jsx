@@ -13,6 +13,47 @@ export function Price({ product, big = false }) {
   );
 }
 
+// Barra de compra mínima mayorista: cuánto falta para poder pagar.
+export function MinimumBar({ minimum }) {
+  if (!minimum) return null;
+  const { amount, missing, reached, percent } = minimum;
+  return (
+    <div className={`s-minbar ${reached ? 'ok' : ''}`} role="status">
+      <div className="s-minbar-text">
+        {reached
+          ? <><strong>¡Llegaste a la compra mínima mayorista!</strong> Ya podés pagar.</>
+          : <>Te faltan <strong>{pesos(missing)}</strong> para llegar a la compra mínima mayorista de {pesos(amount)}.</>}
+      </div>
+      <div className="s-minbar-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label="Avance hacia la compra mínima">
+        <div className="s-minbar-fill" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+  );
+}
+
+// Esqueletos de carga: bloques grises animados con la forma de lo que va a aparecer.
+export function SkeletonGrid({ count = 8 }) {
+  return (
+    <div className="s-grid" aria-hidden="true">
+      {Array.from({ length: count }, (_, k) => (
+        <div key={k} className="s-card s-skel-card">
+          <div className="s-skel s-skel-photo" />
+          <div className="s-card-body">
+            <div className="s-skel s-skel-line short" />
+            <div className="s-skel s-skel-line" />
+            <div className="s-skel s-skel-line mid" />
+            <div className="s-skel s-skel-btn" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function SkeletonLines({ lines = 3 }) {
+  return <div aria-hidden="true">{Array.from({ length: lines }, (_, k) => <div key={k} className={`s-skel s-skel-line ${k === lines - 1 ? 'mid' : ''}`} />)}</div>;
+}
+
 export function ProductPhoto({ product, className = '' }) {
   if (product.image_url) return <img className={`s-photo ${className}`} src={product.image_url} alt={product.name} loading="lazy" decoding="async" />;
   const initials = product.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
@@ -23,13 +64,18 @@ export function ProductCard({ product }) {
   const { cart } = useStore();
   const url = `/producto/${product.slug}`;
   return (
-    <article className="s-card">
-      <Link to={url} className="s-card-img" tabIndex={-1} aria-hidden="true"><ProductPhoto product={product} /></Link>
+    <article className={`s-card ${product.out_of_stock ? 's-soldout' : ''}`}>
+      <Link to={url} className="s-card-img" tabIndex={-1} aria-hidden="true">
+        <ProductPhoto product={product} />
+        {product.out_of_stock && <span className="s-stock-tag">Sin stock</span>}
+      </Link>
       <div className="s-card-body">
         {product.category_name && <div className="s-card-cat">{product.category_name}</div>}
         <h3 className="s-card-title"><Link to={url}>{product.name}</Link></h3>
         <Price product={product} />
-        <button type="button" className="s-btn s-btn-sm" onClick={() => cart.add(product)}>Agregar al carrito</button>
+        {product.out_of_stock
+          ? <button type="button" className="s-btn s-btn-sm" disabled>Sin stock</button>
+          : <button type="button" className="s-btn s-btn-sm" onClick={() => cart.add(product)}>Agregar al carrito</button>}
       </div>
     </article>
   );
@@ -39,11 +85,30 @@ export function ProductGrid({ items }) {
   return <div className="s-grid">{items.map((p) => <ProductCard key={p.id} product={p} />)}</div>;
 }
 
+function useIsPhone() {
+  const q = '(max-width: 699px)';
+  const [phone, setPhone] = useState(() => window.matchMedia?.(q).matches ?? false);
+  useEffect(() => {
+    const mq = window.matchMedia?.(q);
+    if (!mq) return undefined;
+    const on = (e) => setPhone(e.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return phone;
+}
+
 // Carrusel de banners: pasa solo cada `seconds`, se pausa al pasar el mouse o tocar, flechas y puntos discretos.
-export function Carousel({ banners, seconds = 5 }) {
-  const [i, setI] = useState(0);
+// En el celular, si hay banners con imagen para celular, se muestran solo esos (más altos, se ven mejor).
+export function Carousel({ banners: all, seconds = 5 }) {
+  const phone = useIsPhone();
+  const hasMobile = all.some((b) => b.mobile_image_url);
+  const banners = phone && hasMobile ? all.filter((b) => b.mobile_image_url) : all;
+  const [pos, setI] = useState(0);
+  useEffect(() => { setI(0); }, [banners.length]);
   const [paused, setPaused] = useState(false);
   const n = banners.length;
+  const i = n ? pos % n : 0;
   const go = useCallback((d) => setI((cur) => (cur + d + n) % n), [n]);
   const touch = useRef(null);
   const reduced = useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
@@ -65,7 +130,7 @@ export function Carousel({ banners, seconds = 5 }) {
 
   return (
     <section
-      className="s-carousel" aria-roledescription="carrusel" aria-label="Ofertas y destacados"
+      className={`s-carousel ${phone && hasMobile ? 'is-mobile' : ''}`} aria-roledescription="carrusel" aria-label="Ofertas y destacados"
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
       onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
@@ -74,7 +139,10 @@ export function Carousel({ banners, seconds = 5 }) {
         {banners.map((b, k) => {
           const content = (
             <>
-              <img src={b.image_url} alt={b.title || `Banner ${k + 1}`} loading={k === 0 ? 'eager' : 'lazy'} fetchpriority={k === 0 ? 'high' : undefined} />
+              <picture>
+                {b.mobile_image_url && <source media="(max-width: 699px)" srcSet={b.mobile_image_url} />}
+                <img src={b.image_url} alt={b.title || `Banner ${k + 1}`} loading={k === 0 ? 'eager' : 'lazy'} fetchpriority={k === 0 ? 'high' : undefined} />
+              </picture>
               {(b.title || b.subtitle) && (
                 <div className="s-slide-text">
                   {b.title && <div className="s-slide-title">{b.title}</div>}

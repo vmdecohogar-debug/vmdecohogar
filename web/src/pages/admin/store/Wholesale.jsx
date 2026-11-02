@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../../../api.js';
-import { fecha } from '../../../format.js';
+import { fecha, pesos, toCents } from '../../../format.js';
 import { Badge, Loading, Notice, useAction, useApi } from '../../../components/ui.jsx';
 
 const STATUS = { pending: ['Pendiente', 'amarillo'], active: ['Habilitado', 'verde'], blocked: ['Pausado', 'rojo'] };
@@ -33,6 +33,34 @@ function NewCustomer({ onDone, onCancel }) {
         <button className="btn" disabled={busy}>{busy ? 'Creando…' : 'Crear cuenta'}</button>
         <button type="button" className="btn secondary" onClick={onCancel}>Cancelar</button>
       </div>
+    </form>
+  );
+}
+
+function MinimumSettings({ settings, onSaved }) {
+  const [value, setValue] = useState(String((settings.minOrder ?? 5000000) / 100));
+  const { busy, msg, run } = useAction();
+  const save = (e) => {
+    e.preventDefault();
+    run(async () => {
+      await api('/admin/store/wholesale/minimum', { method: 'PUT', body: { minOrder: value === '' ? 0 : toCents(value) } });
+      onSaved();
+    }, 'Compra mínima guardada.');
+  };
+  return (
+    <form className="card stack" onSubmit={save}>
+      <h2>Compra mínima mayorista</h2>
+      <p className="muted small">
+        Los mayoristas ven una barra en el carrito con cuánto les falta y recién pueden pagar al llegar a este monto (sin contar el envío).
+        Poné 0 para que no haya mínimo. Para sacárselo a alguien en particular, usá “Sacar mínimo” en la lista de abajo.
+      </p>
+      <Notice msg={msg} />
+      <div className="row">
+        <span>$</span>
+        <input id="w-min" aria-label="Monto mínimo en pesos" inputMode="decimal" value={value} onChange={(e) => setValue(e.target.value)} style={{ maxWidth: 160 }} />
+        <button className="btn small" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
+      </div>
+      <p className="muted small">Ahora: {settings.minOrder ? pesos(settings.minOrder) : 'sin mínimo'}</p>
     </form>
   );
 }
@@ -78,10 +106,12 @@ export default function Wholesale() {
         </label>
       </section>
 
+      <MinimumSettings settings={settings} onSaved={reload} />
+
       <p className="muted small">{customers.length} cuentas{pending ? ` · ${pending} esperando aprobación` : ''}</p>
       <div className="card table-wrap" style={{ padding: 0 }}>
         <table className="responsive admin-products">
-          <thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Estado</th><th /></tr></thead>
+          <thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Estado</th><th>Compra mínima</th><th /></tr></thead>
           <tbody>
             {customers.map((c) => (
               <tr key={c.id}>
@@ -92,6 +122,16 @@ export default function Wholesale() {
                 </td>
                 <td data-label="Pedidos">{c.orders}</td>
                 <td data-label="Estado"><Badge tone={STATUS[c.status]?.[1]}>{STATUS[c.status]?.[0] ?? c.status}</Badge></td>
+                <td data-label="Compra mínima">
+                  {c.no_minimum ? <Badge tone="verde">Sin mínimo</Badge> : <span className="muted small">{settings.minOrder ? pesos(settings.minOrder) : 'Sin mínimo'}</span>}
+                  <div>
+                    <button type="button" className="btn secondary small" style={{ marginTop: 4 }} disabled={busy}
+                      onClick={() => run(() => api(`/admin/store/wholesale/${c.id}/no-minimum`, { method: 'POST', body: { noMinimum: !c.no_minimum } }).then(reload),
+                        c.no_minimum ? `${c.name} vuelve a tener compra mínima.` : `${c.name} ya puede comprar sin mínimo.`)}>
+                      {c.no_minimum ? 'Poner mínimo' : 'Sacar mínimo'}
+                    </button>
+                  </div>
+                </td>
                 <td data-label="">
                   <div className="row" style={{ justifyContent: 'flex-end' }}>
                     {c.status !== 'active' && <button className="btn small" disabled={busy} onClick={() => run(() => api(`/admin/store/wholesale/${c.id}/status`, { method: 'POST', body: { status: 'active' } }).then(reload))}>{c.status === 'pending' ? 'Aprobar' : 'Reactivar'}</button>}
@@ -100,7 +140,7 @@ export default function Wholesale() {
                 </td>
               </tr>
             ))}
-            {customers.length === 0 && <tr><td colSpan={5} className="muted">Todavía no hay mayoristas.</td></tr>}
+            {customers.length === 0 && <tr><td colSpan={6} className="muted">Todavía no hay mayoristas.</td></tr>}
           </tbody>
         </table>
       </div>

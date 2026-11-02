@@ -96,7 +96,10 @@ export function createApp() {
   app.get('/api/store/products', h(async (req) => store.publicProducts({ ...req.query, showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/products/:slug', h(async (req) => store.publicProduct(req.params.slug, { showWholesale: await canSeeWholesale(req) })));
   app.get('/api/store/checkout', h(async () => checkout.publicCheckout()));
-  app.post('/api/store/quote', h(async (req) => checkout.quote(req.body.items, { wholesale: await canSeeWholesale(req) })));
+  app.post('/api/store/quote', h(async (req) => {
+    const v = await viewer(req);
+    return checkout.quote(req.body.items, { wholesale: v?.role === 'wholesale' && v.status === 'active', viewer: v });
+  }));
   app.post('/api/store/orders', h(async (req) => {
     const v = await viewer(req);
     return checkout.createOrder(req.body, v?.status === 'active' ? v : null);
@@ -204,6 +207,7 @@ export function createApp() {
   app.get('/api/admin/store/counts', admin, h(async () => store.storeCounts()));
   app.get('/api/admin/store/products', admin, h(async () => ({ products: await store.adminProducts(), categories: await store.listCategories({ includeInactive: true }) })));
   app.post('/api/admin/store/products', admin, h(async (req) => store.saveStoreProduct(req.body, req.user.id)));
+  app.post('/api/admin/store/products/:id/out-of-stock', admin, h(async (req) => store.setOutOfStock(Number(req.params.id), req.body.outOfStock, req.user.id)));
   app.post('/api/admin/store/products/recalc', admin, h(async (req) => store.recalcPrices(req.user.id)));
   app.get('/api/admin/store/categories', admin, h(async () => store.listCategories({ includeInactive: true })));
   app.post('/api/admin/store/categories', admin, h(async (req) => store.saveCategory(req.body, req.user.id)));
@@ -224,6 +228,8 @@ export function createApp() {
   app.post('/api/admin/store/wholesale', admin, h(async (req) => wholesale.register(req.body, { byAdmin: req.user.id })));
   app.post('/api/admin/store/wholesale/:id/status', admin, h(async (req) => wholesale.setStatus(Number(req.params.id), req.body.status, req.user.id)));
   app.post('/api/admin/store/wholesale/invite', admin, h(async (req) => wholesale.newInvite(req.user.id, req.body.requireApproval)));
+  app.post('/api/admin/store/wholesale/:id/no-minimum', admin, h(async (req) => wholesale.setNoMinimum(Number(req.params.id), req.body.noMinimum, req.user.id)));
+  app.put('/api/admin/store/wholesale/minimum', admin, h(async (req) => wholesale.setMinOrder(req.body.minOrder, req.user.id)));
   app.put('/api/admin/store/wholesale/settings', admin, h(async (req) => wholesale.setRequireApproval(req.body.requireApproval, req.user.id)));
   app.get('/api/admin/store/orders', admin, h(async (req) => ({ orders: await weborders.listOrders({ status: req.query.status }), summary: await weborders.salesSummary() })));
   app.get('/api/admin/store/orders/shopping', admin, h(async () => weborders.shoppingList()));

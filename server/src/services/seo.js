@@ -37,7 +37,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
   let m = /^\/producto\/([a-z0-9-]+)\/?$/.exec(pathname);
   if (m) {
     const p = await direct.one(
-      `SELECT p.name, p.description, p.image_url, p.list_price, p.sku, p.stock, c.name AS category FROM products p
+      `SELECT p.name, p.description, p.image_url, p.list_price, p.sku, p.stock, p.out_of_stock, c.name AS category FROM products p
          LEFT JOIN categories c ON c.id = p.category_id WHERE p.slug = $1 AND p.active AND p.list_price > 0`,
       [m[1]],
     );
@@ -52,7 +52,7 @@ export async function pageMeta(pathname, base = config.appUrl) {
         brand: { '@type': 'Brand', name },
         offers: {
           '@type': 'Offer', price: money(p.list_price), priceCurrency: 'ARS', url: meta.url,
-          availability: 'https://schema.org/InStock', itemCondition: 'https://schema.org/NewCondition',
+          availability: `https://schema.org/${p.out_of_stock ? 'OutOfStock' : 'InStock'}`, itemCondition: 'https://schema.org/NewCondition',
         },
       });
     } else meta.noindex = true;

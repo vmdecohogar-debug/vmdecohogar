@@ -4,7 +4,8 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.js';
 import { pesos } from '../format.js';
 import { useStore, waLink } from './StoreContext.jsx';
-import { useData } from './pages.jsx';
+import { Skeleton, useData } from './pages.jsx';
+import { MinimumBar } from './components.jsx';
 import { Ico, WhatsAppIcon } from './icons.jsx';
 
 const DRAFT = 'vm_checkout';
@@ -52,7 +53,7 @@ export function Checkout() {
       </section>
     );
   }
-  if (!opts) return <div className="s-wrap s-loading">{error ?? 'Cargando…'}</div>;
+  if (!opts) return <Skeleton error={error} kind="box" />;
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const zone = opts.zones.find((z) => String(z.id) === String(f.zoneId));
@@ -145,8 +146,9 @@ export function Checkout() {
           <div className="s-sum-row"><span>Subtotal</span><span>{pesos(subtotal)}</span></div>
           <div className="s-sum-row"><span>Envío</span><span>{zone ? (zone.price ? pesos(zone.price) : 'Sin cargo') : 'Elegí la zona'}</span></div>
           <div className="s-sum-row total"><span>Total</span><span>{pesos(total)}</span></div>
+          <MinimumBar minimum={quote?.minimum} />
           {msg && <div className="notice error" role="alert">{msg}</div>}
-          <button className="s-btn s-btn-block" disabled={busy || !f.method || !f.zoneId}>
+          <button className="s-btn s-btn-block" disabled={busy || !f.method || !f.zoneId || (quote?.minimum && !quote.minimum.reached)}>
             {busy ? 'Enviando…' : f.method === 'mercadopago' ? 'Ir a pagar con Mercado Pago' : 'Confirmar pedido'}
           </button>
           <p className="s-note"><Ico name="truck" size={18} /> Los pedidos se despachan de 1 a 3 días hábiles.</p>
@@ -183,7 +185,7 @@ export function OrderStatus() {
     return () => clearTimeout(t);
   }, [params, state.data]);
   const { data, error } = state;
-  if (!data) return <div className="s-wrap s-loading">{error ?? 'Cargando…'}</div>;
+  if (!data) return <Skeleton error={error} kind="box" />;
   const { order: o, items, transferInfo: t } = data;
   const wa = waLink(data.whatsapp, data.whatsappText);
   const sendProof = () => {

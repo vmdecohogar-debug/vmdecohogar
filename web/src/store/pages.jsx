@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../auth.js';
 import { pesos } from '../format.js';
 import { useStore, waLink } from './StoreContext.jsx';
-import { Carousel, CategoryMosaic, Price, ProductGrid, ProductPhoto } from './components.jsx';
+import { Carousel, CategoryMosaic, MinimumBar, Price, ProductGrid, ProductPhoto, SkeletonGrid, SkeletonLines } from './components.jsx';
 import { Ico, WhatsAppIcon } from './icons.jsx';
 
 // Los precios dependen de quién mira (público o mayorista): al ingresar o salir se vuelve a pedir.
@@ -30,9 +30,28 @@ function useTitle(title) {
   }, [title, config]);
 }
 
-function Skeleton({ error }) {
+// Mientras carga se ve la forma de la página (banner, título, grilla o detalle) en vez de un "Cargando…".
+export function Skeleton({ error, kind = 'list' }) {
   if (error) return <div className="s-wrap"><div className="notice error">{error}</div></div>;
-  return <div className="s-wrap s-loading" aria-busy="true">Cargando…</div>;
+  return (
+    <div className="s-wrap s-section" aria-busy="true" aria-label="Cargando">
+      {kind === 'home' && <div className="s-skel s-skel-banner" />}
+      {kind === 'product' ? (
+        <div className="s-detail">
+          <div className="s-skel s-skel-detail-photo" />
+          <div><div className="s-skel s-skel-title" /><SkeletonLines lines={5} /><div className="s-skel s-skel-btn" /></div>
+        </div>
+      ) : kind === 'box' ? (
+        <div className="s-narrow"><div className="s-skel s-skel-title" /><SkeletonLines lines={6} /></div>
+      ) : (
+        <>
+          {kind !== 'home' && <div className="s-skel s-skel-title" />}
+          <div style={{ height: 16 }} />
+          <SkeletonGrid count={8} />
+        </>
+      )}
+    </div>
+  );
 }
 
 function Hero() {
@@ -54,7 +73,7 @@ export function Home() {
   const { data, error } = useData('/store/home');
   const [tab, setTab] = useState('best');
   useTitle(null);
-  if (!data) return <Skeleton error={error} />;
+  if (!data) return <Skeleton error={error} kind="home" />;
   const list = tab === 'best' ? data.bestSellers : data.newest;
   return (
     <>
@@ -93,6 +112,7 @@ export function Products() {
   }, [data]);
   const title = data?.category?.name ?? (q ? `Resultados para “${q}”` : 'Todos los productos');
   useTitle(data?.category?.name ?? (q ? `Buscar: ${q}` : 'Todos los productos'));
+  if (!data && !items.length && /no encontrad/i.test(error ?? '')) return <NotFound />;
   if (!data && !items.length) return <Skeleton error={error} />;
 
   return (
@@ -128,7 +148,8 @@ export function Product() {
   const [qty, setQty] = useState(1);
   useEffect(() => setQty(1), [slug]);
   useTitle(data?.product?.name);
-  if (!data) return <Skeleton error={error} />;
+  if (!data && /no encontrad/i.test(error ?? '')) return <NotFound />;
+  if (!data) return <Skeleton error={error} kind="product" />;
   const p = data.product;
   const wa = waLink(config?.store?.whatsapp, `Hola! Quería consultar por: ${p.name} (${p.sku})`);
   return (
@@ -144,14 +165,18 @@ export function Product() {
             <div className="s-sku">Código {p.sku}</div>
             <Price product={p} big />
             {p.description && <p className="s-desc">{p.description}</p>}
-            <div className="s-buy">
-              <div className="s-qty" aria-label="Cantidad">
-                <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Quitar uno">−</button>
-                <span aria-live="polite">{qty}</span>
-                <button type="button" onClick={() => setQty(qty + 1)} aria-label="Agregar uno">+</button>
+            {p.out_of_stock ? (
+              <div className="s-soldout-note">Sin stock por ahora. Consultanos por WhatsApp cuándo vuelve.</div>
+            ) : (
+              <div className="s-buy">
+                <div className="s-qty" aria-label="Cantidad">
+                  <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Quitar uno">−</button>
+                  <span aria-live="polite">{qty}</span>
+                  <button type="button" onClick={() => setQty(qty + 1)} aria-label="Agregar uno">+</button>
+                </div>
+                <button type="button" className="s-btn" onClick={() => cart.add(p, qty)}>Agregar al carrito</button>
               </div>
-              <button type="button" className="s-btn" onClick={() => cart.add(p, qty)}>Agregar al carrito</button>
-            </div>
+            )}
             {config?.store?.dispatchNote && <p className="s-note"><Ico name="truck" size={18} /> {config.store.dispatchNote}</p>}
             {wa && <a className="s-link-wa" href={wa} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={18} /> Consultar por WhatsApp</a>}
           </div>
@@ -204,7 +229,7 @@ export function Cart() {
                   <Link to={`/producto/${i.slug}`} className="s-cart-img"><ProductPhoto product={i} /></Link>
                   <div className="s-cart-info">
                     <Link to={`/producto/${i.slug}`} className="s-cart-name">{i.name}</Link>
-                    <div className="s-cart-unit">{quote && !l ? 'No disponible' : `${pesos(unit)} c/u`}</div>
+                    <div className="s-cart-unit">{quote && !l ? 'Sin stock o no disponible: quitalo para seguir' : `${pesos(unit)} c/u`}</div>
                     <div className="s-qty small">
                       <button type="button" onClick={() => cart.setQty(i.id, i.qty - 1)} aria-label="Quitar uno">−</button>
                       <span>{i.qty}</span>
@@ -223,8 +248,11 @@ export function Cart() {
             <span>Subtotal</span>
             <strong>{pesos(quote?.subtotal ?? cart.total)}</strong>
           </div>
+          <MinimumBar minimum={quote?.minimum} />
           <p className="s-note">El envío se calcula según tu zona en el próximo paso.</p>
-          <Link to="/finalizar" className="s-btn s-btn-block">Finalizar compra</Link>
+          {quote?.minimum && !quote.minimum.reached
+            ? <button type="button" className="s-btn s-btn-block" disabled>Finalizar compra</button>
+            : <Link to="/finalizar" className="s-btn s-btn-block">Finalizar compra</Link>}
           {!user && <p className="s-note s-center-text">¿Comprás por mayor? <Link to="/mayoristas">Ingresá o pedí tu cuenta</Link> para ver precios mayoristas.</p>}
           <div className="s-center"><Link to="/productos">Seguir comprando</Link></div>
         </>
@@ -272,11 +300,33 @@ export function Contact() {
 }
 
 export function NotFound() {
+  const { config } = useStore();
+  const navigate = useNavigate();
+  const [q, setQ] = useState('');
   useTitle('Página no encontrada');
+  const cats = (config?.categories ?? []).filter((c) => c.product_count > 0).slice(0, 8);
+  const search = (e) => {
+    e.preventDefault();
+    if (q.trim()) navigate(`/productos?q=${encodeURIComponent(q.trim())}`);
+  };
   return (
-    <section className="s-section s-wrap s-empty">
-      <h1 className="s-page-title">No encontramos esta página</h1>
-      <Link to="/" className="s-btn">Volver al inicio</Link>
+    <section className="s-section s-wrap s-404">
+      <div className="s-404-num" aria-hidden="true">4<span>0</span>4</div>
+      <h1 className="s-page-title">Esta página no está en nuestras estanterías</h1>
+      <p>Puede que el producto ya no esté o que el enlace tenga un error. Buscá lo que querías o mirá las categorías.</p>
+      <form className="s-404-search" onSubmit={search} role="search">
+        <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar productos" aria-label="Buscar productos" />
+        <button className="s-btn">Buscar</button>
+      </form>
+      {cats.length > 0 && (
+        <div className="s-404-cats">
+          {cats.map((c) => <Link key={c.id} to={`/categoria/${c.slug}`}>{c.icon} {c.name}</Link>)}
+        </div>
+      )}
+      <div className="row" style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Link to="/" className="s-btn">Volver al inicio</Link>
+        <Link to="/productos" className="s-btn s-btn-ghost">Ver todos los productos</Link>
+      </div>
     </section>
   );
 }
