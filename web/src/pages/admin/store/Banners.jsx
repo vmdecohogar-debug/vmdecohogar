@@ -19,11 +19,19 @@ function BannerForm({ initial, categories, onDone, onCancel }) {
     <form className="card stack" onSubmit={save}>
       <h2>{f.id ? 'Editar banner' : 'Nuevo banner'}</h2>
       <Notice msg={msg} />
-      <div>
-        <label>Imagen</label>
-        <p className="muted small">Medida ideal: 1440 × 520 px (o el doble, 2880 × 1040). Se ve entera en computadora y en celular, sin recortes.</p>
-        <ImageField wide max={1920} label="imagen" value={f.image_url} onChange={(url) => setF((x) => ({ ...x, image_url: url }))} onError={(text) => setMsg({ type: 'error', text })} />
+      <div className="grid two">
+        <div>
+          <label>Imagen para computadora</label>
+          <p className="muted small">Ancha: 1440 × 520 px (o el doble, 2880 × 1040).</p>
+          <ImageField wide max={1920} label="imagen" value={f.image_url} onChange={(url) => setF((x) => ({ ...x, image_url: url }))} onError={(text) => setMsg({ type: 'error', text })} />
+        </div>
+        <div>
+          <label>Imagen para celular (recomendada)</label>
+          <p className="muted small">Cuadrada: 1080 × 1080 px. Si no subís una, el celular muestra la de computadora, que se ve angosta.</p>
+          <ImageField max={1200} label="imagen de celular" value={f.mobile_image_url ?? ''} onChange={(url) => setF((x) => ({ ...x, mobile_image_url: url }))} onError={(text) => setMsg({ type: 'error', text })} />
+        </div>
       </div>
+      <p className="muted small">En el celular, si algún banner tiene imagen para celular, se muestran solo los que la tienen.</p>
       <div className="grid two">
         <div><label htmlFor="b-title">Título (opcional)</label><input id="b-title" value={f.title ?? ''} onChange={set('title')} placeholder="Ej.: Hot Sale 20% OFF" /></div>
         <div><label htmlFor="b-sub">Bajada (opcional)</label><input id="b-sub" value={f.subtitle ?? ''} onChange={set('subtitle')} placeholder="Ej.: Solo esta semana en cocina" /></div>
@@ -66,7 +74,7 @@ export default function StoreBanners() {
     <div>
       <div className="row between" style={{ marginBottom: 12 }}>
         <h1 style={{ margin: 0 }}>Banners del inicio</h1>
-        <button className="btn small" onClick={() => setMode({ image_url: '', title: '', subtitle: '', link: '', active: true })}>Nuevo banner</button>
+        <button className="btn small" onClick={() => setMode({ image_url: '', mobile_image_url: '', title: '', subtitle: '', link: '', active: true })}>Nuevo banner</button>
       </div>
       <p className="muted">Pasan solos en el carrusel del inicio, en este orden. El tiempo entre uno y otro se cambia en Tienda.</p>
       <Notice msg={msg} />
@@ -82,6 +90,7 @@ export default function StoreBanners() {
             <img className="banner-thumb" src={b.image_url} alt="" />
             <div style={{ flex: 1, minWidth: 0 }}>
               <strong>{b.title || 'Sin título'}</strong> {!b.active && <Badge tone="rojo">Oculto</Badge>}
+              {' '}{b.mobile_image_url ? <Badge tone="verde">Con versión celular</Badge> : <Badge tone="amarillo">Sin versión celular</Badge>}
               <div className="muted small" style={{ overflowWrap: 'anywhere' }}>{b.link ? `Lleva a ${b.link}` : 'Sin link'}</div>
             </div>
             <div className="row">

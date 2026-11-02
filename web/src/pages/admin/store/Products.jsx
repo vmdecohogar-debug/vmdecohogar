@@ -8,13 +8,14 @@ import { ImageField } from './ImageField.jsx';
 const money = (c) => (c == null ? '' : String(c / 100).replace('.', ','));
 const EMPTY = {
   name: '', sku: '', category_id: '', description: '', image_url: '', price_mode: 'margin', cost: '',
-  list_margin: '', wholesale_margin: '', list_price: '', wholesale_price: '', stock: '', featured: false, discount_pct: '',
+  list_margin: '', wholesale_margin: '', list_price: '', wholesale_price: '', stock: '', featured: false, discount_pct: '', out_of_stock: false,
 };
 const toForm = (p) => ({
   id: p.id, name: p.name, sku: p.sku, category_id: p.category_id ?? '', description: p.description ?? '', image_url: p.image_url ?? '',
   price_mode: p.price_mode, cost: money(p.cost), list_margin: p.list_margin ?? '', wholesale_margin: p.wholesale_margin ?? '',
   list_price: money(p.list_price), wholesale_price: money(p.wholesale_price), stock: String(p.stock ?? ''), featured: p.featured,
   discount_pct: p.discount_pct ?? '',
+  out_of_stock: !!p.out_of_stock,
 });
 
 function ProductForm({ initial, categories, settings, onDone, onCancel }) {
@@ -119,6 +120,7 @@ function ProductForm({ initial, categories, settings, onDone, onCancel }) {
         <div><label htmlFor="p-stock">Stock</label><input id="p-stock" inputMode="numeric" value={f.stock} onChange={set('stock')} /></div>
         <label className="check" style={{ alignSelf: 'end' }}><input type="checkbox" checked={f.featured} onChange={set('featured')} /> Destacado (aparece primero en Más vendidos)</label>
       </div>
+      <label className="check"><input type="checkbox" checked={f.out_of_stock} onChange={set('out_of_stock')} /> Sin stock (se sigue viendo en la tienda, pero no se puede comprar)</label>
       <div className="row">
         <button className="btn" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
         <button type="button" className="btn secondary" onClick={onCancel}>Cancelar</button>
@@ -184,6 +186,7 @@ export default function StoreProducts() {
                         {p.featured && <Badge tone="verde">Destacado</Badge>}
                         {p.promo_list_price && <Badge tone="rojo">-{Math.round(p.discount_pct)}%</Badge>}
                         {!p.active && <Badge tone="rojo">Pausado</Badge>}
+                        {p.out_of_stock && <Badge tone="rojo">Sin stock</Badge>}
                       </div>
                     </div>
                   </div>
@@ -191,7 +194,7 @@ export default function StoreProducts() {
                 <td data-label="Costo">{p.cost ? pesos(p.cost) : '—'}</td>
                 <td data-label="Lista">{strike(p.list_price, p.promo_list_price)}</td>
                 <td data-label="Mayorista">{strike(p.wholesale_price, p.promo_wholesale_price)}</td>
-                <td data-label="Stock">{p.stock}</td>
+                <td data-label="Stock">{p.out_of_stock ? <strong>Sin stock</strong> : p.stock}</td>
                 <td data-label="">
                   {disc?.id === p.id ? (
                     <form className="row discount-edit" style={{ justifyContent: 'flex-end' }} onSubmit={(e) => { e.preventDefault(); applyDiscount(p, disc.pct); }}>
@@ -204,6 +207,9 @@ export default function StoreProducts() {
                   <div className="row" style={{ justifyContent: 'flex-end' }}>
                     <button className="btn secondary small" onClick={() => { setMode(toForm(p)); window.scrollTo(0, 0); }}>Editar</button>
                     <button className="btn secondary small" disabled={!p.list_price} onClick={() => setDisc({ id: p.id, pct: p.discount_pct ? String(p.discount_pct) : '' })}>% Descuento</button>
+                    <button className="btn secondary small" disabled={busy} onClick={() => run(() => api(`/admin/store/products/${p.id}/out-of-stock`, { method: 'POST', body: { outOfStock: !p.out_of_stock } }).then(reload))}>
+                      {p.out_of_stock ? 'Marcar con stock' : 'Marcar sin stock'}
+                    </button>
                     <button className="btn secondary small" disabled={busy} onClick={() => run(() => api(`/admin/products/${p.id}/active`, { method: 'POST', body: { active: !p.active } }).then(reload))}>
                       {p.active ? 'Pausar' : 'Activar'}
                     </button>

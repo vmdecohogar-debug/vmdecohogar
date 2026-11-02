@@ -1,7 +1,7 @@
 // Compras de la tienda contra PostgreSQL real. Requiere TEST_DATABASE_URL; si no está, se saltea.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { orderWhatsappText, priceOrder } from '../src/rules/store.js';
+import { orderWhatsappText, priceOrder, wholesaleMinimum } from '../src/rules/store.js';
 
 const url = process.env.TEST_DATABASE_URL;
 const skip = !url && 'definí TEST_DATABASE_URL para correr la prueba con base de datos';
@@ -27,6 +27,15 @@ test('precio del pedido: lista para el público, mayorista para mayoristas', () 
   assert.ok(priceOrder([{ productId: 3, qty: 1 }], products).errors.length, 'producto pausado');
   assert.ok(priceOrder([{ productId: 1, qty: 0 }], products).errors.length);
   assert.ok(priceOrder([], products).errors.length);
+});
+
+test('mínimo mayorista: cuánto falta y porcentaje para la barra', () => {
+  assert.deepEqual(wholesaleMinimum(2000000, 5000000), { amount: 5000000, missing: 3000000, reached: false, percent: 40 });
+  assert.deepEqual(wholesaleMinimum(6000000, 5000000), { amount: 5000000, missing: 0, reached: true, percent: 100 });
+  assert.equal(wholesaleMinimum(100, 5000000, { exempt: true }), null);
+  assert.equal(wholesaleMinimum(100, 0), null);
+  const products = [{ id: 1, sku: 'A', name: 'Jarra', list_price: 1000, active: true, out_of_stock: true }];
+  assert.deepEqual(priceOrder([{ productId: 1, qty: 1 }], products).errors, ['Jarra está sin stock.']);
 });
 
 test('mensaje de WhatsApp corto, sin el detalle', () => {
@@ -93,9 +102,63 @@ test('mayoristas: pendiente sin invitación, habilitado con el enlace, paga prec
   const q = await checkout.quote([{ productId: P.id, qty: 1 }], { wholesale: true });
   assert.equal(q.subtotal, P.wholesale_price);
   const zone = (await checkout.listZones())[1];
-  const { order } = await checkout.createOrder({ items: [{ productId: P.id, qty: 3 }], customer, zoneId: zone.id, paymentMethod: 'transfer' }, { id: invited.id, role: 'wholesale' });
+  const { order } = await checkout.createOrder({ items: [{ productId: P.id, qty: 8 }], customer, zoneId: zone.id, paymentMethod: 'transfer' }, { id: invited.id, role: 'wholesale' });
   assert.equal(order.price_type, 'wholesale');
+  assert.equal(order.subtotal, 8 * P.wholesale_price);
+});
+
+test('compra mínima mayorista de $50.000 y mayoristas eximidos desde el panel', { skip }, async () => {
+  const u = await wholesale.register({ name: 'Mini Bazar', phone: '11 4444 0010' }, { byAdmin: 1 });
+  const viewer = { id: u.id, role: 'wholesale', status: 'active' };
+  const zone = (await checkout.listZones())[0];
+  const q = await checkout.quote([{ productId: P.id, qty: 3 }], { wholesale: true, viewer });
+  assert.deepEqual(q.minimum, { amount: 5000000, missing: 5000000 - 3 * P.wholesale_price, reached: false, percent: 42 });
+  await assert.rejects(
+    checkout.createOrder({ items: [{ productId: P.id, qty: 3 }], customer, zoneId: zone.id, paymentMethod: 'transfer' }, viewer),
+    /compra mínima mayorista es de \$50\.000\. Te faltan \$29\.000/,
+  );
+  assert.equal((await checkout.quote([{ productId: P.id, qty: 3 }], { viewer: null })).minimum, null, 'el público no tiene mínimo');
+
+  await wholesale.setNoMinimum(u.id, true, 1);
+  assert.equal((await wholesale.list()).find((c) => c.id === u.id).no_minimum, true);
+  assert.equal((await checkout.quote([{ productId: P.id, qty: 3 }], { wholesale: true, viewer })).minimum, null);
+  const { order } = await checkout.createOrder({ items: [{ productId: P.id, qty: 3 }], customer, zoneId: zone.id, paymentMethod: 'transfer' }, viewer);
   assert.equal(order.subtotal, 3 * P.wholesale_price);
+  await wholesale.setNoMinimum(u.id, false, 1);
+
+  const ws = await wholesale.setMinOrder(2000000, 1);
+  assert.equal(ws.minOrder, 2000000);
+  assert.equal((await wholesale.newInvite(1)).minOrder, 2000000, 'generar enlace no borra el mínimo');
+  assert.equal((await checkout.quote([{ productId: P.id, qty: 3 }], { wholesale: true, viewer })).minimum.reached, true);
+  await assert.rejects(wholesale.setMinOrder(-5, 1), /inválido/);
+  await wholesale.setMinOrder(5000000, 1);
+});
+
+test('producto sin stock: se ve en la tienda, al final, y no se puede comprar', { skip }, async () => {
+  const S = await store.saveStoreProduct({ name: 'Taza agotada', cost: 100000 }, 1);
+  await store.setOutOfStock(S.id, true, 1);
+  const page = await store.publicProducts({});
+  const item = page.items.find((p) => p.id === S.id);
+  assert.equal(item.out_of_stock, true);
+  assert.equal(page.items.at(-1).id, S.id, 'va al final de la lista');
+  const q = await checkout.quote([{ productId: S.id, qty: 1 }, { productId: P.id, qty: 1 }]);
+  assert.deepEqual(q.errors, ['Taza agotada está sin stock.']);
+  assert.equal(q.subtotal, P.list_price);
+  const zone = (await checkout.listZones())[0];
+  await assert.rejects(checkout.createOrder({ items: [{ productId: S.id, qty: 1 }], customer, zoneId: zone.id, paymentMethod: 'transfer' }), /sin stock/);
+  await store.setOutOfStock(S.id, false, 1);
+  assert.deepEqual((await checkout.quote([{ productId: S.id, qty: 1 }])).errors, []);
+  const again = await store.saveStoreProduct({ ...S, cost: 100000, out_of_stock: true }, 1);
+  assert.equal(again.out_of_stock, true, 'también desde el formulario');
+});
+
+test('banner con imagen para celular', { skip }, async () => {
+  const b = await store.saveBanner({ image_url: '/uploads/ancho.jpg', mobile_image_url: '/uploads/cuadrado.jpg', active: true }, 1);
+  assert.equal(b.mobile_image_url, '/uploads/cuadrado.jpg');
+  const b2 = await store.saveBanner({ ...b, mobile_image_url: '' }, 1);
+  assert.equal(b2.mobile_image_url, null);
+  assert.ok((await store.listBanners()).some((x) => x.id === b.id && 'mobile_image_url' in x));
+  await store.deleteBanner(b.id, 1);
 });
 
 test('pago aprobado de Mercado Pago marca el pedido una sola vez y controla el monto', { skip }, async () => {

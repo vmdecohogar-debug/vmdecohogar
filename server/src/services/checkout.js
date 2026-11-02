@@ -2,7 +2,8 @@
 import { randomBytes } from 'node:crypto';
 import { config } from '../config.js';
 import { direct, tx } from '../db/index.js';
-import { orderWhatsappText, priceOrder } from '../rules/store.js';
+import { formatPesos } from '../rules/index.js';
+import { orderWhatsappText, priceOrder, wholesaleMinimum } from '../rules/store.js';
 import { SALE_LIST, SALE_WHOLESALE } from './store.js';
 import { AppError, audit, getSettings } from './common.js';
 import { normalizePhone } from './sellers.js';
@@ -29,14 +30,25 @@ export async function publicCheckout() {
 async function productsFor(items, db = direct) {
   const ids = [...new Set((items ?? []).map((i) => Number(i.productId ?? i.id)).filter(Number.isInteger))];
   if (!ids.length) return [];
-  return (await db.query(`SELECT id, sku, name, slug, image_url, ${SALE_LIST} AS list_price, ${SALE_WHOLESALE} AS wholesale_price, cost, active
+  return (await db.query(`SELECT id, sku, name, slug, image_url, ${SALE_LIST} AS list_price, ${SALE_WHOLESALE} AS wholesale_price, cost, active, out_of_stock
        FROM products p WHERE id = ANY($1)`, [ids])).rows;
 }
 
+// Mínimo de compra para un mayorista (null = no tiene, por ejemplo si administración se lo sacó).
+async function minimumFor(viewer, subtotal, db = direct) {
+  if (viewer?.role !== 'wholesale') return null;
+  const ws = (await getSettings(db)).wholesale ?? {};
+  const u = await db.one('SELECT no_minimum FROM users WHERE id = $1', [viewer.id]);
+  return wholesaleMinimum(subtotal, ws.minOrder ?? 5000000, { exempt: !!u?.no_minimum });
+}
+
 // Precios actuales del carrito (el navegador puede tener precios viejos).
-export async function quote(items, { wholesale = false } = {}) {
+export async function quote(items, { wholesale = false, viewer = null } = {}) {
   const r = priceOrder(items, await productsFor(items), { wholesale });
-  return { lines: r.lines.map(({ unit_cost: _c, ...l }) => l), subtotal: r.subtotal, errors: r.errors, priceType: wholesale ? 'wholesale' : 'list' };
+  return {
+    lines: r.lines.map(({ unit_cost: _c, ...l }) => l), subtotal: r.subtotal, errors: r.errors, priceType: wholesale ? 'wholesale' : 'list',
+    minimum: wholesale ? await minimumFor(viewer, r.subtotal) : null,
+  };
 }
 
 const PUBLIC_ORDER = `id, public_token, customer_name, phone, address, city, notes, zone_name, shipping, subtotal, total, price_type,
@@ -63,6 +75,10 @@ export async function createOrder(body, viewer) {
     if (!zone) throw new AppError('Elegí la zona de envío.');
     const priced = priceOrder(body.items, await productsFor(body.items, db), { wholesale, shipping: zone.price });
     if (priced.errors.length) throw new AppError(`${priced.errors.join(' ')} Revisá el carrito.`);
+    const min = wholesale ? await minimumFor(viewer, priced.subtotal, db) : null;
+    if (min && !min.reached) {
+      throw new AppError(`La compra mínima mayorista es de ${formatPesos(min.amount)}. Te faltan ${formatPesos(min.missing)}.`);
+    }
     const o = await db.one(
       `INSERT INTO web_orders (public_token, user_id, customer_name, phone, address, city, notes, zone_id, zone_name, shipping,
                                subtotal, total, cost_total, price_type, payment_method)

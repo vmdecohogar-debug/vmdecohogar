@@ -276,3 +276,47 @@
 .s-copy small { color: var(--c-textSoft); font-size: 12px; }
 .s-btn-xs { padding: 6px 12px; min-height: 32px; font-size: 13px; }
 .s-btn-wa { background: #1f9d55; color: #fff !important; margin-top: 12px; }
+
+/* Banners con imagen para celular: cuadrados (1080 × 1080) en vez de anchos y bajitos */
+.s-slide picture { display: block; width: 100%; height: 100%; }
+.s-carousel.is-mobile .s-slide { aspect-ratio: 1 / 1; }
+
+/* Sin stock */
+.s-card-img { position: relative; display: block; }
+.s-stock-tag { position: absolute; top: 8px; left: 8px; background: var(--c-text); color: var(--c-surface); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.3px; }
+.s-soldout .s-photo { filter: grayscale(0.6); opacity: 0.75; }
+.s-soldout-note { display: inline-block; background: var(--c-line); color: var(--c-text); font-weight: 700; padding: 8px 14px; border-radius: 10px; margin: 8px 0; }
+
+/* Compra mínima mayorista */
+.s-minbar { background: var(--c-accentSoft); border-radius: 14px; padding: 12px 14px; margin: 12px 0; }
+.s-minbar-text { font-size: 14px; margin-bottom: 8px; }
+.s-minbar-track { height: 10px; border-radius: 999px; background: var(--c-surface); overflow: hidden; border: 1px solid var(--c-line); }
+.s-minbar-fill { height: 100%; border-radius: 999px; background: var(--c-accent); transition: width 0.4s ease; }
+.s-minbar.ok { background: var(--c-primarySoft); }
+.s-minbar.ok .s-minbar-fill { background: var(--c-primary); }
+
+/* Esqueletos de carga */
+.s-skel { background: linear-gradient(90deg, var(--c-line) 0%, var(--c-surface) 50%, var(--c-line) 100%); background-size: 200% 100%; animation: s-skel 1.3s ease-in-out infinite; border-radius: 8px; }
+@keyframes s-skel { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .s-skel { animation: none; } }
+.s-skel-card { pointer-events: none; }
+.s-skel-photo { aspect-ratio: 1; border-radius: 0; }
+.s-skel-line { height: 14px; margin: 8px 0; width: 100%; }
+.s-skel-line.short { width: 40%; }
+.s-skel-line.mid { width: 65%; }
+.s-skel-btn { height: 38px; margin-top: 12px; border-radius: 999px; }
+.s-skel-banner { aspect-ratio: 36 / 13; border-radius: 18px; }
+@media (max-width: 699px) { .s-skel-banner { aspect-ratio: 1 / 1; } }
+.s-skel-title { height: 30px; width: 55%; margin: 8px 0 16px; }
+.s-skel-detail-photo { aspect-ratio: 1; border-radius: 16px; }
+
+/* Página no encontrada */
+.s-404 { text-align: center; padding: 40px 0 24px; }
+.s-404-num { font-family: var(--f-brand); font-size: clamp(80px, 22vw, 160px); line-height: 1; color: var(--c-primary); font-weight: 700; letter-spacing: 4px; }
+.s-404-num span { color: var(--c-accent); }
+.s-404 p { color: var(--c-textSoft); max-width: 460px; margin: 8px auto 20px; }
+.s-404-search { display: flex; gap: 8px; max-width: 440px; margin: 0 auto 20px; }
+.s-404-search input { flex: 1; min-width: 0; }
+.s-404-cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0 24px; }
+.s-404-cats a { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 999px; padding: 8px 14px; text-decoration: none; font-weight: 600; font-size: 14px; }
+.s-404-cats a:hover { border-color: var(--c-primary); }

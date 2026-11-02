@@ -121,6 +121,7 @@ export function priceOrder(items, products, { wholesale = false, shipping = 0 } 
   for (const [id, qty] of merged) {
     const p = byId.get(id);
     if (!p || !p.active || !(p.list_price > 0)) { errors.push('Un producto del carrito ya no está disponible.'); continue; }
+    if (p.out_of_stock) { errors.push(`${p.name} está sin stock.`); continue; }
     const unit = wholesale && p.wholesale_price > 0 ? p.wholesale_price : p.list_price;
     lines.push({ productId: id, sku: p.sku, name: p.name, slug: p.slug, image_url: p.image_url, qty, unit_price: unit, unit_cost: p.cost ?? null, total: unit * qty });
   }
@@ -128,6 +129,15 @@ export function priceOrder(items, products, { wholesale = false, shipping = 0 } 
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
   const costTotal = lines.reduce((s, l) => s + (l.unit_cost ?? 0) * l.qty, 0);
   return { lines, subtotal, shipping, total: subtotal + shipping, costTotal, errors: [...new Set(errors)] };
+}
+
+// Compra mínima mayorista (sin contar el envío). minOrder en centavos; 0 o vacío = sin mínimo.
+// Devuelve null si no aplica (público o mayorista eximido).
+export function wholesaleMinimum(subtotal, minOrder, { exempt = false } = {}) {
+  const amount = Math.max(0, Math.round(Number(minOrder) || 0));
+  if (exempt || amount === 0) return null;
+  const missing = Math.max(0, amount - subtotal);
+  return { amount, missing, reached: missing === 0, percent: Math.min(100, Math.floor((subtotal / amount) * 100)) };
 }
 
 // Mensaje corto para WhatsApp: no lista los productos (eso queda en el panel).
