@@ -52,6 +52,8 @@ before(async () => {
   store = await import('../src/services/store.js');
   checkout = await import('../src/services/checkout.js');
   wholesale = await import('../src/services/wholesale.js');
+  process.env.GEOREF_OFF = '1';
+  await (await import('../src/services/shipping.js')).saveShippingSettings({ mode: 'zones' }, 1); // estas pruebas usan zonas fijas
   P = await store.saveStoreProduct({ name: 'Rallador', cost: 462000 }, 1); // lista 7.700 (7.623 redondeado), mayorista 7.000
 });
 
@@ -183,4 +185,26 @@ test('zonas y medios de pago desde el panel', { skip }, async () => {
   const c = await checkout.saveCheckoutSettings({ mercadopago: true, transfer: true, transferInfo: { alias: 'vm.bazar.deco', holder: 'Nadia' } }, 1);
   assert.equal(c.transferInfo.alias, 'vm.bazar.deco');
   await checkout.deleteZone(z.id, 1);
+});
+
+test('envío por código postal: calcula en el servidor y guarda CP y km', { skip }, async () => {
+  const shipping = await import('../src/services/shipping.js');
+  await shipping.saveShippingSettings({ mode: 'postal' }, 1);
+  const pub = await checkout.publicCheckout();
+  assert.equal(pub.shippingMode, 'postal');
+  assert.deepEqual(pub.zones, [], 'no se muestran zonas');
+  const items = [{ productId: P.id, qty: 1 }];
+  await assert.rejects(checkout.createOrder({ items, customer, paymentMethod: 'transfer' }), /código postal/);
+  await assert.rejects(checkout.createOrder({ items, customer, postalCode: '1744', paymentMethod: 'transfer' }), /Elegí tu localidad/);
+  const q = await shipping.quoteShipping({ postalCode: 'B1722', locality: 'Merlo' });
+  const { order } = await checkout.createOrder({ items, customer: { ...customer, city: '' }, postalCode: 'B1722', locality: 'Merlo', shipping: 1, paymentMethod: 'transfer' });
+  assert.equal(order.shipping, q.price, 'ignora el envío que manda el navegador');
+  assert.equal(order.total, P.list_price + q.price);
+  assert.equal(order.postal_code, '1722');
+  assert.equal(order.city, 'Merlo');
+  assert.match(order.zone_name, /^CP 1722 · Merlo \(\d+,?\d? km\)$/);
+  const row = await db.one('SELECT distance_km FROM web_orders WHERE id = $1', [order.id]);
+  assert.equal(Number(row.distance_km), q.km);
+  await assert.rejects(checkout.createOrder({ items, customer, postalCode: '9410', locality: shipping.localitiesFor('9410')[0].name, paymentMethod: 'transfer' }), /WhatsApp/);
+  await shipping.saveShippingSettings({ mode: 'zones' }, 1);
 });

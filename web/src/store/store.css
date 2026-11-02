@@ -343,3 +343,6 @@
 .s-gallery-thumbs button.on { border-color: var(--c-accent); opacity: 1; }
 .s-gallery-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
 @media (min-width: 800px) { .s-gallery-thumbs button { width: 76px; height: 76px; } }
+/* Costo de envío calculado por código postal */
+.s-ship-quote { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 4px; }
+.s-ship-quote small { flex-basis: 100%; color: var(--c-textSoft); }

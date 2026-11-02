@@ -19,7 +19,8 @@ export function Checkout() {
   const navigate = useNavigate();
   const { data: opts, error } = useData('/store/checkout');
   const [quote, setQuote] = useState(null);
-  const [f, setF] = useState(() => ({ name: '', phone: '', address: '', city: '', notes: '', zoneId: '', method: '', ...readDraft() }));
+  const [f, setF] = useState(() => ({ name: '', phone: '', address: '', city: '', notes: '', zoneId: '', postalCode: '', locality: '', method: '', ...readDraft() }));
+  const [ship, setShip] = useState({ localities: [], quote: null, error: null, busy: false });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   useEffect(() => { document.title = 'Finalizar compra'; }, []);
@@ -45,6 +46,32 @@ export function Checkout() {
     setF((x) => ({ ...x, method: methods.includes(x.method) ? x.method : methods[0] ?? '', zoneId: opts.zones.some((z) => String(z.id) === String(x.zoneId)) ? x.zoneId : '' }));
   }, [opts]);
 
+  // Envío por código postal: localidades del CP y costo (se recalcula al cambiar CP, localidad, dirección o carrito).
+  const postal = opts?.shippingMode === 'postal';
+  const cp = (f.postalCode.toUpperCase().replace(/\s/g, '').match(/^[A-Z]?(\d{4})/) ?? [])[1] ?? '';
+  useEffect(() => {
+    if (!postal) return;
+    setShip((x) => ({ ...x, localities: [], quote: null, error: null }));
+    if (!cp) return;
+    let alive = true;
+    api(`/store/shipping/cp/${cp}`).then((r) => {
+      if (!alive) return;
+      setShip((x) => ({ ...x, localities: r.localities, error: r.localities.length ? null : `No encontramos el código postal ${cp}. Revisalo o escribinos por WhatsApp.` }));
+      setF((x) => ({ ...x, locality: r.localities.includes(x.locality) ? x.locality : r.localities.length === 1 ? r.localities[0] : '' }));
+    }, () => {});
+    return () => { alive = false; };
+  }, [postal, cp]);
+  useEffect(() => {
+    if (!postal || !cp || !f.locality) return;
+    let alive = true;
+    setShip((x) => ({ ...x, busy: true }));
+    const t = setTimeout(() => {
+      api('/store/shipping/quote', { method: 'POST', body: { postalCode: cp, locality: f.locality, address: f.address, items: cart.items.map((i) => ({ productId: i.id, qty: i.qty })) } })
+        .then((q) => alive && setShip((x) => ({ ...x, quote: q, error: null, busy: false })), (e) => alive && setShip((x) => ({ ...x, quote: null, error: e.message, busy: false })));
+    }, 600);
+    return () => { alive = false; clearTimeout(t); };
+  }, [postal, cp, f.locality, f.address, key, user?.id]);
+
   if (!cart.items.length) {
     return (
       <section className="s-section s-wrap s-narrow s-empty">
@@ -56,9 +83,11 @@ export function Checkout() {
   if (!opts) return <Skeleton error={error} kind="box" />;
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
-  const zone = opts.zones.find((z) => String(z.id) === String(f.zoneId));
+  const zone = postal ? null : opts.zones.find((z) => String(z.id) === String(f.zoneId));
+  const shipPrice = postal ? ship.quote?.price : zone?.price;
+  const shipReady = postal ? !!ship.quote && !ship.busy : !!zone;
   const subtotal = quote?.subtotal ?? cart.total;
-  const total = subtotal + (zone?.price ?? 0);
+  const total = subtotal + (shipPrice ?? 0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -69,8 +98,10 @@ export function Checkout() {
         method: 'POST',
         body: {
           items: cart.items.map((i) => ({ productId: i.id, qty: i.qty })),
-          customer: { name: f.name, phone: f.phone, address: f.address, city: f.city, notes: f.notes },
-          zoneId: Number(f.zoneId),
+          customer: { name: f.name, phone: f.phone, address: f.address, city: postal ? f.locality : f.city, notes: f.notes },
+          zoneId: postal ? null : Number(f.zoneId),
+          postalCode: cp,
+          locality: f.locality,
           paymentMethod: f.method,
         },
       });
@@ -97,12 +128,40 @@ export function Checkout() {
             <input id="k-phone" value={f.phone} onChange={set('phone')} required inputMode="tel" autoComplete="tel" placeholder="11 2345 6789" />
             <label htmlFor="k-address">Dirección de entrega</label>
             <input id="k-address" value={f.address} onChange={set('address')} required autoComplete="street-address" placeholder="Calle, número, piso/depto" />
-            <label htmlFor="k-city">Localidad</label>
-            <input id="k-city" value={f.city} onChange={set('city')} autoComplete="address-level2" />
+            {!postal && (
+              <>
+                <label htmlFor="k-city">Localidad</label>
+                <input id="k-city" value={f.city} onChange={set('city')} autoComplete="address-level2" />
+              </>
+            )}
             <label htmlFor="k-notes">Aclaraciones (opcional)</label>
             <textarea id="k-notes" rows={2} value={f.notes} onChange={set('notes')} placeholder="Entre calles, horario, timbre…" />
           </fieldset>
 
+          {postal ? (
+          <fieldset className="s-box">
+            <legend>Envío a domicilio</legend>
+            <label htmlFor="k-cp">Código postal</label>
+            <input id="k-cp" value={f.postalCode} onChange={set('postalCode')} required inputMode="numeric" autoComplete="postal-code" placeholder="Ej.: 1744" maxLength={8} />
+            {ship.localities.length > 1 && (
+              <>
+                <label htmlFor="k-loc">Localidad o barrio</label>
+                <select id="k-loc" value={f.locality} onChange={(e) => setF({ ...f, locality: e.target.value, city: e.target.value })} required>
+                  <option value="">Elegí tu localidad</option>
+                  {ship.localities.map((l) => <option key={l}>{l}</option>)}
+                </select>
+              </>
+            )}
+            {ship.busy && <p className="s-note">Calculando el envío…</p>}
+            {!ship.busy && ship.quote && (
+              <p className="s-ship-quote">
+                <Ico name="truck" size={18} /> Envío en moto a {ship.quote.locality}: <strong>{ship.quote.free ? '¡Sin cargo!' : pesos(ship.quote.price)}</strong>
+                {ship.quote.precision !== 'direccion' && <small> Precio aproximado: completá calle y número para calcularlo a tu dirección exacta.</small>}
+              </p>
+            )}
+            {ship.error && <p className="notice error" role="alert">{ship.error}</p>}
+          </fieldset>
+          ) : (
           <fieldset className="s-box">
             <legend>Zona de envío</legend>
             {opts.zones.length === 0 && <p className="s-note">Todavía no hay zonas de envío cargadas. Escribinos por WhatsApp.</p>}
@@ -114,6 +173,7 @@ export function Checkout() {
               </label>
             ))}
           </fieldset>
+          )}
 
           <fieldset className="s-box">
             <legend>Cómo pagás</legend>
@@ -144,11 +204,11 @@ export function Checkout() {
             ))}
           </ul>
           <div className="s-sum-row"><span>Subtotal</span><span>{pesos(subtotal)}</span></div>
-          <div className="s-sum-row"><span>Envío</span><span>{zone ? (zone.price ? pesos(zone.price) : 'Sin cargo') : 'Elegí la zona'}</span></div>
+          <div className="s-sum-row"><span>Envío</span><span>{shipReady ? (shipPrice ? pesos(shipPrice) : 'Sin cargo') : postal ? 'Poné tu código postal' : 'Elegí la zona'}</span></div>
           <div className="s-sum-row total"><span>Total</span><span>{pesos(total)}</span></div>
           <MinimumBar minimum={quote?.minimum} />
           {msg && <div className="notice error" role="alert">{msg}</div>}
-          <button className="s-btn s-btn-block" disabled={busy || !f.method || !f.zoneId || (quote?.minimum && !quote.minimum.reached)}>
+          <button className="s-btn s-btn-block" disabled={busy || !f.method || !shipReady || (quote?.minimum && !quote.minimum.reached)}>
             {busy ? 'Enviando…' : f.method === 'mercadopago' ? 'Ir a pagar con Mercado Pago' : 'Confirmar pedido'}
           </button>
           <p className="s-note"><Ico name="truck" size={18} /> Los pedidos se despachan de 1 a 3 días hábiles.</p>
