@@ -100,6 +100,9 @@ function Footer() {
             <li><Link to="/productos">Productos</Link></li>
             <li><Link to="/contacto">Contacto</Link></li>
             <li><Link to="/mayoristas">Compras mayoristas</Link></li>
+            <li><Link to="/preguntas-frecuentes">Preguntas frecuentes</Link></li>
+            <li><Link to="/tiempos-de-respuesta">Tiempos de respuesta</Link></li>
+            <li><Link to="/privacidad">Política de privacidad</Link></li>
           </ul>
         </div>
         <div>

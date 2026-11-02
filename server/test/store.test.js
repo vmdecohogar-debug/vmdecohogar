@@ -122,3 +122,33 @@ test('SEO: título, descripción y datos de producto para Google', { skip }, asy
   assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/categoria\/cocina<\/loc>/);
   assert.match(map, new RegExp(`/producto/${p.slug}<`));
 });
+
+test('Páginas informativas: preguntas frecuentes, tiempos de respuesta y privacidad con su SEO', { skip }, async () => {
+  const info = await seo.storeInfo();
+  assert.ok(info.faq.groups.length >= 5);
+  assert.ok(info.compromiso.items.some((i) => i.time === 'Dentro de las 12 horas'));
+  assert.match(info.privacidad.sections.map((s) => s.p.join(' ')).join(' '), /AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA/);
+
+  const faq = await seo.pageMeta('/preguntas-frecuentes', 'https://vmbazar.com.ar');
+  assert.equal(faq.title, 'Preguntas frecuentes | VM Bazar y Deco');
+  assert.ok(faq.description.length > 50 && faq.description.length <= 170);
+  assert.ok(!faq.noindex);
+  assert.match(seo.injectMeta('<!--seo--><!--/seo-->', faq), /"@type":"FAQPage"/);
+  for (const path of ['/tiempos-de-respuesta', '/privacidad', '/productos', '/contacto', '/mayoristas']) {
+    const m = await seo.pageMeta(path, 'https://vmbazar.com.ar');
+    assert.ok(m.description && m.description !== (await seo.pageMeta('/')).description, `${path} tiene descripción propia`);
+  }
+  const map = await seo.sitemap('https://vmbazar.com.ar');
+  assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/preguntas-frecuentes<\/loc>/);
+  assert.match(map, /<loc>https:\/\/vmbazar.com.ar\/privacidad<\/loc>/);
+});
+
+test('robots.txt deja a Google leer la tienda y le cierra el panel y los pedidos', () => {
+  return import('../src/services/seo.js').then(({ robots }) => {
+    const r = robots('https://vmbazar.com.ar');
+    assert.match(r, /^Allow: \/api\/store\/$/m);
+    assert.match(r, /^Disallow: \/admin$/m);
+    assert.match(r, /^Disallow: \/api\/store\/orders$/m);
+    assert.match(r, /^Sitemap: https:\/\/vmbazar.com.ar\/sitemap.xml$/m);
+  });
+});

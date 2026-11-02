@@ -17,6 +17,7 @@ import { StoreProvider } from './store/StoreContext.jsx';
 import StoreLayout from './store/StoreLayout.jsx';
 import { Cart, Contact, Home, NotFound, Product, Products } from './store/pages.jsx';
 import { Checkout, OrderStatus, WholesalePage } from './store/checkout.jsx';
+import { Faq, Privacy, ResponseTimes } from './store/info.jsx';
 import './store/store.css';
 
 export { useAuth } from './auth.js';
@@ -119,6 +120,9 @@ export default function App() {
                   <Route path="/pedido/:token" element={<OrderStatus />} />
                   <Route path="/mayoristas" element={<WholesalePage />} />
                   <Route path="/contacto" element={<Contact />} />
+                  <Route path="/preguntas-frecuentes" element={<Faq />} />
+                  <Route path="/tiempos-de-respuesta" element={<ResponseTimes />} />
+                  <Route path="/privacidad" element={<Privacy />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </StoreLayout>
