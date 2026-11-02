@@ -109,7 +109,7 @@ export function infoPages(store = {}, { wholesaleMin = 0 } = {}) {
       {
         h: '1. Quién es responsable de tus datos',
         p: [
-          `El responsable de la base de datos es Alejo Ignacio Vera, CUIT 20-37542387-2, titular de ${name}${where}. Para cualquier consulta sobre tus datos podés escribirnos por ${contacto}.`,
+          `El responsable de la base de datos es Nadia Florencia Morellini, CUIT 27-36552682-1, titular de ${name}${where}. Para cualquier consulta sobre tus datos podés escribirnos por ${contacto}.`,
         ],
       },
       {
