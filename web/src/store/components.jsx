@@ -77,6 +77,40 @@ export function ProductPhoto({ product, className = '' }) {
   return <div className={`s-photo s-photo-empty ${className}`} aria-hidden="true">{initials}</div>;
 }
 
+// Galería de la página del producto: foto grande y miniaturas para elegir (en el celular también se desliza).
+export function ProductGallery({ product }) {
+  const images = product.images?.length ? product.images : [];
+  const [k, setK] = useState(0);
+  const startX = useRef(null);
+  useEffect(() => setK(0), [product.id]);
+  if (images.length <= 1) return <ProductPhoto product={product} className="s-detail-photo" />;
+  const go = (n) => setK((n + images.length) % images.length);
+  const onTouchStart = (e) => { startX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (startX.current == null) return;
+    const dx = e.changedTouches[0].clientX - startX.current;
+    startX.current = null;
+    if (Math.abs(dx) > 40) go(k + (dx < 0 ? 1 : -1));
+  };
+  return (
+    <div className="s-gallery">
+      <div className="s-gallery-main" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <img className="s-photo s-detail-photo" src={images[k]} alt={`${product.name} (foto ${k + 1} de ${images.length})`} decoding="async" />
+        <button type="button" className="s-gallery-nav prev" onClick={() => go(k - 1)} aria-label="Foto anterior">‹</button>
+        <button type="button" className="s-gallery-nav next" onClick={() => go(k + 1)} aria-label="Foto siguiente">›</button>
+        <span className="s-gallery-count" aria-hidden="true">{k + 1}/{images.length}</span>
+      </div>
+      <div className="s-gallery-thumbs" role="tablist" aria-label="Fotos del producto">
+        {images.map((url, i) => (
+          <button key={url} type="button" role="tab" aria-selected={i === k} className={i === k ? 'on' : ''} onClick={() => setK(i)} aria-label={`Ver foto ${i + 1}`}>
+            <img src={url} alt="" loading="lazy" decoding="async" />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function ProductCard({ product }) {
   const { cart } = useStore();
   const url = `/producto/${product.slug}`;

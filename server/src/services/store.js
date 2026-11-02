@@ -220,7 +220,7 @@ export async function publicProducts({ category, q, sort = 'new', page = 1, limi
 
 export async function publicProduct(slug, { showWholesale = false } = {}) {
   const p = await direct.one(
-    `SELECT ${PUBLIC_FIELDS}, p.category_id FROM products p LEFT JOIN categories c ON c.id = p.category_id
+    `SELECT ${PUBLIC_FIELDS}, p.category_id, p.extra_images FROM products p LEFT JOIN categories c ON c.id = p.category_id
       WHERE p.slug = $1 AND p.active AND p.list_price > 0`,
     [slug],
   );
@@ -231,7 +231,9 @@ export async function publicProduct(slug, { showWholesale = false } = {}) {
       ORDER BY p.out_of_stock, random() LIMIT 4`,
     [p.id, p.category_id],
   );
-  const { category_id: _c, ...product } = p;
+  const { category_id: _c, extra_images: extra, ...product } = p;
+  // Todas las fotos para la galería: primero la principal y después las extra.
+  product.images = [product.image_url, ...(extra ?? [])].filter(Boolean);
   return { product: forViewer(product, showWholesale), related: rows.map((r) => forViewer(r, showWholesale)) };
 }
 
@@ -261,7 +263,7 @@ export async function publicConfig() {
 
 // ---------- Productos (administración) ----------
 
-const ADMIN_FIELDS = `p.id, p.sku, p.slug, p.name, p.description, p.image_url, p.cost, p.list_price, p.wholesale_price, p.price_mode,
+const ADMIN_FIELDS = `p.id, p.sku, p.slug, p.name, p.description, p.image_url, p.extra_images, p.cost, p.list_price, p.wholesale_price, p.price_mode,
   p.list_margin, p.wholesale_margin, p.discount_pct::float AS discount_pct, p.promo_list_price, p.promo_wholesale_price, p.category_id, c.name AS category_name, p.stock, p.out_of_stock, p.active, p.featured, p.created_at, p.updated_at`;
 
 export async function adminProducts() {
@@ -269,6 +271,16 @@ export async function adminProducts() {
     `SELECT ${ADMIN_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.created_at DESC, p.id DESC`,
   );
   return rows;
+}
+
+// Fotos del producto: la primera es la principal. Acepta solo direcciones de fotos subidas o http(s).
+const MAX_PHOTOS = 10;
+function cleanImages(list) {
+  if (!Array.isArray(list)) throw new AppError('Fotos inválidas.');
+  const urls = [...new Set(list.map((u) => (typeof u === 'string' ? u.trim() : '')).filter(Boolean))];
+  if (urls.length > MAX_PHOTOS) throw new AppError(`Se pueden cargar hasta ${MAX_PHOTOS} fotos por producto.`);
+  if (urls.some((u) => u.length > 500 || !/^(\/|https?:\/\/)/i.test(u))) throw new AppError('Foto inválida.');
+  return urls;
 }
 
 const cents = (v) => (v == null || v === '' ? null : Math.round(Number(v)));
@@ -300,6 +312,9 @@ export async function saveStoreProduct(data, adminId) {
   if (discount.errors.length) throw new AppError(discount.errors.join(' '));
   const stock = data.stock == null || data.stock === '' ? null : Number(data.stock);
   if (stock != null && (!Number.isInteger(stock) || stock < 0)) throw new AppError('Stock inválido.');
+  // Con "images" (la galería del panel) se reemplazan todas las fotos; sin eso solo cambia la principal.
+  const images = data.images === undefined ? null : cleanImages(data.images);
+  const mainImage = images ? images[0] ?? null : data.image_url || null;
 
   return tx(async (db) => {
     const cat = data.category_id ? await db.one('SELECT id, name FROM categories WHERE id = $1', [data.category_id]) : null;
@@ -310,7 +325,7 @@ export async function saveStoreProduct(data, adminId) {
       throw new AppError(`Ya existe un producto con el código ${sku}.`, 409);
     }
     const values = [
-      name, str(data.description, 2000) || null, cat?.id ?? null, cat?.name ?? null, data.image_url || null,
+      name, str(data.description, 2000) || null, cat?.id ?? null, cat?.name ?? null, mainImage,
       row.cost, prices.list_price, prices.wholesale_price, row.price_mode, row.list_margin, row.wholesale_margin,
       !!data.featured, stock,
     ];
@@ -342,6 +357,7 @@ export async function saveStoreProduct(data, adminId) {
         [...values, sku, slugify(`${name} ${sku}`), discount.pct, promo.promo_list_price, promo.promo_wholesale_price],
       );
     }
+    if (images) await db.query('UPDATE products SET extra_images = $2 WHERE id = $1', [p.id, images.slice(1)]);
     if (data.out_of_stock != null) await db.query('UPDATE products SET out_of_stock = $2 WHERE id = $1', [p.id, !!data.out_of_stock]);
     await audit(db, adminId, data.id ? 'update' : 'create', 'product', p.id, { name, ...row, ...prices, errors: undefined });
     return db.one(`SELECT ${ADMIN_FIELDS} FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.id = $1`, [p.id]);

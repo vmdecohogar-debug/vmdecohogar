@@ -193,3 +193,23 @@ test('robots.txt deja a Google leer la tienda y le cierra el panel y los pedidos
     assert.match(r, /^Sitemap: https:\/\/vmbazar.com.ar\/sitemap.xml$/m);
   });
 });
+
+test('varias fotos por producto: la primera es la principal y la galería las muestra en orden', { skip }, async () => {
+  const p = await store.saveStoreProduct({ name: 'Florero de vidrio', cost: 100000, image_url: '/uploads/a.jpg' }, ADMIN);
+  assert.deepEqual(p.extra_images, []);
+  const g = await store.saveStoreProduct({ ...p, images: ['/uploads/b.jpg', '/uploads/a.jpg', '/uploads/c.jpg', '/uploads/b.jpg'] }, ADMIN);
+  assert.equal(g.image_url, '/uploads/b.jpg', 'la primera queda como principal');
+  assert.deepEqual(g.extra_images, ['/uploads/a.jpg', '/uploads/c.jpg'], 'sin repetidas');
+  const { product } = await store.publicProduct(g.slug);
+  assert.deepEqual(product.images, ['/uploads/b.jpg', '/uploads/a.jpg', '/uploads/c.jpg']);
+  // Guardar sin "images" (otra pantalla) conserva la galería.
+  const { images: _i, ...noImages } = g;
+  const kept = await store.saveStoreProduct({ ...noImages, image_url: '/uploads/b.jpg' }, ADMIN);
+  assert.deepEqual(kept.extra_images, ['/uploads/a.jpg', '/uploads/c.jpg']);
+  // Borrar todas.
+  const none = await store.saveStoreProduct({ ...kept, images: [] }, ADMIN);
+  assert.equal(none.image_url, null);
+  assert.deepEqual(none.extra_images, []);
+  await assert.rejects(store.saveStoreProduct({ ...kept, images: ['javascript:alert(1)'] }, ADMIN), /Foto inválida/);
+  await assert.rejects(store.saveStoreProduct({ ...kept, images: Array.from({ length: 11 }, (_, k) => `/uploads/${k}.jpg`) }, ADMIN), /hasta 10/);
+});

@@ -296,3 +296,17 @@ span.thumb { display: inline-block; background: var(--beige-tint); }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 .skel-title { height: 28px; width: 40%; margin: 4px 0 16px; }
 .skel-row { height: 56px; margin-bottom: 10px; }
+
+/* Galería de fotos del producto (panel) */
+.gallery-field { display: flex; flex-direction: column; gap: 10px; }
+.gallery-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.gallery-grid { align-items: start; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+.gallery-grid li { position: relative; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--white); }
+.gallery-grid li.is-main { border: 2px solid var(--taupe); }
+.gallery-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.gallery-tag { position: absolute; top: 6px; left: 6px; background: var(--taupe); color: var(--white); font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+.gallery-actions { display: flex; justify-content: space-between; gap: 2px; padding: 4px; border-top: 1px solid var(--line); }
+.gallery-actions button { flex: 1; min-height: 32px; border: 0; border-radius: 6px; background: var(--beige-tint); color: var(--text); cursor: pointer; font-size: 13px; font-family: inherit; }
+.gallery-actions button:disabled { opacity: 0.35; cursor: default; }
+.gallery-actions button.danger { color: #b3261e; }
+.gallery-empty { height: 104px; width: 104px; border-radius: 10px; border: 1px dashed var(--line); }
