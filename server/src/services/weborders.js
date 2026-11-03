@@ -19,7 +19,7 @@ const MISSING_COST = '(SELECT count(*)::int FROM web_order_items i WHERE i.order
 export async function listOrders({ status } = {}) {
   const where = status && NEXT[status] ? 'WHERE o.status = $1' : '';
   const orders = (await direct.query(
-    `SELECT o.id, o.customer_name, o.phone, o.address, o.city, o.postal_code, o.notes, o.zone_name, o.shipping, o.subtotal, o.total,
+    `SELECT o.id, o.customer_name, o.phone, o.address, o.city, o.postal_code, o.notes, o.zone_name, o.pickup, o.shipping, o.subtotal, o.total,
             o.cost_total, ${PROFIT} AS profit, ${MISSING_COST} AS missing_cost, o.price_type, o.payment_method,
             o.payment_status, o.status, o.created_at, o.paid_at, o.ready_at, o.public_token
        FROM web_orders o ${where}

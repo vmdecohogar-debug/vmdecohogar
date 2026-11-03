@@ -12,7 +12,12 @@ export const SHIPPING_DEFAULTS = {
   maxKm: 40, // más lejos no se ofrece envío en moto
   roadFactor: 1.3, // la calle no es línea recta: km en línea recta × 1,3 ≈ km recorridos
   freeFrom: 0, // envío gratis desde este subtotal (0 = nunca)
+  // Retiro sin costo en un punto de entrega (se ofrece junto al envío a domicilio).
+  pickup: { enabled: true, place: 'Moreno centro', note: 'Te escribimos por WhatsApp para coordinar día y horario.' },
 };
+
+// Nombre del retiro tal como lo ve el cliente y queda en el pedido.
+export const pickupLabel = (p) => `Retiro en punto de entrega${p?.place ? ` (${p.place})` : ''}`;
 
 // "B1744ABC", "1744", "b 1744" → "1744". null si no tiene 4 números.
 export function normalizePostalCode(v) {
@@ -74,5 +79,15 @@ export function cleanShippingSettings(data = {}, prev = SHIPPING_DEFAULTS) {
     maxKm: num(data.maxKm, d.maxKm, { max: 2000 }),
     roadFactor: num(data.roadFactor, d.roadFactor, { min: 1, max: 3 }),
     freeFrom: Math.round(num(data.freeFrom, d.freeFrom)),
+    pickup: cleanPickup(data.pickup, d.pickup ?? SHIPPING_DEFAULTS.pickup),
+  };
+}
+
+function cleanPickup(p, prev) {
+  if (!p || typeof p !== 'object') return { ...SHIPPING_DEFAULTS.pickup, ...prev };
+  return {
+    enabled: p.enabled === undefined ? !!prev.enabled : !!p.enabled,
+    place: String(p.place ?? prev.place ?? '').trim().slice(0, 80),
+    note: String(p.note ?? prev.note ?? '').trim().slice(0, 200),
   };
 }

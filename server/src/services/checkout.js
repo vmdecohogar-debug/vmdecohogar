@@ -8,6 +8,7 @@ import { SALE_LIST, SALE_WHOLESALE } from './store.js';
 import { AppError, audit, getSettings } from './common.js';
 import { normalizePhone } from './sellers.js';
 import { quoteShipping, shippingSettings } from './shipping.js';
+import { pickupLabel } from '../rules/shipping.js';
 
 const str = (v, max = 200) => String(v ?? '').trim().slice(0, max);
 
@@ -29,6 +30,7 @@ export async function publicCheckout() {
     shippingMode: ship.mode,
     freeFrom: ship.freeFrom || 0,
     zones,
+    pickup: ship.pickup?.enabled ? { label: pickupLabel(ship.pickup), note: ship.pickup.note || '' } : null,
     methods: { mercadopago: !!c.mercadopago && mpConfigured(), transfer: !!c.transfer },
   };
 }
@@ -58,7 +60,7 @@ export async function quote(items, { wholesale = false, viewer = null } = {}) {
 }
 
 const PUBLIC_ORDER = `id, public_token, customer_name, phone, address, city, postal_code, notes, zone_name, shipping, subtotal, total, price_type,
-  payment_method, payment_status, status, created_at`;
+  payment_method, payment_status, status, created_at, pickup`;
 
 export async function createOrder(body, viewer) {
   const wholesale = viewer?.role === 'wholesale';
@@ -67,6 +69,10 @@ export async function createOrder(body, viewer) {
     city: str(body.customer?.city, 120), notes: str(body.customer?.notes, 500),
   };
   if (!customer.name) throw new AppError('Falta tu nombre.');
+  const ship = await shippingSettings();
+  const pickup = body.delivery === 'pickup';
+  if (pickup && !ship.pickup?.enabled) throw new AppError('El retiro en punto de entrega no está disponible por ahora. Elegí envío a domicilio.');
+  if (pickup) customer.address = pickupLabel(ship.pickup);
   if (!customer.address) throw new AppError('Falta la dirección de entrega.');
   let phone;
   try { phone = normalizePhone(customer.phone); } catch { throw new AppError('Revisá el teléfono: incluí el código de área.'); }
@@ -76,10 +82,9 @@ export async function createOrder(body, viewer) {
   if (method === 'transfer' && !settings.transfer) throw new AppError('La transferencia no está disponible por ahora.');
   if (!['mercadopago', 'transfer'].includes(method)) throw new AppError('Elegí cómo vas a pagar.');
 
-  const ship = await shippingSettings();
   // El envío por código postal se calcula antes (puede consultar Georef por internet).
   let postal = null;
-  if (ship.mode !== 'zones') {
+  if (!pickup && ship.mode !== 'zones') {
     const sub = priceOrder(body.items, await productsFor(body.items), { wholesale }).subtotal;
     postal = await quoteShipping({ postalCode: body.postalCode, locality: body.locality, address: customer.address, subtotal: sub }, ship);
     if (!customer.city) customer.city = postal.locality;
@@ -88,7 +93,9 @@ export async function createOrder(body, viewer) {
   const order = await tx(async (db) => {
     const products = await productsFor(body.items, db);
     let zone;
-    if (postal) {
+    if (pickup) {
+      zone = { id: null, name: pickupLabel(ship.pickup), price: 0 };
+    } else if (postal) {
       zone = { id: null, name: `CP ${postal.postalCode} · ${postal.locality} (${String(postal.km).replace('.', ',')} km)`, price: postal.price, postalCode: postal.postalCode, km: postal.km };
     } else {
       zone = await db.one('SELECT id, name, price FROM shipping_zones WHERE id = $1 AND active', [Number(body.zoneId)]);
@@ -102,11 +109,11 @@ export async function createOrder(body, viewer) {
     }
     const o = await db.one(
       `INSERT INTO web_orders (public_token, user_id, customer_name, phone, address, city, notes, zone_id, zone_name, shipping,
-                               subtotal, total, cost_total, price_type, payment_method, postal_code, distance_km)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING ${PUBLIC_ORDER}`,
+                               subtotal, total, cost_total, price_type, payment_method, postal_code, distance_km, pickup)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING ${PUBLIC_ORDER}`,
       [randomBytes(12).toString('base64url'), viewer?.id ?? null, customer.name, phone, customer.address, customer.city || null,
         customer.notes || null, zone.id, zone.name, zone.price, priced.subtotal, priced.total, priced.costTotal,
-        wholesale ? 'wholesale' : 'list', method, zone.postalCode ?? null, zone.km ?? null],
+        wholesale ? 'wholesale' : 'list', method, zone.postalCode ?? null, zone.km ?? null, pickup],
     );
     for (const l of priced.lines) {
       await db.query(
@@ -114,7 +121,7 @@ export async function createOrder(body, viewer) {
         [o.id, l.productId, l.sku, l.name, l.qty, l.unit_price, l.unit_cost],
       );
     }
-    if (viewer?.id) await db.query('UPDATE users SET address = COALESCE(address, $2), city = COALESCE(city, $3) WHERE id = $1', [viewer.id, customer.address, customer.city || null]);
+    if (viewer?.id && !pickup) await db.query('UPDATE users SET address = COALESCE(address, $2), city = COALESCE(city, $3) WHERE id = $1', [viewer.id, customer.address, customer.city || null]);
     await audit(db, viewer?.id ?? null, 'create', 'web_order', o.id, { total: priced.total, method });
     return o;
   });
@@ -156,6 +163,7 @@ export async function publicOrder(token) {
     whatsappText: orderWhatsappText(c.whatsappOrderMessage, o.id),
     whatsapp: s.store?.whatsapp ?? '',
     dispatchNote: s.store?.dispatchNote ?? 'Los pedidos se despachan de 1 a 3 días hábiles.',
+    pickupNote: o.pickup ? (await shippingSettings()).pickup?.note ?? '' : null,
   };
 }
 

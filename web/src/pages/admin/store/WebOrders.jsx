@@ -56,12 +56,12 @@ function OrderCard({ o, busy, act }) {
 
       <div className="order-client">
         <strong>{o.customer_name}</strong>
-        <div>{o.address}{o.city ? `, ${o.city}` : ''}</div>
+        {o.pickup ? <div><strong>Retira en el punto de entrega</strong></div> : <div>{o.address}{o.city ? `, ${o.city}` : ''}</div>}
         <div>
           <a href={`https://wa.me/${waPhone(o.phone)}`} target="_blank" rel="noopener noreferrer">WhatsApp {showPhone(o.phone)}</a>
           {' · '}<a href={`tel:${o.phone}`}>Llamar</a>
         </div>
-        <div className="muted small">Envío: {o.zone_name}</div>
+        <div className="muted small">{o.pickup ? o.zone_name : `Envío: ${o.zone_name}`}</div>
         {o.notes && <div className="small">Nota: {o.notes}</div>}
       </div>
 
