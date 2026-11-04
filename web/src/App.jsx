@@ -13,6 +13,7 @@ import StoreSettings from './pages/admin/store/StoreSettings.jsx';
 import Shipping from './pages/admin/store/Shipping.jsx';
 import Wholesale from './pages/admin/store/Wholesale.jsx';
 import WebOrders from './pages/admin/store/WebOrders.jsx';
+import PriceList from './pages/admin/store/PriceList.jsx';
 import { StoreProvider } from './store/StoreContext.jsx';
 import StoreLayout from './store/StoreLayout.jsx';
 import { Cart, Contact, Home, NotFound, Product, Products } from './store/pages.jsx';
@@ -69,6 +70,7 @@ function Admin() {
         <Route index element={<StoreHome />} />
         <Route path="pedidos" element={<WebOrders />} />
         <Route path="productos" element={<StoreProducts />} />
+        <Route path="lista-precios" element={<PriceList />} />
         <Route path="categorias" element={<StoreCategories />} />
         <Route path="banners" element={<StoreBanners />} />
         <Route path="envios" element={<Shipping />} />
