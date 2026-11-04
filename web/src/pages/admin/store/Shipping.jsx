@@ -86,6 +86,16 @@ function Rates({ onMode }) {
       <label className="check"><input type="radio" name="ship-mode" checked={f.mode === 'postal'} onChange={() => setF({ ...f, mode: 'postal' })} /> Por código postal: el cliente pone su código postal y la tienda calcula el costo según la distancia</label>
       <label className="check"><input type="radio" name="ship-mode" checked={f.mode === 'zones'} onChange={() => setF({ ...f, mode: 'zones' })} /> Por zonas fijas: el cliente elige una de las zonas de abajo</label>
 
+      <h3>Retiro en punto de entrega</h3>
+      <label className="check"><input type="checkbox" checked={!!f.pickup?.enabled} onChange={(e) => setF({ ...f, pickup: { ...f.pickup, enabled: e.target.checked } })} /> Ofrecer retiro sin costo al finalizar la compra</label>
+      {f.pickup?.enabled && (
+        <div className="grid two">
+          <div><label htmlFor="p-place">Lugar (va entre paréntesis)</label><input id="p-place" value={f.pickup.place ?? ''} onChange={(e) => setF({ ...f, pickup: { ...f.pickup, place: e.target.value } })} placeholder="Moreno centro" /></div>
+          <div><label htmlFor="p-note">Aclaración para el cliente (opcional)</label><input id="p-note" value={f.pickup.note ?? ''} onChange={(e) => setF({ ...f, pickup: { ...f.pickup, note: e.target.value } })} placeholder="Ej.: te escribimos para coordinar día y horario" /></div>
+        </div>
+      )}
+      {f.pickup?.enabled && <p className="muted small">El cliente ve: <strong>Retiro en punto de entrega{f.pickup.place ? ` (${f.pickup.place})` : ''}</strong>, sin cargo. No le pedimos dirección. Se guarda con el botón de abajo.</p>}
+
       <h3>Desde dónde salen los envíos</h3>
       <div className="grid two">
         <div><label htmlFor="o-addr">Calle y número</label><input id="o-addr" value={f.origin.address} onChange={setO('address')} /></div>
@@ -115,7 +125,7 @@ function Rates({ onMode }) {
         Costo = (tarifa por uso + precio por km × km) + margen, redondeado hacia arriba a $100. Los km se miden en línea recta y se multiplican por el factor de recorrido (1,3 = las calles dan un 30% más de vuelta).
         Ejemplo a {km} km: <strong>{pesos(example)}</strong>.
       </p>
-      <button className="btn" disabled={busy} style={{ width: 'auto' }}>{busy ? 'Guardando…' : 'Guardar tarifa'}</button>
+      <button className="btn" disabled={busy} style={{ width: 'auto' }}>{busy ? 'Guardando…' : 'Guardar envíos'}</button>
 
       <h3>Probar un código postal</h3>
       <p className="muted small">Usa la tarifa guardada.</p>

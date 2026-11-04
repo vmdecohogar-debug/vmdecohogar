@@ -208,3 +208,26 @@ test('envío por código postal: calcula en el servidor y guarda CP y km', { ski
   await assert.rejects(checkout.createOrder({ items, customer, postalCode: '9410', locality: shipping.localitiesFor('9410')[0].name, paymentMethod: 'transfer' }), /WhatsApp/);
   await shipping.saveShippingSettings({ mode: 'zones' }, 1);
 });
+
+test('retiro en punto de entrega: sin costo, sin dirección y se puede apagar desde el panel', { skip }, async () => {
+  const shipping = await import('../src/services/shipping.js');
+  await shipping.saveShippingSettings({ mode: 'postal' }, 1);
+  const pub = await checkout.publicCheckout();
+  assert.equal(pub.pickup.label, 'Retiro en punto de entrega (Moreno centro)', 'viene activado de entrada');
+  const { order } = await checkout.createOrder({ items: [{ productId: P.id, qty: 1 }], customer: { ...customer, address: '' }, delivery: 'pickup', paymentMethod: 'transfer' });
+  assert.equal(order.pickup, true);
+  assert.equal(Number(order.shipping), 0);
+  assert.equal(order.zone_name, 'Retiro en punto de entrega (Moreno centro)');
+  assert.equal(order.address, 'Retiro en punto de entrega (Moreno centro)');
+  assert.equal(Number(order.total), Number(order.subtotal));
+  assert.match((await checkout.publicOrder(order.public_token)).pickupNote, /WhatsApp/);
+
+  const s = await shipping.saveShippingSettings({ pickup: { enabled: true, place: 'Moreno, estación', note: '' } }, 1);
+  assert.equal(s.pickup.place, 'Moreno, estación');
+  assert.equal(s.mode, 'postal', 'no toca el resto');
+  assert.equal((await checkout.publicCheckout()).pickup.label, 'Retiro en punto de entrega (Moreno, estación)');
+  await shipping.saveShippingSettings({ pickup: { enabled: false } }, 1);
+  assert.equal((await checkout.publicCheckout()).pickup, null);
+  await assert.rejects(checkout.createOrder({ items: [{ productId: P.id, qty: 1 }], customer, delivery: 'pickup', paymentMethod: 'transfer' }), /no está disponible/);
+  await shipping.saveShippingSettings({ mode: 'zones', pickup: { enabled: true, place: 'Moreno centro' } }, 1);
+});

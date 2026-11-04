@@ -19,7 +19,7 @@ export function Checkout() {
   const navigate = useNavigate();
   const { data: opts, error } = useData('/store/checkout');
   const [quote, setQuote] = useState(null);
-  const [f, setF] = useState(() => ({ name: '', phone: '', address: '', city: '', notes: '', zoneId: '', postalCode: '', locality: '', method: '', ...readDraft() }));
+  const [f, setF] = useState(() => ({ name: '', phone: '', address: '', city: '', notes: '', zoneId: '', postalCode: '', locality: '', method: '', delivery: 'ship', ...readDraft() }));
   const [ship, setShip] = useState({ localities: [], quote: null, error: null, busy: false });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -83,9 +83,11 @@ export function Checkout() {
   if (!opts) return <Skeleton error={error} kind="box" />;
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  // Retiro en punto de entrega: sin costo y sin dirección.
+  const pick = f.delivery === 'pickup' && !!opts.pickup;
   const zone = postal ? null : opts.zones.find((z) => String(z.id) === String(f.zoneId));
-  const shipPrice = postal ? ship.quote?.price : zone?.price;
-  const shipReady = postal ? !!ship.quote && !ship.busy : !!zone;
+  const shipPrice = pick ? 0 : postal ? ship.quote?.price : zone?.price;
+  const shipReady = pick || (postal ? !!ship.quote && !ship.busy : !!zone);
   const subtotal = quote?.subtotal ?? cart.total;
   const total = subtotal + (shipPrice ?? 0);
 
@@ -98,10 +100,11 @@ export function Checkout() {
         method: 'POST',
         body: {
           items: cart.items.map((i) => ({ productId: i.id, qty: i.qty })),
-          customer: { name: f.name, phone: f.phone, address: f.address, city: postal ? f.locality : f.city, notes: f.notes },
-          zoneId: postal ? null : Number(f.zoneId),
-          postalCode: cp,
-          locality: f.locality,
+          customer: { name: f.name, phone: f.phone, address: pick ? '' : f.address, city: pick ? '' : postal ? f.locality : f.city, notes: f.notes },
+          delivery: pick ? 'pickup' : 'ship',
+          zoneId: pick || postal ? null : Number(f.zoneId),
+          postalCode: pick ? null : cp,
+          locality: pick ? null : f.locality,
           paymentMethod: f.method,
         },
       });
@@ -120,15 +123,34 @@ export function Checkout() {
       <h1 className="s-page-title">Finalizar compra</h1>
       <form className="s-checkout" onSubmit={submit}>
         <div className="s-checkout-main">
+          {opts.pickup && (
+            <fieldset className="s-box">
+              <legend>Cómo recibís tu pedido</legend>
+              <label className={`s-option ${!pick ? 'on' : ''}`}>
+                <input type="radio" name="delivery" value="ship" checked={!pick} onChange={set('delivery')} />
+                <span className="s-option-text"><strong>Envío a domicilio</strong><small>Te lo llevamos a tu dirección.</small></span>
+                <Ico name="truck" />
+              </label>
+              <label className={`s-option ${pick ? 'on' : ''}`}>
+                <input type="radio" name="delivery" value="pickup" checked={pick} onChange={set('delivery')} />
+                <span className="s-option-text"><strong>{opts.pickup.label}</strong>{opts.pickup.note && <small>{opts.pickup.note}</small>}</span>
+                <span className="s-option-price">Sin cargo</span>
+              </label>
+            </fieldset>
+          )}
           <fieldset className="s-box">
-            <legend>Tus datos para la entrega</legend>
+            <legend>{pick ? 'Tus datos' : 'Tus datos para la entrega'}</legend>
             <label htmlFor="k-name">Nombre y apellido</label>
             <input id="k-name" value={f.name} onChange={set('name')} required autoComplete="name" />
             <label htmlFor="k-phone">Teléfono (WhatsApp)</label>
             <input id="k-phone" value={f.phone} onChange={set('phone')} required inputMode="tel" autoComplete="tel" placeholder="11 2345 6789" />
-            <label htmlFor="k-address">Dirección de entrega</label>
-            <input id="k-address" value={f.address} onChange={set('address')} required autoComplete="street-address" placeholder="Calle, número, piso/depto" />
-            {!postal && (
+            {!pick && (
+              <>
+                <label htmlFor="k-address">Dirección de entrega</label>
+                <input id="k-address" value={f.address} onChange={set('address')} required autoComplete="street-address" placeholder="Calle, número, piso/depto" />
+              </>
+            )}
+            {!postal && !pick && (
               <>
                 <label htmlFor="k-city">Localidad</label>
                 <input id="k-city" value={f.city} onChange={set('city')} autoComplete="address-level2" />
@@ -138,7 +160,7 @@ export function Checkout() {
             <textarea id="k-notes" rows={2} value={f.notes} onChange={set('notes')} placeholder="Entre calles, horario, timbre…" />
           </fieldset>
 
-          {postal ? (
+          {pick ? null : postal ? (
           <fieldset className="s-box">
             <legend>Envío a domicilio</legend>
             <label htmlFor="k-cp">Código postal</label>
@@ -204,14 +226,14 @@ export function Checkout() {
             ))}
           </ul>
           <div className="s-sum-row"><span>Subtotal</span><span>{pesos(subtotal)}</span></div>
-          <div className="s-sum-row"><span>Envío</span><span>{shipReady ? (shipPrice ? pesos(shipPrice) : 'Sin cargo') : postal ? 'Poné tu código postal' : 'Elegí la zona'}</span></div>
+          <div className="s-sum-row"><span>{pick ? 'Retiro' : 'Envío'}</span><span>{shipReady ? (shipPrice ? pesos(shipPrice) : 'Sin cargo') : postal ? 'Poné tu código postal' : 'Elegí la zona'}</span></div>
           <div className="s-sum-row total"><span>Total</span><span>{pesos(total)}</span></div>
           <MinimumBar minimum={quote?.minimum} />
           {msg && <div className="notice error" role="alert">{msg}</div>}
           <button className="s-btn s-btn-block" disabled={busy || !f.method || !shipReady || (quote?.minimum && !quote.minimum.reached)}>
             {busy ? 'Enviando…' : f.method === 'mercadopago' ? 'Ir a pagar con Mercado Pago' : 'Confirmar pedido'}
           </button>
-          <p className="s-note"><Ico name="truck" size={18} /> Los pedidos se despachan de 1 a 3 días hábiles.</p>
+          {!pick && <p className="s-note"><Ico name="truck" size={18} /> Los pedidos se despachan de 1 a 3 días hábiles.</p>}
         </aside>
       </form>
     </section>
@@ -288,9 +310,11 @@ export function OrderStatus() {
       <div className="s-box s-summary">
         <h2>Detalle</h2>
         <ul>{items.map((i) => <li key={i.sku + i.name}><span>{i.qty} × {i.name}</span><span>{pesos(i.qty * i.unit_price)}</span></li>)}</ul>
-        <div className="s-sum-row"><span>Envío ({o.zone_name})</span><span>{o.shipping ? pesos(o.shipping) : 'Sin cargo'}</span></div>
+        <div className="s-sum-row"><span>{o.pickup ? o.zone_name : `Envío (${o.zone_name})`}</span><span>{o.shipping ? pesos(o.shipping) : 'Sin cargo'}</span></div>
         <div className="s-sum-row total"><span>Total</span><span>{pesos(o.total)}</span></div>
-        <p className="s-note">Entrega en {o.address}{o.city ? `, ${o.city}` : ''}.</p>
+        {o.pickup
+          ? <p className="s-note">Lo retirás en el punto de entrega.{data.pickupNote ? ` ${data.pickupNote}` : ''}</p>
+          : <p className="s-note">Entrega en {o.address}{o.city ? `, ${o.city}` : ''}.</p>}
       </div>
       <p className="s-note">Guardá este enlace para ver el estado de tu pedido.</p>
       <div className="s-center"><Link to="/" className="s-btn s-btn-ghost">Volver a la tienda</Link></div>
