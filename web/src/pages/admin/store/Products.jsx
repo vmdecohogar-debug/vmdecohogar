@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../../api.js';
 import { pesos, toCents } from '../../../format.js';
 import { Badge, Loading, Notice, useAction, useApi } from '../../../components/ui.jsx';
@@ -159,7 +160,10 @@ export default function StoreProducts() {
     <div>
       <div className="row between" style={{ marginBottom: 12 }}>
         <h1 style={{ margin: 0 }}>Productos</h1>
-        <button className="btn small" onClick={() => { setMode({ ...EMPTY }); window.scrollTo(0, 0); }}>Nuevo producto</button>
+        <div className="row" style={{ gap: 8 }}>
+          <Link className="btn secondary small" to="/admin/lista-precios">Descargar lista de precios</Link>
+          <button className="btn small" onClick={() => { setMode({ ...EMPTY }); window.scrollTo(0, 0); }}>Nuevo producto</button>
+        </div>
       </div>
       <Notice msg={msg} />
       {mode && <ProductForm key={mode.id ?? 'new'} initial={mode} categories={data.categories} settings={settings.store} onDone={done} onCancel={() => setMode(null)} />}
